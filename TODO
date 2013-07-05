@@ -1,0 +1,12 @@
+TODO 
+TODO discuss architecture for gci
+TODO compile: 
+              user input            > Gibbs intermediate language
+              grab glass of water
+              take glass of water   > PLAYER TAKE GLASS
+              ----
+              unlock door
+              use key on door
+              unlock door with key
+              open door
+              open door with key    > KEY USE DOOR
