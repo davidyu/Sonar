@@ -1,0 +1,4 @@
+# test builds for parser
+
+-main TestParser
+-swf TestParser.swf
