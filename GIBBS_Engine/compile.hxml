@@ -1,0 +1,7 @@
+-main Main
+-cp src
+-lib hscript
+
+-swf-version 11.7
+
+-swf bin/Main.swf
