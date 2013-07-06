@@ -29,4 +29,5 @@ VIM Developer tips
     --regex-haxe=/^[ \t]*enum[ \t]+([A-Za-z0-9_]+)/\1/t,typedef/
     --regex-haxe=/^[ \t]*+([A-Za-z0-9_]+)(;|\([^]))*:[^]]*\))/\1/t,enum_field/
 </code></pre>
+* Crazy how it's just a bunch of complex regex expressions.
 * Find a good debugger.
