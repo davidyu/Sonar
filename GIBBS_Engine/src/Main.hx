@@ -1,5 +1,9 @@
 package ;
 
+import engine.gibbs.Component;
+import engine.gibbs.components.RenderCmp;
+import engine.gibbs.Entity;
+import engine.gibbs.subsystems.TickSys;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.Lib;
@@ -13,8 +17,16 @@ class Main
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
 		// entry point
+        var cmp : Component = new Cmp1( 1 ) ;
         
-        var ent : Ent = new Ent();
+        var ent : Entity = new Ent();
+        ent.attachComponent( cmp );
+        var i : Int = ent.getComponent( Cmp1 ).num;
+		
+		var sys = new TickSys();
+		var v  = new RenderCmp( sys );
+        
+        trace( i );
 	}
 	
 }

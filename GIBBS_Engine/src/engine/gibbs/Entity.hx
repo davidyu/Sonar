@@ -1,10 +1,9 @@
 package engine.gibbs;
 
-interface Entity
+interface Entity 
 {
-    function attachComponent( component : Component, name : String ) : Void;
-    function detachComponent( name : String ) : Component;
-    function getComponent<T>() : T;
-    function updateComponents() : Void;
+    function attachComponent( component : Component ) : Void;
+    function detachComponent<T>( type : Class<T> ) : Void;
+    function getComponent<T>( type : Class<T> ) : T;
     //function HandleMessage( message : Message ) : Void;
 }

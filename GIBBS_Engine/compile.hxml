@@ -1,7 +1,12 @@
--main Main
 -cp src
+-cp src/game
+-main Game
 -lib hscript
 
+-debug
+
+--flash-strict
+-swf-header 200:200:30
 -swf-version 11.7
 
 -swf bin/Main.swf

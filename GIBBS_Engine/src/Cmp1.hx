@@ -1,24 +1,28 @@
 package ;
 import engine.gibbs.Component;
+import engine.gibbs.Entity;
 
 class Cmp1 implements Component
 {
-
-    public function new() {
-        
+    public function new( num : Int ) {
+        this.num = num;
     }
     
     
-    function initialize() : Void {
+    public function initialize() : Void {
         
     }
     
-    function update(): Void {
+	public function onAdded( e : Entity ) : Void {
+		
+	}
+	public function onRemoved( e : Entity ) : Void {
+		
+	}
+    public function shutdown() : Void {
         
     }
     
-    function shutdown() : Void {
-        
-    }
+    public var num : Int;
     
 }
