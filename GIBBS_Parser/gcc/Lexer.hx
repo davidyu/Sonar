@@ -56,7 +56,7 @@ class Lexer {
         return tokens;
     }
 
-    private static function tokenize(word:String):Token {
+    private static inline function tokenize(word:String):Token {
         return switch getType(word) {
             case TokenType.Noun: Token.Noun(word);
             case TokenType.Verb: Token.Verb(word);
@@ -65,7 +65,7 @@ class Lexer {
         }
     }
 
-    private static function getType(word:String):TokenType {
+    private static inline function getType(word:String):TokenType {
         return dict.get(word);
     }
 }
