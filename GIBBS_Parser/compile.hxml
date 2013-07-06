@@ -1,4 +1,5 @@
 # test builds for parser
 
--main TestParser
+-main gcc.test.TestParser
+gcc.Lexer
 -swf TestParser.swf
