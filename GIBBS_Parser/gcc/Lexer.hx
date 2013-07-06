@@ -5,6 +5,7 @@ enum TokenType {
     Verb;
     Article;
     Adjective;
+    Unknown;
 }
 
 enum Token {
@@ -12,6 +13,7 @@ enum Token {
     Verb(val: String);
     Article(val: String);
     Adjective(val: Descriptor);
+    Unknown(val: String);
 }
 
 enum Descriptor {
@@ -21,18 +23,24 @@ enum Descriptor {
 
 class Lexer {
 
-    //start of HACK HACK HACK
-    private static var verbs:Array<String> =
-        [ "run", "grab", "take", "jump", "go" ];
-
-    private static var nouns:Array<String> =
-        [ "mug", "glass", "pistol", "gun", "bat", "hammer", "crowbar", "item" ];
-
     private static var dict:Map<String, TokenType>;
 
-    public static function loadDictionary():Void {
+    //to be implemented. XML? Script?
+    public static function loadDictionary(file:String):Void {
+
+    }
+
+    #if debug
+    //start of HACK HACK HACK
+    public static function loadDebugDictionary():Void {
         //hack hack hack
         dict = new Map<String, TokenType>();
+
+        var verbs:Array<String> =
+            [ "run", "grab", "take", "jump", "go" ];
+
+        var nouns:Array<String> =
+            [ "mug", "glass", "pistol", "gun", "bat", "hammer", "crowbar", "item" ];
 
         for (verb in verbs) {
             dict.set(verb, TokenType.Verb);
@@ -43,8 +51,15 @@ class Lexer {
         }
     }
     //end of HACK HACK HACK
+    #end
 
     public static function lex(line:String):Array<Token> {
+
+        #if debug
+        if (dict == null) {
+            loadDebugDictionary();
+        }
+        #end
 
         var words:Array<String> = line.split(" ");
         var tokens:Array<Token>  = new Array<Token>();
@@ -62,10 +77,14 @@ class Lexer {
             case TokenType.Verb: Token.Verb(word);
             case TokenType.Adjective: Token.Adjective(Descriptor.Description(word)); //hack; don't worry about numerals for now
             case TokenType.Article: Token.Article(word);
+            case TokenType.Unknown: Token.Unknown(word);
         }
     }
 
-    private static inline function getType(word:String):TokenType {
-        return dict.get(word);
+    private static function getType(word:String):TokenType {
+        if (dict.exists(word)) {
+            return dict.get(word);
+        }
+        return TokenType.Unknown;
     }
 }

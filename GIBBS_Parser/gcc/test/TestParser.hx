@@ -1,20 +1,21 @@
 package gcc.test;
 
-class TestParser extends haxe.unit.TestCase {
-    //warning: this test is for FLASH TARGET ONLY
+class TestParser {
     static var input:flash.text.TextField;
     static var output:flash.text.TextField;
-
-    public function testLexer() {
-
-
-    }
 
     public function testPipeline() {
 
     }
 
     static function main() {
+        var r = new haxe.unit.TestRunner();
+        r.add(new TestLexer());
+        r.run();
+    }
+
+    //warning: this test is for FLASH TARGET ONLY
+    static function setupInteractiveTest() {
 
         //set up dynamic text field - not usable.
         input = new flash.text.TextField();
@@ -37,10 +38,6 @@ class TestParser extends haxe.unit.TestCase {
         output.text = "~";
         flash.Lib.current.addChild(output);
 
-        testParse("");
     }
 
-    static function testParse(input:String) {
-    
-    }
 }
