@@ -3,4 +3,5 @@
 -debug
 -main gcc.test.TestParser
 gcc.Lexer
+gcc.Parser
 -swf TestParser.swf

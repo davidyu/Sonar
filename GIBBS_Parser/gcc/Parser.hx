@@ -1,3 +1,5 @@
+package gcc;
+
 enum TokenType {
   Noun;
   Verb;
@@ -9,4 +11,7 @@ enum Token {
   Verb(val: String);
 }
 
+class Parser {
 
+
+}
