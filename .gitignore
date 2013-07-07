@@ -1,2 +1,6 @@
+# ctags files
 GIBBS_Parser/gcc/tags
+
+# swfs
 GIBBS_Parser/bin/*.swf
+GIBBS_Engine/bin/*.swf
