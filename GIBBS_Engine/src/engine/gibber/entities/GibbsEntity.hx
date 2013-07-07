@@ -1,26 +1,23 @@
 package engine.gibber.entities;
 import engine.gibbs.Component;
 import engine.gibbs.Entity;
+import haxe.ds.ObjectMap;
 
-/**
- * ...
- * @author ...
- */
 class GibbsEntity implements Entity
 {
 	
 	public function new() {
-        components = new Map();
+        components = new Map(); 
     }
     
-    public function attachComponent( component : Dynamic ) : Void {
+    public function attachComponent( component : Component ) : Void {
 		#if debug
 			var type = Type.getClass( component );
 			if ( components.exists( Type.getClassName( type ) ) ) {
 				throw "Component of this type " + Type.getClassName( type ) + " already exists.";
 			}
 		#end
-        components.set( Type.getClassName( Type.getClass ( component ) ), component );
+        components[Type.getClassName( Type.getClass ( component ) )] = component;
     }
     
     public function detachComponent<T>( type : Class<T> ) : Void {
@@ -33,7 +30,7 @@ class GibbsEntity implements Entity
     }
     
     public function getComponent<T>( type : Class<T> ) : T {
-        return cast components.get( Type.getClassName( type ) );
+        return cast components[Type.getClassName( type )];
     }
     
     var components : Map<String, Component>;

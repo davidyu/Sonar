@@ -5,8 +5,7 @@
 
 -debug
 
---flash-strict
--swf-header 200:200:30
+-swf-header 700:500:30
 -swf-version 11.7
 
 -swf bin/Main.swf
