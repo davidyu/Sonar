@@ -1,1 +1,1 @@
-copy /Y build.hxml compile.hxml
+subs.bat "/" \ build.hxml > compile.hxml
