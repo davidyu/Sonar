@@ -41,8 +41,8 @@ class EntityBuilder
 		e.attachCmp( transit );
 		e.attachCmp( look );
 		
-		s1.getCmp( StinkyMisc.EntityListPortalClass ).add( e );
-		s2.getCmp( StinkyMisc.EntityListPortalClass ).add( e );
+		s1.getCmp( EntityListHelper.PortalEntityList ).add( e );
+		s2.getCmp( EntityListHelper.PortalEntityList ).add( e );
 		
 		return e;
 	}

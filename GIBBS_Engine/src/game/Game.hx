@@ -8,7 +8,7 @@ import engine.gibber.components.TransitCmp;
 import engine.gibber.entities.Player;
 import engine.gibber.entities.Portal;
 import engine.gibber.entities.Sector;
-import engine.gibber.StinkyMisc;
+import engine.gibber.EntityListHelper;
 import engine.gibbs.Component;
 import engine.gibbs.components.RenderCmp;
 import engine.gibbs.Entity;
@@ -37,7 +37,7 @@ class Game
 		trace ("The player is in sector with this description: " + pos.currentSector.getCmp( LookCmp ).Look );
 		
 		trace("Entering door...");
-		var somePortal = pos.currentSector.getCmp( StinkyMisc.EntityListPortalClass ).getHead();
+		var somePortal = pos.currentSector.getCmp( EntityListHelper.PortalEntityList ).getHead();
 		pos.enterPortal( somePortal );
 		
 		trace ("The player is in sector with this description: " + pos.currentSector.getCmp( LookCmp ).Look );
