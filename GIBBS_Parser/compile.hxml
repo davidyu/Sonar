@@ -1,0 +1,6 @@
+# test builds for parser
+
+-debug
+-main gcc.test.TestParser
+gcc.Lexer
+-swf bin\TestParser.swf
