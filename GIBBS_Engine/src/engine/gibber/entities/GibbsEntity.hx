@@ -5,31 +5,49 @@ import haxe.ds.ObjectMap;
 
 class GibbsEntity implements Entity
 {
-	
 	public function new() {
         components = new Map(); 
     }
     
-    public function attachComponent( component : Component ) : Void {
+    public function attachCmp( component : Component ) : Void {
 		#if debug
 			var type = Type.getClass( component );
 			if ( components.exists( Type.getClassName( type ) ) ) {
 				throw "Component of this type " + Type.getClassName( type ) + " already exists.";
 			}
 		#end
+		component.onAttach( this );
         components[Type.getClassName( Type.getClass ( component ) )] = component;
+		
     }
     
-    public function detachComponent<T>( type : Class<T> ) : Void {
-		var exists : Bool = components.remove( Type.getClassName( type ) );
+    public function detachCmp<T>( type : Class<T> ) : T {
+		var name = Type.getClassName( type );
+		var component = components.get( name );
+			
 		#if debug
-			if ( !exists ) {
-				throw "Component of this type " + Type.getClassName( type ) + " does not exist.";
+			if ( component != null ) {
+				throw "Component of this type " + name + " does not exist.";
 			}
 		#end
+		component.onDetach( this );
+		components.remove( name );
+		
+		return cast component;
+		
     }
+	
+	public function detachAll(): Void {
+		var component;
+		
+		for ( c in components.keys() ) {
+			component = components[c];
+			component.onDetach( this );
+			components.remove( c );
+		}
+	}
     
-    public function getComponent<T>( type : Class<T> ) : T {
+    public function getCmp<T>( type : Class<T> ) : T {
         return cast components[Type.getClassName( type )];
     }
     

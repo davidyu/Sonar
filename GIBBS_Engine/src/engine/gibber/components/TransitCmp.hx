@@ -30,7 +30,7 @@ class TransitCmp implements Component
 		onEnterTransit( e );
 		// If the entity is allowed to pass, execute onLeave
 		if ( enterScript == null || enterScript.execute() ) {
-			e.getComponent( PositionCmp ).currentSector = getDestSector( from );
+			e.getCmp( PositionCmp ).currentSector = getDestSector( from );
 			onLeaveTransit( e );
 		}
 		
@@ -44,13 +44,16 @@ class TransitCmp implements Component
 		
 	}
 	
-	public function onAdded( e : Entity ) : Void {
-		
+	public function onAttach( e : Entity ) : Void {
+		entity = e;
 	}
 	
-	public function onRemoved( e : Entity ) : Void {
-		
+	public function onDetach( e : Entity ) : Void {
+		entity = null;
 	}
+	
+	public var entity : Entity;
+	
 	
 	
 	private function onEnterTransit( e : Entity ) : Void {

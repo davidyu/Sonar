@@ -18,14 +18,15 @@ class LookCmp implements Component
 		
 	}
 	
-	public function onAdded( e : Entity ) : Void {
-		
+	public function onAttach( e : Entity ) : Void {
+		entity = e;
 	}
 	
-	public function onRemoved( e : Entity ) : Void {
-		
+	public function onDetach( e : Entity ) : Void {
+		entity = null;
 	}
 	
+	@:isVar public var entity : Entity;
 	@:isVar public var Look( default, default ) : String;
 	
 }

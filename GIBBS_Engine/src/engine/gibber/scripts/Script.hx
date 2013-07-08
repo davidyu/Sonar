@@ -8,7 +8,7 @@ class Script
 		
 	}
 	
-	public function execute() : Bool {
+	public function execute() : Dynamic {
 		return true;
 	}
 	

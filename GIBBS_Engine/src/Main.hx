@@ -20,8 +20,8 @@ class Main
         var cmp : Component = new Cmp1( 1 ) ;
         
         var ent : Entity = new Ent();
-        ent.attachComponent( cmp );
-        var i : Int = ent.getComponent( Cmp1 ).num;
+        ent.attachCmp( cmp );
+        var i : Int = ent.getCmp( Cmp1 ).num;
 		
 		var sys = new TickSys();
 		var v  = new RenderCmp( sys );

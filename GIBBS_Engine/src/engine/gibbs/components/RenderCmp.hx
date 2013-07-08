@@ -15,11 +15,11 @@ class RenderCmp implements TickCmp
         
     }
     
-	public function onAdded( e : Entity ) : Void {
+	public function onAttach( e : Entity ) : Void {
 		
 	}
 	
-	public function onRemoved( e : Entity ) : Void {
+	public function onDetach( e : Entity ) : Void {
 		
 	}
 	
@@ -27,5 +27,6 @@ class RenderCmp implements TickCmp
         
     }
 	
+	public var entity : Entity;
 	var renderManager : TickSys;
 }

@@ -13,10 +13,10 @@ class Cmp1 implements Component
         
     }
     
-	public function onAdded( e : Entity ) : Void {
+	public function onAttach( e : Entity ) : Void {
 		
 	}
-	public function onRemoved( e : Entity ) : Void {
+	public function onDetach( e : Entity ) : Void {
 		
 	}
     public function shutdown() : Void {

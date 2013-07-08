@@ -1,11 +1,13 @@
 -cp src
--cp src/game
--main Game
--lib hscript
 
+-lib hscript
 -debug
+
+#REMEMBER THIS FOR DEBUGGING AND NEVER FORGET
+-D fdb
 
 -swf-header 700:500:30
 -swf-version 11.7
 
--swf bin/Main.swf
+-swf bin/GIBBSEngine.swf
+-main game.Game

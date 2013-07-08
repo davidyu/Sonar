@@ -1,8 +1,8 @@
 package engine.gibber.entities;
-import engine.gibbs.Entity;
 
-class Sector extends GibbsEntity
+class Portal extends GibbsEntity
 {
+
 	public function new() {
 		super();
 	}

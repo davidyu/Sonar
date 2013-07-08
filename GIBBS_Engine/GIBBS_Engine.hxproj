@@ -20,7 +20,7 @@
   <!-- Build options -->
   <build>
     <option directives="" />
-    <option flashStrict="True" />
+    <option flashStrict="False" />
     <option mainClass="game.Game" />
     <option enabledebug="True" />
     <option additional="" />
@@ -44,12 +44,12 @@
   <!-- Executed before build -->
   <preBuildCommand>$(CompilerPath)\haxe.exe $(ProjectDir)\compile.hxml</preBuildCommand>
   <!-- Executed after build -->
-  <postBuildCommand alwaysRun="True" />
+  <postBuildCommand alwaysRun="False" />
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Custom" />
-    <option testMovieCommand="bin\Main.swf" />
+    <option testMovie="OpenDocument" />
+    <option testMovieCommand="bin\GIBBSEngine.swf" />
   </options>
   <!-- Plugin storage -->
   <storage />

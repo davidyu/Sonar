@@ -5,7 +5,9 @@ interface Component
     function initialize() : Void;
     function shutdown() : Void;
 	
-	function onAdded( e : Entity ) : Void;
-	function onRemoved( e : Entity ) : Void;
+	function onAttach( e : Entity ) : Void;
+	function onDetach( e : Entity ) : Void;
     //function HandleMessage( message : Message ); Void;
+	
+	public var entity( default, null ) : Entity;
 }
