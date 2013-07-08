@@ -13,6 +13,7 @@ enum Token {
     Verb(val: String);
     Article(val: String);
     Adjective(val: Descriptor);
+    //modifier
     Unknown(val: String);
 }
 
@@ -20,6 +21,10 @@ enum Descriptor {
     Number(val: Int);           //3 apple bars vs 1 apple bar
     Description(val: String);   //green lantern vs blue lantern
 }
+
+/*
+ * Simple, stateless Lexer.
+ */
 
 class Lexer {
 
