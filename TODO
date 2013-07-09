@@ -1,5 +1,7 @@
-TODO 
-TODO discuss architecture for gcc
+TODO for parser
+DOIN discuss architecture for gcc
+TODO design interface for loading game vocabulary/lang specs
+TODO design output structure of parser
 TODO compile: 
               user input            > Gibbs intermediate language
               grab glass of water
