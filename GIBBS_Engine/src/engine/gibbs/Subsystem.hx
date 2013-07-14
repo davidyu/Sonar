@@ -1,7 +1,7 @@
 package engine.gibbs;
 import engine.gibbs.subsystems.EntityObserver;
 
-class Subsystem extends EntityObserver
+class Subsystem implements EntityObserver
 {
 	public function new() {
 		

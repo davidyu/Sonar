@@ -1,4 +1,5 @@
 package engine.gibber;
+import engine.gibber.components.BoundRectCmp;
 import engine.gibber.components.EntityListCmp;
 import engine.gibber.components.LookCmp;
 import engine.gibber.components.PositionCmp;
@@ -15,11 +16,13 @@ class EntityBuilder
 		var s1 : Sector = new Sector();
 		var look : LookCmp = new LookCmp();
 		var portals = new EntityListCmp<Portal>();
+		var bounds = new BoundRectCmp( 0, 0, 100, 100 );
 		
 		look.Look = "This is a random number in this sector:" + Std.random( 500 );
 		
 		s1.attachCmp( look );
 		s1.attachCmp( portals );
+		s1.attachCmp( bounds );
 		
 		return s1;
 	}

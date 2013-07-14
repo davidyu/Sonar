@@ -42,6 +42,7 @@ class Game
 		
 		trace ("The player is in sector with this description: " + pos.currentSector.getCmp( LookCmp ).Look );
 		
+		var n = new DebugGame( Lib.current );
 	}
 	
 }
