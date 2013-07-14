@@ -78,7 +78,7 @@ class Lexer {
 
     private static inline function tokenize(word:String):Token {
         return switch getType(word) {
-            case TokenType.Noun: Token.Noun(word);
+           case TokenType.Noun: Token.Noun(word);
             case TokenType.Verb: Token.Verb(word);
             case TokenType.Adjective: Token.Adjective(Descriptor.Description(word)); //hack; don't worry about numerals for now
             case TokenType.Article: Token.Article(word);

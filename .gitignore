@@ -1,5 +1,5 @@
 # ctags files
-GIBBS_Parser/gcc/tags
+tags
 
 # swfs
 GIBBS_Parser/bin/*.swf
