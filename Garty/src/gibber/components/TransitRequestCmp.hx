@@ -6,19 +6,19 @@ import gibber.scripts.TransitScript;
 class TransitRequestCmp implements Component
 {
 
-    public function new( mover : Entity, srcSector : Entity, destSector : Entity, 
-                         transit : TransitScript=null ) {
+    public function new( mover : Entity, destSector : Entity, transit : TransitScript=null ) {
         this.mover = mover;
-        this.srcSector = srcSector;
         this.destSector = destSector;
         
         this.transitScript = transit;
     }
     
-    @:isVar var mover( default, null ) : Entity;
-    @:isVar var srcSector( default, null ) : Entity;
-    @:isVar var destSector( default, null ) : Entity;
+    @:isVar public var mover( default, null ) : Entity;
+    @:isVar public var destSector( default, null ) : Entity;
     
-    var transitScript : TransitScript;
+    @:isVar public var transitScript( default, null ) : TransitScript;
+
+    // TODO
+    var progressState : Int;
     
 }

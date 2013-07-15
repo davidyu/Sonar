@@ -7,7 +7,7 @@
 #REMEMBER THIS FOR DEBUGGING AND NEVER FORGET
 -D fdb
 
--swf-header 700:500:30
+-swf-header 700:500:30:256CB8
 -swf-version 11.7
 
 -swf bin/Engine.swf

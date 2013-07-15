@@ -4,6 +4,7 @@ import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.Lib;
 import gibber.components.TransitRequestCmp;
+import gibber.God;
 import gibber.systems.TransitRequestSys;
 
 
@@ -17,9 +18,10 @@ class Main
         stage.align = StageAlign.TOP_LEFT;
         // entry point
         
-        trace("hello");
-        var t = new TransitRequestCmp(null, null, null);
-        var b = new TransitRequestSys();
+        trace( "Starting up God" );
+        
+        var g = new God( Lib.current );
+
     }
 
 }
