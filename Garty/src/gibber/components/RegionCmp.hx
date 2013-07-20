@@ -2,10 +2,12 @@ package gibber.components;
 import com.artemisx.Component;
 import com.artemisx.Entity;
 import gibber.scripts.VoidExecuteScript;
+import utils.Vec2;
 
 class RegionCmp implements Component
 {
-
+	@:isVar var pos :  Vec2;
+	
     public function new( enter : VoidExecuteScript=null, exit : VoidExecuteScript=null ) {
         enterScript = enter;
         exitScript = exit;

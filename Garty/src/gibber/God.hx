@@ -49,7 +49,8 @@ class God
     }
     
     public function initializeSystems() : Void {
-        world.setSystem( new NameRegistry() );
+        world.setManager( new NameRegistry() );
+		
         world.setSystem( new TransitRequestSys() );
         
         world.initialize();

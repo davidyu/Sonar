@@ -12,7 +12,7 @@ class Commander
     }
     
     public function goToSector( mover : Entity, destSectorName : String ) : Void {
-        var destSector = god.world.getSystem( NameRegistry ).getEntity( destSectorName );
+        var destSector = god.world.getManager( NameRegistry ).getEntity( destSectorName );
         
         if ( destSector != null ) {
             god.entityBuilder.createTransitRequest( mover, destSector, null );
