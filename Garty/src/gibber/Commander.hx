@@ -1,15 +1,22 @@
 package gibber;
 import com.artemisx.Entity;
 import com.artemisx.World;
+import gibber.components.EContainerCmp;
 import gibber.components.LookCmp;
-import gibber.systems.NameRegistry;
+import gibber.components.PortalCmp;
+import gibber.managers.NameRegistry;
+
+using Lambda;
 
 class Commander
 {
-
     public function new( g : God ) {
         god = g;
     }
+	
+	public function getPortalDest( portal : Entity, fromSector : Entity ) : Entity {
+		return portal.getComponent( PortalCmp ).getDestSector( fromSector );
+	}
     
     public function goToSector( mover : Entity, destSectorName : String ) : Void {
         var destSector = god.world.getManager( NameRegistry ).getEntity( destSectorName );
@@ -29,5 +36,6 @@ class Commander
     }
     
     var god : God;
-    
+	
+	
 }

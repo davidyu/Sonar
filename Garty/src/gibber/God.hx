@@ -5,7 +5,7 @@ import flash.display.MovieClip;
 import flash.text.TextField;
 import flash.text.TextFieldType;
 import flash.ui.Keyboard;
-import gibber.systems.NameRegistry;
+import gibber.managers.NameRegistry;
 import gibber.systems.TransitRequestSys;
 
 class God
@@ -46,6 +46,8 @@ class God
         
         initializeSystems();
         initializeEntities();
+		
+		entityBuilder.testAspectMatch();
     }
     
     public function initializeSystems() : Void {
