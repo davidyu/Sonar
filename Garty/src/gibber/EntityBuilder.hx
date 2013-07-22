@@ -10,13 +10,15 @@ import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.TransitRequestCmp;
 import gibber.scripts.TransitScript;
+import utils.Polygon;
+import utils.Vec2;
 
 class EntityBuilder
-{
+    {
     public function new( g : God ) {
        god = g;
     }
-    
+
     public function createTransitRequest( mover : Entity, destSector : Entity, transitScript : TransitScript ) : Entity {
         var e : Entity = world.createEntity();
         var tr = new TransitRequestCmp( mover, destSector, transitScript );
@@ -27,13 +29,13 @@ class EntityBuilder
         
         return e;
     }
-    
+
     public function createSector( name : String ) : Entity {
         var e = world.createEntity();
         var nameCmp = new NameIdCmp( "sector:" + name );
         var lookCmp = new LookCmp();
         var regionCmp = new RegionCmp();
-		var containerCmp = new EContainerCmp();
+        var containerCmp = new EContainerCmp();
         
         lookCmp.lookText = "This is some room #" + Std.random(1000);
         
@@ -46,7 +48,7 @@ class EntityBuilder
         
         return e;
     }
-    
+
     public function createPlayer( name : String ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
@@ -61,12 +63,12 @@ class EntityBuilder
         
         return e;
     }
-	
-	public function createPortal( srcSector : Entity, destSector : Entity ) : Entity {
+
+    public function createPortal( srcSector : Entity, destSector : Entity ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
         var posCmp = new PosCmp( god.sectors[0] );
-		var portalCmp = new PortalCmp( srcSector, destSector );
+        var portalCmp = new PortalCmp( srcSector, destSector );
         
         lookCmp.lookText = "This is the player";
         
@@ -78,18 +80,23 @@ class EntityBuilder
         
         return e;
     }
-	
-	public function testAspectMatch() {
-		var sig = Aspect.getAspectForAll( [PortalCmp] ).one( [PosCmp, TransitRequestCmp] ).exclude( [TransitRequestCmp] );
-		var portal = createPortal( null, null );
-		
-		trace( Aspect.matches( sig, portal.componentBits ) );
-	}
+
+    public function testAspectMatch() {
+        var sig = Aspect.getAspectForAll( [PortalCmp] ).one( [PosCmp, TransitRequestCmp] ).exclude( [TransitRequestCmp] );
+        var portal = createPortal( null, null );
+        
+        trace( Aspect.matches( sig, portal.componentBits ) );
+    }
     
+    public function testPolygon() {
+        var p = new Polygon( [ new Vec2( -2, 1 ), new Vec2( 2, 3 ), new Vec2( 3, -2 ), new Vec2( -2, -2 ) ] );
+        trace(p.getLineIntersection( new Vec2( -4, 0 ), new Vec2( 0, 0 ) ) );
+    }
+
     var god : God;
     var world ( get_world, never ) : World;
-	
-	function get_world() : World {
-		return god.world;
-	}
+
+    function get_world() : World {
+        return god.world;
+    }
 }

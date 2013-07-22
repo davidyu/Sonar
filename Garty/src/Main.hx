@@ -5,8 +5,6 @@ import flash.display.StageScaleMode;
 import flash.Lib;
 import gibber.components.TransitRequestCmp;
 import gibber.God;
-import gibber.systems.TransitRequestSys;
-
 
 class Main 
 {

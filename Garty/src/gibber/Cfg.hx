@@ -8,10 +8,10 @@ import gibber.components.PortalCmp;
  */
 class Cfg
 {
-	public static var portalAspect = Aspect.getAspectForOne( [PortalCmp] );
-	
-	public static function init() {
-		portalAspect = 
-	}
-	
-}
+    //public static var portalAspect = Aspect.getAspectForOne( [PortalCmp] );
+//
+    //public static function init() {
+        //portalAspect = 
+    //}
+//
+//}

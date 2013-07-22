@@ -11,6 +11,4 @@ class PosCmp implements Component
     public function new( sec : Entity ) {
         sector = sec;
     }
-    
-
 }

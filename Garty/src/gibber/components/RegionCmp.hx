@@ -6,8 +6,6 @@ import utils.Vec2;
 
 class RegionCmp implements Component
 {
-	@:isVar var pos :  Vec2;
-	
     public function new( enter : VoidExecuteScript=null, exit : VoidExecuteScript=null ) {
         enterScript = enter;
         exitScript = exit;
@@ -27,5 +25,8 @@ class RegionCmp implements Component
     
     var enterScript : VoidExecuteScript;
     var exitScript : VoidExecuteScript;
+
+    //var polys : Array<
+    @:isVar var pos : Vec2;
     
 }

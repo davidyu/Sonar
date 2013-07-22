@@ -23,53 +23,26 @@ enum EType {
 	SECTOR;
 }
 
+// Name registry class used to cataloguing game entities.
+// Invariant is the essential entity component signature
+// e.g. a portal is defined as an entity with certain components that are expectet not to change
 class NameRegistry extends TagManager
 {
     public function new() {
         super();
     }
-	
-	override public function initialize() {
-		nameMapper = world.getMapper( NameIdCmp );
-	}
-    
-    override public function onAdded( e : Entity ) : Void {
-		var nameCmp = nameMapper.getSafe( e );
-		
-		if ( nameCmp != null ) {
-			var type : EType;
-			
-			// Determine entity type from its component signature
-			// May want to factor this into a separate method
-			if ( Aspect.matches( Aspect.getAspectForAll( [ PosCmp, CharCmp ] ), e.componentBits ) ) {
-				type = EType.CHAR;
-			} else if ( Aspect.matches( Aspect.getAspectForAll( [UsageCmp, TakeCmp] ), e.componentBits ) ) {
-				type = EType.ITEM;
-			} else if ( Aspect.matches( Aspect.getAspectForAll( [UsageCmp] ).exclude( [TakeCmp] ), e.componentBits ) ) {
-				type = EType.OBJ;
-			} else if ( Aspect.matches( Aspect.getAspectForAll( [PortalCmp] ), e.componentBits ) ) {
-				type = EType.PORTAL;
-			} else if ( Aspect.matches( Aspect.getAspectForAll( [EContainerCmp, RegionCmp] ), e.componentBits ) ) {
-				type = EType.SECTOR;
-			} else {
-				return;
-			}
-			
-			registerEntity( type, nameCmp.name, e );
-		}
-		
+
+    override public function initialize() {
+        nameMapper = world.getMapper( NameIdCmp );
     }
-	
-	public function registerEntity( type : EType, tag : String, e : Entity ) : Void {
-		tag = Std.string( type ) + ":" + tag;
-		super.register( tag, e );
-	}
-	
-	public function unregisterEntityFromTag( type : EType, tag : String, e : Entity ) : Void {
-		tag = Std.string( type ) + ":" + tag;
-		super.unregister( tag );
-	}
-	
+
+    override public function onAdded( e : Entity ) : Void {
+        var nameCmp = nameMapper.getSafe( e );
+        
+        if ( nameCmp != null ) {
+            register( nameCmp.name, e );
+        }
+    }
+
     var nameMapper : ComponentMapper<NameIdCmp>;
-    
 }

@@ -19,11 +19,11 @@ class AdvancedParser
         
         switch( words[0] ) {
             case "go":
-				var dest : Entity = null;
-				
-				dest = god.world.getManager( NameRegistry ).getEntity( words[1] );
-				
-				god.world.getManager( NameRegistry ).getEntity( words[1] );
+                var dest : Entity = null;
+                
+                dest = god.world.getManager( NameRegistry ).getEntity( words[1] );
+                
+                god.world.getManager( NameRegistry ).getEntity( words[1] );
                 //god.commander.getPortalDest( god.player, words[1] );
                 return "";
         }

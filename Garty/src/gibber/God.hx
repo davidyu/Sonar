@@ -10,7 +10,6 @@ import gibber.systems.TransitRequestSys;
 
 class God
 {
-
     public function new( r : MovieClip ) {
         root = r;
         
@@ -46,13 +45,13 @@ class God
         
         initializeSystems();
         initializeEntities();
-		
-		entityBuilder.testAspectMatch();
+        
+        entityBuilder.testPolygon();
     }
-    
+
     public function initializeSystems() : Void {
         world.setManager( new NameRegistry() );
-		
+        
         world.setSystem( new TransitRequestSys() );
         
         world.initialize();
