@@ -45,6 +45,22 @@ class Vec2
     public inline function toString() : String {
         return "x: " + x + " y: " + y;
     }
+    
+    public inline static function getVecArray( arr : Array<Float> ) : Array<Vec2> {
+        var i = 0;
+        var ret : Array<Vec2> = new Array();
+        
+        if ( arr.length % 2 != 0 ) {
+            throw "Odd number of elements";
+        }
+        
+        while ( i < arr.length ) {
+            ret.push( new Vec2( arr[i], arr[i + 1] ) );
+            i += 2;
+        }
+        
+        return ret;
+    }
 
     @:isVar public var x : Float;
     @:isVar public var y : Float;

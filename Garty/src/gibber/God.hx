@@ -5,8 +5,14 @@ import flash.display.MovieClip;
 import flash.text.TextField;
 import flash.text.TextFieldType;
 import flash.ui.Keyboard;
+import gibber.components.PosCmp;
 import gibber.managers.NameRegistry;
+import gibber.systems.PhysicsSys;
+import gibber.systems.RenderSectorSys;
+import gibber.systems.RenderSys;
 import gibber.systems.TransitRequestSys;
+import utils.Polygon;
+import utils.Vec2;
 
 class God
 {
@@ -53,6 +59,9 @@ class God
         world.setManager( new NameRegistry() );
         
         world.setSystem( new TransitRequestSys() );
+        world.setSystem( new PhysicsSys() );
+        world.setSystem( new RenderSectorSys( root ) );
+        world.setSystem( new RenderSys( root ) );
         
         world.initialize();
     }
@@ -60,9 +69,11 @@ class God
     public function initializeEntities() : Void {
         sectors = new Array();
         
-        sectors.push( entityBuilder.createSector( "sector1" ) );
-        sectors.push( entityBuilder.createSector( "sector2" ) );
-        sectors.push( entityBuilder.createSector( "sector3" ) );
+        var vectorArray1 = Vec2.getVecArray( [0, 0, 30, 0, 30, 30, 0, 30] );
+        var vectorArray2 = Vec2.getVecArray( [35, 0, 65, 0, 65, 30, 35, 30] );
+        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 0, 0 ), [new Polygon( vectorArray1 ), new Polygon( vectorArray2 )] ) );
+        sectors.push( entityBuilder.createSector( "sector2", new Vec2( 0, 0 ), [] ) );
+        sectors.push( entityBuilder.createSector( "sector3", new Vec2( 0, 0 ), [] ) );
         
         player = entityBuilder.createPlayer( "Bob" );
     }
@@ -86,7 +97,11 @@ class God
                 inputTextfield.text = "";
             case Keyboard.DELETE:
                 outputTextfield.text = "";
+                
+            case Keyboard.RIGHT:
+                player.getComponent( PosCmp ).dp.x = 2;
         }
+        
         
     }
     

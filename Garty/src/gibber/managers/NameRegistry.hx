@@ -40,7 +40,13 @@ class NameRegistry extends TagManager
         var nameCmp = nameMapper.getSafe( e );
         
         if ( nameCmp != null ) {
-            register( nameCmp.name, e );
+            if ( !entitiesByTag.exists( nameCmp.name ) ) {
+                register( nameCmp.name, e );
+            } else {
+                #if debug
+                trace( "Attempted to add entity to name registry that already exists" + nameCmp.name );
+                #end
+            }
         }
     }
 

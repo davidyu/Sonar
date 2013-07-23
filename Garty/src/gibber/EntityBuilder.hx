@@ -30,11 +30,11 @@ class EntityBuilder
         return e;
     }
 
-    public function createSector( name : String ) : Entity {
+    public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
         var e = world.createEntity();
         var nameCmp = new NameIdCmp( "sector:" + name );
         var lookCmp = new LookCmp();
-        var regionCmp = new RegionCmp();
+        var regionCmp = new RegionCmp( pos, polygonAreas );
         var containerCmp = new EContainerCmp();
         
         lookCmp.lookText = "This is some room #" + Std.random(1000);
@@ -52,7 +52,7 @@ class EntityBuilder
     public function createPlayer( name : String ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
-        var posCmp = new PosCmp( god.sectors[0] );
+        var posCmp = new PosCmp( god.sectors[0], new Vec2( 10, 10 ) );
         
         lookCmp.lookText = "This is the player";
         
@@ -67,7 +67,7 @@ class EntityBuilder
     public function createPortal( srcSector : Entity, destSector : Entity ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
-        var posCmp = new PosCmp( god.sectors[0] );
+        var posCmp = new PosCmp( god.sectors[0], new Vec2( 20, 20 ) );
         var portalCmp = new PortalCmp( srcSector, destSector );
         
         lookCmp.lookText = "This is the player";
