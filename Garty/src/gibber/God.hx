@@ -11,6 +11,7 @@ import gibber.systems.PhysicsSys;
 import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
 import gibber.systems.TransitRequestSys;
+import utils.Key;
 import utils.Polygon;
 import utils.Vec2;
 
@@ -46,6 +47,7 @@ class God
         
         // Events
         root.stage.addEventListener( flash.events.KeyboardEvent.KEY_DOWN, onEnterKey );
+        Key.init();
         root.addEventListener( flash.events.Event.ENTER_FRAME, tick );
         
         
@@ -69,11 +71,12 @@ class God
     public function initializeEntities() : Void {
         sectors = new Array();
         
-        var vectorArray1 = Vec2.getVecArray( [0, 0, 30, 0, 30, 30, 0, 30] );
-        var vectorArray2 = Vec2.getVecArray( [35, 0, 65, 0, 65, 30, 35, 30] );
-        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 0, 0 ), [new Polygon( vectorArray1 ), new Polygon( vectorArray2 )] ) );
+        var vectorArray1 = Vec2.getVecArray( [0, 0, 30, 0, 45, 15, 30, 30, 0, 30, 0, 30 ] );
+        var bridgeArray1 = Vec2.getVecArray( [0, 17, 135, 17, 135, 23, 0, 23, 0, 23] );
+        var vectorArray2 = Vec2.getVecArray( [135, 0, 165, 0, 165, 30, 135, 30] );
+        sectors.push( entityBuilder.createSector( "sector0", new Vec2( 50, 200 ), [new Polygon( vectorArray1 ), new Polygon( bridgeArray1 ), new Polygon( vectorArray2 )] ) );
+        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 0, 0 ), [] ) );
         sectors.push( entityBuilder.createSector( "sector2", new Vec2( 0, 0 ), [] ) );
-        sectors.push( entityBuilder.createSector( "sector3", new Vec2( 0, 0 ), [] ) );
         
         player = entityBuilder.createPlayer( "Bob" );
     }
@@ -81,12 +84,27 @@ class God
     
     
     public function tick(_) : Void {
+        input();
         world.process();
     }
     
     
     @:isVar public var world ( default, null ) : World;
     @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
+    
+    function input() : Void {
+        var speed = 2.0;
+        
+        if ( Key.isDown( Keyboard.RIGHT ) ) {
+            player.getComponent( PosCmp ).dp.x = speed;
+        } if ( Key.isDown( Keyboard.LEFT ) ){
+            player.getComponent( PosCmp ).dp.x = -speed;
+        } if ( Key.isDown( Keyboard.UP ) ) {
+            player.getComponent( PosCmp ).dp.y = -speed;
+        } if ( Key.isDown( Keyboard.DOWN ) ) {
+            player.getComponent( PosCmp ).dp.y = speed;
+        }
+    }
     
     function onEnterKey( e : flash.events.KeyboardEvent ) : Void {
         switch ( e.keyCode ) {
@@ -98,8 +116,11 @@ class God
             case Keyboard.DELETE:
                 outputTextfield.text = "";
                 
-            case Keyboard.RIGHT:
-                player.getComponent( PosCmp ).dp.x = 2;
+            //case Keyboard.RIGHT:
+                //player.getComponent( PosCmp ).dp.x = 2;
+            //case Keyboard.LEFT:
+                //player.getComponent( PosCmp ).dp.x = -2;
+                
         }
         
         

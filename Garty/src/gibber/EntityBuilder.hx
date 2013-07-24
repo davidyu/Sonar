@@ -8,6 +8,7 @@ import gibber.components.NameIdCmp;
 import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
+import gibber.components.RenderCmp;
 import gibber.components.TransitRequestCmp;
 import gibber.scripts.TransitScript;
 import utils.Polygon;
@@ -35,6 +36,7 @@ class EntityBuilder
         var nameCmp = new NameIdCmp( "sector:" + name );
         var lookCmp = new LookCmp();
         var regionCmp = new RegionCmp( pos, polygonAreas );
+        var renderCmp = new RenderCmp();
         var containerCmp = new EContainerCmp();
         
         lookCmp.lookText = "This is some room #" + Std.random(1000);
@@ -42,6 +44,7 @@ class EntityBuilder
         e.addComponent( nameCmp );
         e.addComponent( lookCmp );
         e.addComponent( regionCmp );
+        e.addComponent( renderCmp );
         e.addComponent( containerCmp );
         
         world.addEntity( e );
@@ -53,11 +56,13 @@ class EntityBuilder
         var e = world.createEntity();
         var lookCmp = new LookCmp();
         var posCmp = new PosCmp( god.sectors[0], new Vec2( 10, 10 ) );
+        var renderCmp = new RenderCmp();
         
         lookCmp.lookText = "This is the player";
         
         e.addComponent( posCmp );
         e.addComponent( lookCmp );
+        e.addComponent( renderCmp );
 
         world.addEntity( e );
         
@@ -69,12 +74,14 @@ class EntityBuilder
         var lookCmp = new LookCmp();
         var posCmp = new PosCmp( god.sectors[0], new Vec2( 20, 20 ) );
         var portalCmp = new PortalCmp( srcSector, destSector );
+        var renderCmp = new RenderCmp();
         
         lookCmp.lookText = "This is the player";
         
         e.addComponent( posCmp );
         e.addComponent( lookCmp );
         e.addComponent( portalCmp );
+        e.addComponent( renderCmp );
 
         world.addEntity( e );
         
