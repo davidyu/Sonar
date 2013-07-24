@@ -31,3 +31,7 @@ VIM Developer tips
 </code></pre>
 * Crazy how it's just a bunch of complex regex expressions.
 * Find a good debugger.
+
+TODO
+====
+- Optimize to avoid using strings in artemis, Vec2 object pooling
