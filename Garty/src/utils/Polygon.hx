@@ -42,6 +42,28 @@ class Polygon
         return c;
     }
     
+    public function getClosestPoint( point : Vec2 ) : Vec2 {
+        var i = 0;
+        var j = edges.length - 1;
+        var closest : Vec2 = new Vec2( Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY );
+        var ext : Vec2;
+        var len : Float;
+        var minLen = Math.POSITIVE_INFINITY;
+        
+        while ( i < edges.length ) {
+            ext = Math2.getCloseIntersectPoint( point, edges[i], edges[j] );
+            len = ext.sub( point ).lengthsq();
+            if ( len < minLen ) {
+                closest = ext;
+                minLen = len;
+            }
+        
+            j = i++;
+        }
+        
+        return closest;
+    }
+    
 
     
 

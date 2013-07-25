@@ -28,7 +28,10 @@ class PhysicsSys extends EntitySystem
         var collPoint : Vec2;   // Collision point with wall
         var sectorPolys : Array<Polygon>; // Walls
         var sectorPos : Vec2;       // Origin of sector
-        var coll = true;
+        var dist = 0.0;
+        var minVec = new Vec2();
+        var minDist = Math.POSITIVE_INFINITY;
+        var isColl = true;
         
         for ( i in 0...actives.size ) {
             e = actives.get( i );
@@ -43,17 +46,21 @@ class PhysicsSys extends EntitySystem
             
             for ( j in 0...sectorPolys.length ) {
                 if ( sectorPolys[j].isPointinPolygon( newPos ) ) {
-                    coll = false;
+                    isColl = false;
                 }
-                //collPoint = sectorPolys[j].getLineIntersection( pos, newPos );
-                //if ( collPoint != null ) {
-                    //newPos = pos;
-                    //break;
-                //}
             }
-            
-            if ( coll ) {
-                newPos = pos;
+            if ( isColl ) {
+                for ( i in 0...sectorPolys.length ) {
+                    collPoint = sectorPolys[i].getClosestPoint( newPos );
+                    trace( collPoint );
+                    dist = collPoint.sub( newPos ).lengthsq();
+                    if ( dist < minDist ) {
+                        minDist = dist;
+                        minVec = collPoint;
+                    }
+                }
+                trace("end" + minVec + newPos );
+                newPos = minVec;
             }
             posCmp.pos = newPos;
             

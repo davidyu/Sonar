@@ -12,6 +12,7 @@ import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
 import gibber.systems.TransitRequestSys;
 import utils.Key;
+import utils.Math2;
 import utils.Polygon;
 import utils.Vec2;
 
@@ -79,6 +80,9 @@ class God
         sectors.push( entityBuilder.createSector( "sector2", new Vec2( 0, 0 ), [] ) );
         
         player = entityBuilder.createPlayer( "Bob" );
+        
+        var v1 = new Vec2(0, 0);
+        var v2 = new Vec2(1, 1);
     }
     
     

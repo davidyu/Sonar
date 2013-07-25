@@ -23,6 +23,25 @@ class Math2 {
         }
         
         return null;
+    }    
+    
+    // Finds the intersection between a line segment and the shortest line from a point to that line segment
+    public static function getCloseIntersectPoint( p : Vec2, a : Vec2, b : Vec2 ) : Vec2 { 
+        var ac : Vec2 = p.sub( a );  // Vector from point to edge1
+        var ab : Vec2 = b.sub( a );  // Edge
+        var r : Float = ac.dot( ab ) / ( ab.lengthsq() );   // ratio between length of ac / ae (where ae is ||ab||cos@
+        var l = ab.lengthsq();
+        var ext : Vec2; // r * unit vector in direction of ab
+        
+        if ( r < 0 ) {
+            ext = a;
+        } else if ( r > 1 ) {
+            ext = b;
+        } else {
+            ext = a.add( ab.mul( r ) );
+        }
+        
+        return ext;
     }
 
     // http://en.literateprograms.org/Box-Muller_transform_(C)

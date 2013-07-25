@@ -2,6 +2,7 @@ package gibber;
 import com.artemisx.Aspect;
 import com.artemisx.Entity;
 import com.artemisx.World;
+import gibber.components.cmd.MoveCmd;
 import gibber.components.EContainerCmp;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
@@ -55,14 +56,16 @@ class EntityBuilder
     public function createPlayer( name : String ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
-        var posCmp = new PosCmp( god.sectors[0], new Vec2( 10, 10 ) );
+        var posCmp = new PosCmp( god.sectors[0], new Vec2( 20, 20 ) );
         var renderCmp = new RenderCmp();
+        var commCmp = new MoveCmd();
         
         lookCmp.lookText = "This is the player";
         
         e.addComponent( posCmp );
         e.addComponent( lookCmp );
         e.addComponent( renderCmp );
+        e.addComponent( commCmp );
 
         world.addEntity( e );
         

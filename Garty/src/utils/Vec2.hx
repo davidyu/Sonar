@@ -17,13 +17,21 @@ class Vec2
     public inline function sub( rhs : Vec2 ) : Vec2 { 
         return new Vec2( x - rhs.x, y - rhs.y );
     }
-
+    
+    public inline function mul( k : Float ) : Vec2 {
+        return scale( k );
+    }
+    
+    public inline function div( k : Float ) : Vec2 {
+        return new Vec2( x / k, y / k );
+    }
+    
     public inline function scale( factor : Float ) : Vec2 {
         return new Vec2( x * factor, y * factor );
     }
 
     public inline function normalize() : Vec2 {
-        return this.scale( length() );
+        return this.div( length() );
     }
 
     public inline function length() : Float {
