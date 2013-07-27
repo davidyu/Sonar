@@ -3,6 +3,7 @@ import com.artemisx.Entity;
 import com.artemisx.World;
 import flash.display.MovieClip;
 import flash.text.TextField;
+import flash.text.TextFormat;
 import flash.text.TextFieldType;
 import flash.ui.Keyboard;
 import gibber.components.PosCmp;
@@ -33,22 +34,28 @@ class God
         parser = new AdvancedParser( this );
         commander = new Commander( this );
         
+        baseTextFormat = new TextFormat();
+        baseTextFormat.font = "Helvetica";
+        baseTextFormat.size = 24;
+
         inputTextfield = new TextField();
         inputTextfield.type = TextFieldType.INPUT;
         inputTextfield.width = root.stage.stageWidth;
         inputTextfield.height = 50;
         inputTextfield.y = root.stage.stageHeight - inputTextfield.height;
+        inputTextfield.defaultTextFormat = baseTextFormat;
         inputTextfield.background = true;
         inputTextfield.backgroundColor = 0xB0EFF7;
-        inputTextfield.textColor = 0xF29746;
+        inputTextfield.textColor = 0x000000;
         
         root.addChild( inputTextfield );
         
         outputTextfield = new TextField();
-        outputTextfield.type = TextFieldType.INPUT;
+        outputTextfield.type = TextFieldType.DYNAMIC;
+        outputTextfield.defaultTextFormat = baseTextFormat;
         outputTextfield.width = root.stage.stageWidth;
         outputTextfield.height = root.stage.stageHeight - inputTextfield.height;
-        outputTextfield.textColor = 0xF29746;
+        outputTextfield.textColor = 0xffffff;
         
         root.addChild( outputTextfield );
         
@@ -135,6 +142,7 @@ class God
     
     var root : MovieClip;
     var inputTextfield : TextField;
+    var baseTextFormat : TextFormat;
     public var outputTextfield : TextField;
     
     var parser : AdvancedParser;
