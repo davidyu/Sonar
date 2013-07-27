@@ -2,7 +2,8 @@ package gibber;
 import com.artemisx.Aspect;
 import com.artemisx.Entity;
 import com.artemisx.World;
-import gibber.components.cmd.MoveCmd;
+import gibber.commands.MoveCmd;
+import gibber.components.CmdQueue;
 import gibber.components.EContainerCmp;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
@@ -58,14 +59,18 @@ class EntityBuilder
         var lookCmp = new LookCmp();
         var posCmp = new PosCmp( god.sectors[0], new Vec2( 20, 20 ) );
         var renderCmp = new RenderCmp();
-        var commCmp = new MoveCmd();
+        var cmdCmp = new CmdQueue();
+        
+        cmdCmp.enqueue( god.cmdFactory.createCmd( "move", [e, new Vec2( 100, 20 )] ) );
+        cmdCmp.enqueue( god.cmdFactory.createCmd( "move", [e, new Vec2( 20, 20 )] ) );
+        cmdCmp.enqueue( god.cmdFactory.createCmd( "move", [e, new Vec2( 100, 20 )] ) );
         
         lookCmp.lookText = "This is the player";
         
         e.addComponent( posCmp );
         e.addComponent( lookCmp );
         e.addComponent( renderCmp );
-        e.addComponent( commCmp );
+        e.addComponent( cmdCmp );
 
         world.addEntity( e );
         

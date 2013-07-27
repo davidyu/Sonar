@@ -7,6 +7,7 @@ import flash.text.TextFieldType;
 import flash.ui.Keyboard;
 import gibber.components.PosCmp;
 import gibber.managers.NameRegistry;
+import gibber.systems.CmdProcessSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
@@ -18,10 +19,15 @@ import utils.Vec2;
 
 class God
 {
+    @:isVar public var world ( default, null ) : World;
+    @:isVar public var cmdFactory ( default, null ) : CmdFactory;
+    @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
+    
     public function new( r : MovieClip ) {
         root = r;
         
         world = new World();
+        cmdFactory = new CmdFactory( this );
         entityBuilder = new EntityBuilder( this );
         
         parser = new AdvancedParser( this );
@@ -63,6 +69,7 @@ class God
         
         world.setSystem( new TransitRequestSys() );
         world.setSystem( new PhysicsSys() );
+        world.setSystem( new CmdProcessSys() );
         world.setSystem( new RenderSectorSys( root ) );
         world.setSystem( new RenderSys( root ) );
         
@@ -91,10 +98,6 @@ class God
         input();
         world.process();
     }
-    
-    
-    @:isVar public var world ( default, null ) : World;
-    @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
     
     function input() : Void {
         var speed = 2.0;

@@ -6,21 +6,21 @@ import com.artemisx.Entity;
 
 class EContainerCmp implements Component
 {
-	@:isVar public var portals : Array<Entity>;
-	@:isVar public var objects : Array<Entity>;
-	
-	public function new( ports : Array<Entity> = null, objs : Array<Entity> = null ) {
-		portals = ports;
-		objects = objs;
-		
-		if ( ports == null ) {
-			portals = new Array();
-		}
-		
-		if ( objs == null ) {
-			objs = new Array();
-		}
-	}
-	
-	
+    @:isVar public var portals : Array<Entity>;
+    @:isVar public var objects : Array<Entity>;
+
+    public function new( ports : Array<Entity> = null, objs : Array<Entity> = null ) {
+        portals = ports;
+        objects = objs;
+        
+        if ( ports == null ) {
+            portals = new Array();
+        }
+        
+        if ( objs == null ) {
+            objs = new Array();
+        }
+    }
+
+
 }
