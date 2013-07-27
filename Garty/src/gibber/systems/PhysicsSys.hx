@@ -30,7 +30,7 @@ class PhysicsSys extends EntitySystem
         var sectorPos : Vec2;       // Origin of sector
         var dist = 0.0;
         var minVec = new Vec2();
-        var minDist = Math.POSITIVE_INFINITY;
+        var minDist;
         var isColl = true;
         
         for ( i in 0...actives.size ) {
@@ -49,6 +49,8 @@ class PhysicsSys extends EntitySystem
                     isColl = false;
                 }
             }
+
+            minDist = Math.POSITIVE_INFINITY; //must reset for each entity
             if ( isColl ) {
                 for ( i in 0...sectorPolys.length ) {
                     collPoint = sectorPolys[i].getClosestPoint( newPos );
