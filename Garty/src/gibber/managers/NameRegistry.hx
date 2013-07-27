@@ -5,7 +5,7 @@ import com.artemisx.Entity;
 import com.artemisx.EntitySystem;
 import com.artemisx.managers.TagManager;
 import gibber.components.CharCmp;
-import gibber.components.EContainerCmp;
+import gibber.components.ContainerCmp;
 import gibber.components.NameIdCmp;
 import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
@@ -16,11 +16,11 @@ import haxe.ds.StringMap;
 import haxe.ds.StringMap;
 
 enum EType {
-	CHAR;
-	ITEM;
-	OBJ;
-	PORTAL;
-	SECTOR;
+    CHAR;
+    ITEM;
+    OBJ;
+    PORTAL;
+    SECTOR;
 }
 
 // Name registry class used to cataloguing game entities.

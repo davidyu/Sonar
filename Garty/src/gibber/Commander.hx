@@ -1,7 +1,7 @@
 package gibber;
 import com.artemisx.Entity;
 import com.artemisx.World;
-import gibber.components.EContainerCmp;
+import gibber.components.ContainerCmp;
 import gibber.components.LookCmp;
 import gibber.components.PortalCmp;
 import gibber.managers.NameRegistry;

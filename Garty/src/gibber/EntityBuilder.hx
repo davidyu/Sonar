@@ -4,7 +4,7 @@ import com.artemisx.Entity;
 import com.artemisx.World;
 import gibber.commands.MoveCmd;
 import gibber.components.CmdQueue;
-import gibber.components.EContainerCmp;
+import gibber.components.ContainerCmp;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
 import gibber.components.PortalCmp;
@@ -39,7 +39,7 @@ class EntityBuilder
         var lookCmp = new LookCmp();
         var regionCmp = new RegionCmp( pos, polygonAreas );
         var renderCmp = new RenderCmp();
-        var containerCmp = new EContainerCmp();
+        var containerCmp = new ContainerCmp();
         
         lookCmp.lookText = "This is some room #" + Std.random(1000);
         

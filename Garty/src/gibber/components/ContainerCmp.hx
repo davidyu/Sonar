@@ -4,7 +4,7 @@ import com.artemisx.Aspect;
 import com.artemisx.Component;
 import com.artemisx.Entity;
 
-class EContainerCmp implements Component
+class ContainerCmp implements Component
 {
     @:isVar public var portals : Array<Entity>;
     @:isVar public var objects : Array<Entity>;
