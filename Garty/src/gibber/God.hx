@@ -9,6 +9,7 @@ import flash.ui.Keyboard;
 import gibber.components.PosCmp;
 import gibber.managers.ContainerMgr;
 import gibber.managers.NameRegistry;
+import gibber.managers.SynonymMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.RenderSectorSys;
@@ -74,6 +75,7 @@ class God
     public function initializeSystems() : Void {
         world.setManager( new NameRegistry() );
         world.setManager( new ContainerMgr() );
+        world.setManager( new SynonymMgr() );
         
         world.setSystem( new TransitRequestSys() );
         world.setSystem( new PhysicsSys() );

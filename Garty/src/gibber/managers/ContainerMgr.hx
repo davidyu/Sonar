@@ -24,7 +24,7 @@ class ContainerMgr extends Manager
     
     override public function onAdded( e : Entity ) : Void {
         var containerSig = Aspect.getAspectForAll( [ContainerCmp, NameIdCmp] );
-        var objSig       = Aspect.getAspectForAll( [TakeCmp, NameIdCmp] );
+        var objSig       = Aspect.getAspectForAll( [NameIdCmp] ).one( [PosCmp] );
         
         if ( Aspect.matches( containerSig, e.componentBits ) ) {
             var eName = nameMapper.get( e ).name;
@@ -75,16 +75,21 @@ class ContainerMgr extends Manager
         };
     }
     
-    public function getContainerEntities( container : Entity ) : Array<Entity> {
+    public function changeContainerOfEntity( e : Entity, oldContainer : Entity, newContainer : Entity ) : Void {
+        getEntitiesOfContainer( oldContainer ).remove( e );
+        entityByContainer.set( nameMapper.get( e ).name, newContainer );
+    }
+    
+    public function getEntitiesOfContainer( container : Entity ) : Array<Entity> {
         return containerEntities.get( nameMapper.get( container ).name );
     }
     
-    public function getEntityContainer( e : Entity ) : Entity {
+    public function getContainerOfEntity( e : Entity ) : Entity {
         return entityByContainer.get( nameMapper.get( e ).name );
     }
     
-    @:isVar var containerEntities : StringMap<Array<Entity>>;
-    @:isVar var entityByContainer : StringMap<Entity>;
+    var containerEntities : StringMap<Array<Entity>>;
+    var entityByContainer : StringMap<Entity>;
     
     var nameMapper : ComponentMapper<NameIdCmp>;
     var takeMapper : ComponentMapper<TakeCmp>;
