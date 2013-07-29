@@ -2,6 +2,7 @@ package gibber;
 import com.artemisx.Aspect;
 import com.artemisx.Entity;
 import com.artemisx.World;
+import gibber.components.ContainableCmp;
 import gibber.gabby.SynTag;
 import gibber.commands.MoveCmd;
 import gibber.components.CmdQueue;
@@ -14,6 +15,7 @@ import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
 import gibber.gabby.components.SynListCmp;
 import gibber.components.TransitRequestCmp;
+import gibber.managers.ContainerMgr;
 import gibber.scripts.TransitScript;
 import utils.Polygon;
 import utils.Vec2;
@@ -22,6 +24,8 @@ class EntityBuilder
     {
     public function new( g : God ) {
        god = g;
+       world = god.world;
+       containerMgr = god.world.getManager( ContainerMgr );
     }
     
     public function createWordRef( tag : SynTag ) {
@@ -38,6 +42,7 @@ class EntityBuilder
     public function createPlayer( name : String ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
+        var nameCmp = new NameIdCmp( name );
         var posCmp = new PosCmp( god.sectors[0], new Vec2( 20, 20 ) );
         var renderCmp = new RenderCmp();
         var cmdCmp = new CmdQueue();
@@ -61,8 +66,9 @@ class EntityBuilder
     public function createPortal( srcSector : Entity, destSector : Entity ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
-        var posCmp = new PosCmp( god.sectors[0], new Vec2( 20, 20 ) );
+        var posCmp = new PosCmp( srcSector, new Vec2( 20, 20 ) );
         var portalCmp = new PortalCmp( srcSector, destSector );
+        var contCmp = new ContainableCmp( containerMgr, srcSector, srcSector );
         var renderCmp = new RenderCmp();
         
         lookCmp.lookText = "This is the player";
@@ -70,6 +76,7 @@ class EntityBuilder
         e.addComponent( posCmp );
         e.addComponent( lookCmp );
         e.addComponent( portalCmp );
+        e.addComponent( contCmp );
         e.addComponent( renderCmp );
 
         world.addEntity( e );
@@ -122,9 +129,6 @@ class EntityBuilder
     }
 
     var god : God;
-    var world ( get_world, never ) : World;
-
-    function get_world() : World {
-        return god.world;
-    }
+    var world : World;
+    var containerMgr : ContainerMgr;
 }

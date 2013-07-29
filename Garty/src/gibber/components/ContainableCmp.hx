@@ -10,15 +10,18 @@ class ContainableCmp implements Component
     @:isVar public var parent( default, default ) : Entity;
     
     public function new( mgr : ContainerMgr, parent : Entity, container : Entity = null ) {
+        this.mgr = mgr;
         this.container = container;
         this.parent = parent;
-        this.mgr = mgr;
     }
     
     var mgr : ContainerMgr;
     
     function set_container( newContainer : Entity ) : Entity {
-        mgr.changeContainerOfEntity( parent, container, newContainer );
+        if ( container != null ) {
+            mgr.changeContainerOfEntity( parent, container, newContainer );
+        }
+        return newContainer;
     }
     
 }

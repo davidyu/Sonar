@@ -60,8 +60,6 @@ class RenderSys extends EntitySystem
             g.endFill();
         }
         
-        
-        
     }
     
     var posMapper : ComponentMapper<PosCmp>;

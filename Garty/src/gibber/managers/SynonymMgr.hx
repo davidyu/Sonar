@@ -83,8 +83,9 @@ class SynonymMgr extends Manager
             var record = entitiesFromSynonyms.get( s );
             record.remove( tag.entityNameId );
         }
-         
+        
         world.deleteEntity( nameCmp.tagEntityRef ); // Delete the tag entity linked to named entity
+        nameCmp.tagEntityRef = null;
     }
     
     var nameRegistry : NameRegistry;

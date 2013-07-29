@@ -35,7 +35,6 @@ class TransitRequestSys extends EntitySystem
     private function transit( req : TransitRequestCmp ) : Bool {
         if ( req.transitScript == null || req.transitScript.execute()[0] == true ) {
             var playerPos = posMapper.get( req.mover );
-            trace(req.mover.listComponents());
             // Exit the room the player is currently in
             regionMapper.get( playerPos.sector ).onExit( req.mover, req.destSector );
             // Enter the room the player will be in

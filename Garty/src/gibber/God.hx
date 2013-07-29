@@ -29,13 +29,30 @@ class God
     public function new( r : MovieClip ) {
         root = r;
         
+        // Events
+        root.stage.addEventListener( flash.events.KeyboardEvent.KEY_DOWN, onEnterKey );
+        Key.init();
+        root.addEventListener( flash.events.Event.ENTER_FRAME, tick );
+        
+        setupConsole();
+        
         world = new World();
+        initializeSystems();
+
         cmdFactory = new CmdFactory( this );
         entityBuilder = new EntityBuilder( this );
         
         parser = new AdvancedParser( this );
         commander = new Commander( this );
         
+        initializeEntities();
+        
+        this.testBed = new TestBed(this);
+        testBed.run();
+        
+    }
+    
+    public function setupConsole() : Void {
         baseTextFormat = new TextFormat();
         baseTextFormat.font = "Helvetica";
         baseTextFormat.size = 24;
@@ -60,16 +77,6 @@ class God
         outputTextfield.textColor = 0xffffff;
         
         root.addChild( outputTextfield );
-        
-        // Events
-        root.stage.addEventListener( flash.events.KeyboardEvent.KEY_DOWN, onEnterKey );
-        Key.init();
-        root.addEventListener( flash.events.Event.ENTER_FRAME, tick );
-        
-        
-        initializeSystems();
-        initializeEntities();
-        
     }
 
     public function initializeSystems() : Void {
@@ -97,16 +104,17 @@ class God
         sectors.push( entityBuilder.createSector( "sector2", new Vec2( 0, 0 ), [] ) );
         
         player = entityBuilder.createPlayer( "Bob" );
+        entityBuilder.createPortal( sectors[0], sectors[1] );
         
         var v1 = new Vec2(0, 0);
         var v2 = new Vec2(1, 1);
     }
-    
-    
-    
+        
     public function tick(_) : Void {
         input();
         world.process();
+        testBed.tick();
+        
     }
     
     function input() : Void {
@@ -147,6 +155,8 @@ class God
     var inputTextfield : TextField;
     var baseTextFormat : TextFormat;
     public var outputTextfield : TextField;
+    var testBed : TestBed;
+
     
     var parser : AdvancedParser;
     
