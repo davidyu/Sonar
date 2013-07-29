@@ -21,6 +21,7 @@ class ContainableCmp implements Component
         if ( container != null ) {
             mgr.changeContainerOfEntity( parent, container, newContainer );
         }
+        container = newContainer;
         return newContainer;
     }
     

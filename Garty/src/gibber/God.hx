@@ -147,8 +147,6 @@ class God
                 //player.getComponent( PosCmp ).dp.x = -2;
                 
         }
-        
-        
     }
     
     var root : MovieClip;

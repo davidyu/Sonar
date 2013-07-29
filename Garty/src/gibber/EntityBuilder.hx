@@ -65,6 +65,7 @@ class EntityBuilder
 
     public function createPortal( srcSector : Entity, destSector : Entity ) : Entity {
         var e = world.createEntity();
+        var nameCmp = new NameIdCmp( "door1" );
         var lookCmp = new LookCmp();
         var posCmp = new PosCmp( srcSector, new Vec2( 20, 20 ) );
         var portalCmp = new PortalCmp( srcSector, destSector );
@@ -78,6 +79,7 @@ class EntityBuilder
         e.addComponent( portalCmp );
         e.addComponent( contCmp );
         e.addComponent( renderCmp );
+        e.addComponent( nameCmp );
 
         world.addEntity( e );
         
