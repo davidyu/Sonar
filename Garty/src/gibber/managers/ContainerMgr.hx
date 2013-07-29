@@ -4,6 +4,7 @@ import com.artemisx.Aspect;
 import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import com.artemisx.Manager;
+import gibber.components.ContainableCmp;
 import gibber.components.ContainerCmp;
 import gibber.components.NameIdCmp;
 import gibber.components.PosCmp;
@@ -15,16 +16,17 @@ class ContainerMgr extends Manager
 {
     public function new() {
         containerEntities = new StringMap();
-        entityByContainer = new StringMap();
+        entityContainer = new StringMap();
     }
     
     override public function initialize() : Void {
         nameMapper = world.getMapper( NameIdCmp );
+        containableMapper = world.getMapper( ContainableCmp );
     }
     
     override public function onAdded( e : Entity ) : Void {
         var containerSig = Aspect.getAspectForAll( [ContainerCmp, NameIdCmp] );
-        var objSig       = Aspect.getAspectForAll( [NameIdCmp] ).one( [PosCmp] );
+        var objSig       = Aspect.getAspectForAll( [NameIdCmp, ContainableCmp, PosCmp] );
         
         if ( Aspect.matches( containerSig, e.componentBits ) ) {
             var eName = nameMapper.get( e ).name;
@@ -37,11 +39,11 @@ class ContainerMgr extends Manager
             }
         } else if ( Aspect.matches( objSig, e.componentBits ) ) {
             // Get item's container entity thru TakeCmp, and set both hashes
-            var container = takeMapper.get( e ).container;
+            var container = containableMapper.get( e ).container;
             var eName = nameMapper.get( e ).name;
 
             if ( container != null ) {
-                entityByContainer.set( eName, container ); // Set contianer for entity
+                entityContainer.set( eName, container ); // Set contianer for entity
                 containerEntities.get( nameMapper.get( container ).name ).push( e ); // Add entity to container
             } else {
                 throw "Invalid container for entity: " + eName;
@@ -61,14 +63,14 @@ class ContainerMgr extends Manager
         
         if ( entities != null ) {
             for ( e in entities ) {
-                entityByContainer.remove( name );
+                entityContainer.remove( name );
             }
             
             containerEntities.remove( name );
             return;
         }
         
-        var container = entityByContainer.get( name );
+        var container = entityContainer.get( name );
         
         if ( !containerEntities.get( nameMapper.get( container ).name ).remove( e ) ) {
             throw "Removing entity that doesn't exist in container: " + name;
@@ -77,7 +79,7 @@ class ContainerMgr extends Manager
     
     public function changeContainerOfEntity( e : Entity, oldContainer : Entity, newContainer : Entity ) : Void {
         getEntitiesOfContainer( oldContainer ).remove( e );
-        entityByContainer.set( nameMapper.get( e ).name, newContainer );
+        entityContainer.set( nameMapper.get( e ).name, newContainer );
     }
     
     public function getEntitiesOfContainer( container : Entity ) : Array<Entity> {
@@ -85,13 +87,13 @@ class ContainerMgr extends Manager
     }
     
     public function getContainerOfEntity( e : Entity ) : Entity {
-        return entityByContainer.get( nameMapper.get( e ).name );
+        return entityContainer.get( nameMapper.get( e ).name );
     }
     
     var containerEntities : StringMap<Array<Entity>>;
-    var entityByContainer : StringMap<Entity>;
+    var entityContainer : StringMap<Entity>;
     
     var nameMapper : ComponentMapper<NameIdCmp>;
-    var takeMapper : ComponentMapper<TakeCmp>;
+    var containableMapper : ComponentMapper<ContainableCmp>;
     
 }
