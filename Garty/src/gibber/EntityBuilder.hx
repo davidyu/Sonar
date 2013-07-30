@@ -9,6 +9,7 @@ import gibber.gabby.SynTag;
 import gibber.commands.MoveCmd;
 import gibber.components.CmdQueue;
 import gibber.components.ContainerCmp;
+import gibber.components.InventoryCmp;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
 import gibber.components.PortalCmp;
@@ -57,6 +58,8 @@ class EntityBuilder
         var posCmp = new PosCmp( god.sectors[0], new Vec2( 20, 20 ) );
         var renderCmp = new RenderCmp();
         var cmdCmp = new CmdQueue();
+        var containerCmp = new ContainerCmp(); //temporary hack solution
+        var inventoryCmp = new InventoryCmp();
         
         lookCmp.lookText = "This is the player";
         
@@ -65,6 +68,8 @@ class EntityBuilder
         e.addComponent( posCmp );
         e.addComponent( renderCmp );
         e.addComponent( cmdCmp );
+        e.addComponent( containerCmp );
+        e.addComponent( inventoryCmp );
 
         world.addEntity( e );
         
