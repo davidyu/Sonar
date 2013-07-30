@@ -4,7 +4,7 @@ import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import com.artemisx.Manager;
 import gibber.components.NameIdCmp;
-import gibber.gabby.components.SynListCmp;
+import gibber.components.SynListCmp;
 import gibber.God;
 import haxe.ds.StringMap;
 import haxe.ds.StringMap;

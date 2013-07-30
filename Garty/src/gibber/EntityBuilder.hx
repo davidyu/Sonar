@@ -3,6 +3,8 @@ import com.artemisx.Aspect;
 import com.artemisx.Entity;
 import com.artemisx.World;
 import gibber.components.ContainableCmp;
+import gibber.components.StaticPosCmp;
+import gibber.gabby.PortalEdge;
 import gibber.gabby.SynTag;
 import gibber.commands.MoveCmd;
 import gibber.components.CmdQueue;
@@ -13,12 +15,14 @@ import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
-import gibber.gabby.components.SynListCmp;
+import gibber.components.SynListCmp;
 import gibber.components.TransitRequestCmp;
 import gibber.managers.ContainerMgr;
 import gibber.scripts.TransitScript;
 import utils.Polygon;
 import utils.Vec2;
+
+using Lambda;
 
 class EntityBuilder
     {
@@ -26,6 +30,13 @@ class EntityBuilder
        god = g;
        world = god.world;
        containerMgr = god.world.getManager( ContainerMgr );
+    }
+    
+    public function addPortalEdges( portal : Entity, edges : Array<PortalEdge> ) : Void {
+        var portalCmp = portal.getComponent( PortalCmp );
+        
+        portalCmp.edges = portalCmp.edges.concat( edges );
+        portal.addComponent( portalCmp );
     }
     
     public function createWordRef( tag : SynTag ) {
@@ -47,14 +58,11 @@ class EntityBuilder
         var renderCmp = new RenderCmp();
         var cmdCmp = new CmdQueue();
         
-        cmdCmp.enqueue( god.cmdFactory.createCmd( "move", [e, new Vec2( 100, 20 )] ) );
-        cmdCmp.enqueue( god.cmdFactory.createCmd( "move", [e, new Vec2( 20, 20 )] ) );
-        cmdCmp.enqueue( god.cmdFactory.createCmd( "move", [e, new Vec2( 100, 20 )] ) );
-        
         lookCmp.lookText = "This is the player";
         
-        e.addComponent( posCmp );
         e.addComponent( lookCmp );
+        e.addComponent( nameCmp );
+        e.addComponent( posCmp );
         e.addComponent( renderCmp );
         e.addComponent( cmdCmp );
 
@@ -63,13 +71,14 @@ class EntityBuilder
         return e;
     }
 
-    public function createPortal( srcSector : Entity, destSector : Entity ) : Entity {
+    public function createPortal( name : String, sector : Entity ) : Entity {
         var e = world.createEntity();
-        var nameCmp = new NameIdCmp( "door1" );
+        var nameCmp = new NameIdCmp( name );
         var lookCmp = new LookCmp();
-        var posCmp = new PosCmp( srcSector, new Vec2( 20, 20 ) );
-        var portalCmp = new PortalCmp( srcSector, destSector );
-        var contCmp = new ContainableCmp( containerMgr, srcSector, srcSector );
+        var posCmp = new PosCmp( sector, new Vec2( 20, 20 ) );
+        var staticCmp = new StaticPosCmp();
+        var portalCmp = new PortalCmp();
+        var contCmp = new ContainableCmp( containerMgr, sector, sector );
         var renderCmp = new RenderCmp();
         
         lookCmp.lookText = "This is the player";
@@ -77,6 +86,7 @@ class EntityBuilder
         e.addComponent( posCmp );
         e.addComponent( lookCmp );
         e.addComponent( portalCmp );
+        e.addComponent( staticCmp );
         e.addComponent( contCmp );
         e.addComponent( renderCmp );
         e.addComponent( nameCmp );
@@ -84,13 +94,6 @@ class EntityBuilder
         world.addEntity( e );
         
         return e;
-    }
-
-    public function testAspectMatch() {
-        var sig = Aspect.getAspectForAll( [PortalCmp] ).one( [PosCmp, TransitRequestCmp] ).exclude( [TransitRequestCmp] );
-        var portal = createPortal( null, null );
-        
-        trace( Aspect.matches( sig, portal.componentBits ) );
     }
 
     public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {

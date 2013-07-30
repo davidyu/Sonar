@@ -13,6 +13,6 @@ interface Command
 {
     @:isVar var state : TCmdRes;
     function onStart() : Void;
-    function Execute() : Void;
+    function Execute() : Array<Dynamic>;
     function onFinished() : Void;
 }

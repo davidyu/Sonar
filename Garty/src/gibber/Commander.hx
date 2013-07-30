@@ -14,10 +14,6 @@ class Commander
         god = g;
     }
 
-    public function getPortalDest( portal : Entity, fromSector : Entity ) : Entity {
-        return portal.getComponent( PortalCmp ).getDestSector( fromSector );
-    }
-    
     public function goToSector( mover : Entity, destSectorName : String ) : Void {
         var destSector = god.world.getManager( NameRegistry ).getEntity( destSectorName );
         

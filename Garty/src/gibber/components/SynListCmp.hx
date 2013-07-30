@@ -1,4 +1,4 @@
-package gibber.gabby.components;
+package gibber.components;
 
 import com.artemisx.Component;
 import gibber.gabby.SynTag;

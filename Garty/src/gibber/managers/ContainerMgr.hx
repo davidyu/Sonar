@@ -77,6 +77,12 @@ class ContainerMgr extends Manager
         };
     }
     
+    //TODO IMPLEMENT THIS - need to remove entities that don't match signature, and add entities that match
+    override public function onChanged( e : Entity ) {
+        
+    }
+
+    
     public function changeContainerOfEntity( e : Entity, oldContainer : Entity, newContainer : Entity ) : Void {
         getEntitiesOfContainer( oldContainer ).remove( e );
         entityContainer.set( nameMapper.get( e ).name, newContainer );

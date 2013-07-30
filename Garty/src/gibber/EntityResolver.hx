@@ -1,4 +1,4 @@
-package gibber.gabby;
+package gibber;
 import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import gibber.components.NameIdCmp;

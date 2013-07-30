@@ -33,15 +33,15 @@ class TransitRequestSys extends EntitySystem
     
     // Starts transition to another sector. Returns true if transitioned
     private function transit( req : TransitRequestCmp ) : Bool {
-        if ( req.transitScript == null || req.transitScript.execute()[0] == true ) {
-            var playerPos = posMapper.get( req.mover );
+        //if ( req.transitScript == null || req.transitScript.execute()[0] == true ) {
+            //var playerPos = posMapper.get( req.mover );
             // Exit the room the player is currently in
-            regionMapper.get( playerPos.sector ).onExit( req.mover, req.destSector );
+            //regionMapper.get( playerPos.sector ).onExit( req.mover, req.destSector );
             // Enter the room the player will be in
-            regionMapper.get( req.destSector ).onEnter( req.mover, playerPos.sector );
-            
-            return true;
-        }
+            //regionMapper.get( req.destSector ).onEnter( req.mover, playerPos.sector );
+            //
+            //return true;
+        //}
         
         return false;
     }

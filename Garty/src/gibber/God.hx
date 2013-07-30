@@ -6,7 +6,10 @@ import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFieldType;
 import flash.ui.Keyboard;
+import gibber.components.CmdQueue;
+import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
+import gibber.gabby.PortalEdge;
 import gibber.managers.ContainerMgr;
 import gibber.managers.NameRegistry;
 import gibber.managers.SynonymMgr;
@@ -25,6 +28,7 @@ class God
     @:isVar public var world ( default, null ) : World;
     @:isVar public var cmdFactory ( default, null ) : CmdFactory;
     @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
+    @:isVar public var scriptFactory ( default, null ) : ScriptFactory;
     
     public function new( r : MovieClip ) {
         root = r;
@@ -44,11 +48,12 @@ class God
         
         parser = new AdvancedParser( this );
         commander = new Commander( this );
+        scriptFactory = new ScriptFactory( this );
         
         initializeEntities();
         
-        this.testBed = new TestBed(this);
-        testBed.run();
+        //this.testBed = new TestBed(this);
+        //testBed.run();
         
     }
     
@@ -84,7 +89,7 @@ class God
         world.setManager( new ContainerMgr() );
         world.setManager( new SynonymMgr() );
         
-        world.setSystem( new TransitRequestSys() );
+        //world.setSystem( new TransitRequestSys() );
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new RenderSectorSys( root ) );
@@ -95,25 +100,39 @@ class God
     
     public function initializeEntities() : Void {
         sectors = new Array();
+        portals = new Array();
         
         var vectorArray1 = Vec2.getVecArray( [0, 0, 30, 0, 45, 15, 30, 30, 0, 30, 0, 30 ] );
         var bridgeArray1 = Vec2.getVecArray( [0, 17, 135, 17, 135, 23, 0, 23, 0, 23] );
         var vectorArray2 = Vec2.getVecArray( [135, 0, 165, 0, 165, 30, 135, 30] );
         sectors.push( entityBuilder.createSector( "sector0", new Vec2( 50, 200 ), [new Polygon( vectorArray1 ), new Polygon( bridgeArray1 ), new Polygon( vectorArray2 )] ) );
-        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 0, 0 ), [] ) );
-        sectors.push( entityBuilder.createSector( "sector2", new Vec2( 0, 0 ), [] ) );
+        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 80, 230 ), [new Polygon( vectorArray1 ), new Polygon( bridgeArray1 ), new Polygon( vectorArray2 )] ) );
+        sectors.push( entityBuilder.createSector( "sector2", new Vec2( 110, 260 ), [new Polygon( vectorArray1 ), new Polygon( bridgeArray1 ), new Polygon( vectorArray2 )] ) );
+
+        portals.push( entityBuilder.createPortal( "door01", sectors[0] ) );
+        portals.push( entityBuilder.createPortal( "door10", sectors[1] ) );
         
         player = entityBuilder.createPlayer( "Bob" );
-        entityBuilder.createPortal( sectors[0], sectors[1] );
         
-        var v1 = new Vec2(0, 0);
-        var v2 = new Vec2(1, 1);
+        entityBuilder.addPortalEdges( portals[0], [new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) )] );
+        entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[0], scriptFactory.createScript( "transit" ) )] );
+        
+        var pCmp = portals[0].getComponent( PortalCmp );
+        var pCmp2 = portals[1].getComponent( PortalCmp );
+
+        var cmdCmp = player.getComponent( CmdQueue );
+        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 100, 20 )] ) );
+
+        cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, pCmp.edges[0]] ) );
+        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 100, 20 )] ) );
+        cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, pCmp2.edges[0]] ) );
+        
     }
         
     public function tick(_) : Void {
         input();
         world.process();
-        testBed.tick();
+        //testBed.tick();
         
     }
     
@@ -161,6 +180,7 @@ class God
     public var commander : Commander;
     
     public var sectors : Array<Entity>;
+    public var portals : Array<Entity>;
     public var player : Entity;
     
 }

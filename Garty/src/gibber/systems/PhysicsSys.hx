@@ -6,6 +6,7 @@ import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
+import gibber.components.StaticPosCmp;
 import utils.Polygon;
 import utils.Vec2;
 
@@ -44,24 +45,26 @@ class PhysicsSys extends EntitySystem
             
             sectorPolys = regionMapper.get( posCmp.sector ).polys;
             
+            isColl = true;
+            minVec.x = minVec.y = 0;
+            minDist = Math.POSITIVE_INFINITY; //must reset for each entity
+            dist = 0.0;
+            
             for ( j in 0...sectorPolys.length ) {
                 if ( sectorPolys[j].isPointinPolygon( newPos ) ) {
                     isColl = false;
                 }
             }
 
-            minDist = Math.POSITIVE_INFINITY; //must reset for each entity
             if ( isColl ) {
                 for ( i in 0...sectorPolys.length ) {
                     collPoint = sectorPolys[i].getClosestPoint( newPos );
-                    trace( collPoint );
                     dist = collPoint.sub( newPos ).lengthsq();
                     if ( dist < minDist ) {
                         minDist = dist;
                         minVec = collPoint;
                     }
                 }
-                trace("end" + minVec + newPos );
                 newPos = minVec;
             }
             posCmp.pos = newPos;
