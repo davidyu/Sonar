@@ -41,7 +41,6 @@ class TakeCmd implements Command
 
         if ( Aspect.matches( containerSig, newLoc.componentBits ) ) {
             containableMapper.get( obj ).container = newLoc;
-            containableMapper.get( obj ).parent    = newLoc;
             state = Command.TCmdRes.PASS;
             return [ "moved to " + nameMapper.get( newLoc ).name, true ];
         }
