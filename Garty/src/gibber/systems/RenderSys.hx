@@ -11,6 +11,7 @@ import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
 import gibber.components.StaticPosCmp;
+import gibber.Util;
 import utils.Vec2;
 
 class RenderSys extends EntitySystem
@@ -53,12 +54,10 @@ class RenderSys extends EntitySystem
             g.clear();
             
             posCmp = posMapper.get( e );
-            pos = posCmp.pos;
-            sectorPos = posMapper.get( posCmp.sector ).pos;
+            pos = Util.relativeCoords( e, posCmp.sector );
             
-            g.moveTo( sectorPos.x, sectorPos.y );
             g.beginFill( render.colour );
-                g.drawCircle( sectorPos.x + pos.x, sectorPos.y + pos.y, 3 );
+                g.drawCircle( pos.x, pos.y, 3 );
             g.endFill();
         }
     }

@@ -5,6 +5,8 @@ import flash.display.StageScaleMode;
 import flash.Lib;
 import gibber.components.TransitRequestCmp;
 import gibber.God;
+import gibber.scripts.GenericScript;
+import haxe.ds.GenericStack;
 
 class Main 
 {
@@ -19,6 +21,8 @@ class Main
         trace( "Starting up God" );
         
         var g = new God( Lib.current );
+        
+
 
     }
 

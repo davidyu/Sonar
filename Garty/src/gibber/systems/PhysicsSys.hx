@@ -10,6 +10,8 @@ import gibber.components.StaticPosCmp;
 import utils.Polygon;
 import utils.Vec2;
 
+using gibber.Util;
+
 class PhysicsSys extends EntitySystem
 {
     public function new() {
@@ -42,11 +44,8 @@ class PhysicsSys extends EntitySystem
             pos = posCmp.pos; // transform player pos in sector-local coord system
             newPos = pos.add( posCmp.dp );
             
-            var region = regionMapper.get( posCmp.sector );
+            var region = regionMapper.get( posCmp.regionStack.head.elt );
             sectorPolys = region.polys;
-            for ( p in region.portals ) {
-                sectorPolys.concat( regionMapper.get( p ).polys );
-            }
             
             isColl = true;
             minVec.x = minVec.y = 0;
@@ -56,6 +55,22 @@ class PhysicsSys extends EntitySystem
             for ( j in 0...sectorPolys.length ) {
                 if ( sectorPolys[j].isPointinPolygon( newPos ) ) {
                     isColl = false;
+                }
+            }
+            
+            for ( p in region.portals ) {
+                var region = regionMapper.get( p );
+                var polys = region.polys;
+                for ( j in polys ) {
+                    posCmp.regionStack.add( p );
+                    trace( Util.localCoords( newPos, e, p, posCmp.sector ) );
+                    if ( j.isPointinPolygon( Util.localCoords( newPos, e, p, posCmp.sector ) ) ) {
+                        isColl = false;
+                        region.onEnter( e, posCmp.regionStack.peek() );
+                       
+                    } else {
+                        posCmp.regionStack.pop();
+                    }
                 }
             }
 

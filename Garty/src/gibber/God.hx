@@ -106,7 +106,7 @@ class God
         var bridgeArray1 = Vec2.getVecArray( [0, 17, 135, 17, 135, 23, 0, 23, 0, 23] );
         var vectorArray2 = Vec2.getVecArray( [135, 0, 165, 0, 165, 30, 135, 30] );
         sectors.push( entityBuilder.createSector( "sector0", new Vec2( 50, 200 ), [new Polygon( vectorArray1 ), new Polygon( bridgeArray1 ), new Polygon( vectorArray2 )] ) );
-        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 215, 200 ), [new Polygon( vectorArray1 ), new Polygon( bridgeArray1 ), new Polygon( vectorArray2 )] ) );
+        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 216, 200 ), [new Polygon( vectorArray1 ), new Polygon( bridgeArray1 ), new Polygon( vectorArray2 )] ) );
         sectors.push( entityBuilder.createSector( "sector2", new Vec2( 381, 200 ), [new Polygon( vectorArray1 ), new Polygon( bridgeArray1 ), new Polygon( vectorArray2 )] ) );
 
         portals.push( entityBuilder.createPortal( "door01", sectors[0], new Vec2( 160, 0 ) ) );
@@ -122,9 +122,9 @@ class God
 
         var cmdCmp = player.getComponent( CmdQueue );
         cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 100, 20 )] ) );
-        cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, pCmp.edges[0]] ) );
+        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", player, pCmp.edges[0]] ) );
         cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 100, 20 )] ) );
-        cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, pCmp2.edges[0]] ) );
+        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, pCmp2.edges[0]] ) );
         
     }
         
