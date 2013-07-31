@@ -4,6 +4,8 @@ import com.artemisx.Entity;
 import haxe.ds.GenericStack;
 import utils.Vec2;
 
+using gibber.Util;
+
 class PosCmp implements Component
 {
     @:isVar public var regionStack : GenericStack<Entity>;
@@ -20,14 +22,7 @@ class PosCmp implements Component
     }
     
     function get_sector() : Entity {
-        var s = regionStack.head;
-        var ret = null;
-        
-        while ( s != null ) {
-            ret = s.elt;
-            s = s.next;
-        }
-        return ret;
+        return regionStack.base();
     }
     
 }

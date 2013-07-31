@@ -53,6 +53,17 @@ class Util
         return s.head.elt;
     }
     
+    public static function base( s : GenericStack<Entity> ) : Entity {
+        var st = s.head;
+        var ret = null;
+        
+        while ( st != null ) {
+            ret = st.elt;
+            st = st.next;
+        }
+        return ret;
+    }
+    
     public static function clear( s : GenericStack<Entity> ) : Void {
         while ( !s.isEmpty() ) {
             s.pop();

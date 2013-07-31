@@ -1,7 +1,6 @@
 package gibber.components;
 import com.artemisx.Component;
 import com.artemisx.Entity;
-import gibber.gabby.Region;
 import gibber.scripts.VoidExecuteScript;
 import utils.Polygon;
 import utils.Vec2;

@@ -5,7 +5,6 @@ import com.artemisx.World;
 import gibber.components.ContainableCmp;
 import gibber.components.StaticPosCmp;
 import gibber.gabby.PortalEdge;
-import gibber.gabby.Region;
 import gibber.gabby.SynTag;
 import gibber.commands.MoveCmd;
 import gibber.components.CmdQueue;
