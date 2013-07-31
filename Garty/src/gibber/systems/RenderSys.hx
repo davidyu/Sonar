@@ -10,12 +10,13 @@ import flash.display.Sprite;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
+import gibber.components.StaticPosCmp;
 import utils.Vec2;
 
 class RenderSys extends EntitySystem
 {
     public function new( root : MovieClip ) {
-        super( Aspect.getAspectForAll( [PosCmp] ) );
+        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp] ) );
         
         buffer = new Sprite();
         this.root = root;
@@ -47,19 +48,19 @@ class RenderSys extends EntitySystem
         
         for ( i in 0...actives.size ) {
             e = actives.get( i );
-            g = renderMapper.get( e ).sprite.graphics;
+            var render = renderMapper.get( e );
+            g = render.sprite.graphics;
             g.clear();
             
             posCmp = posMapper.get( e );
             pos = posCmp.pos;
-            sectorPos = regionMapper.get( posCmp.sector ).pos;
+            sectorPos = posMapper.get( posCmp.sector ).pos;
             
             g.moveTo( sectorPos.x, sectorPos.y );
-            g.beginFill( 0xff00 );
+            g.beginFill( render.colour );
                 g.drawCircle( sectorPos.x + pos.x, sectorPos.y + pos.y, 3 );
             g.endFill();
         }
-        
     }
     
     var posMapper : ComponentMapper<PosCmp>;

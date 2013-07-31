@@ -5,6 +5,7 @@ import com.artemisx.World;
 import gibber.components.ContainableCmp;
 import gibber.components.StaticPosCmp;
 import gibber.gabby.PortalEdge;
+import gibber.gabby.Region;
 import gibber.gabby.SynTag;
 import gibber.commands.MoveCmd;
 import gibber.components.CmdQueue;
@@ -37,6 +38,9 @@ class EntityBuilder
         
         portalCmp.edges = portalCmp.edges.concat( edges );
         portal.addComponent( portalCmp );
+        
+        portal.getComponent( PosCmp ).sector.getComponent( RegionCmp ).portals.push( portal ); // temp add this portal to sector region
+
     }
     
     public function createWordRef( tag : SynTag ) {
@@ -71,15 +75,16 @@ class EntityBuilder
         return e;
     }
 
-    public function createPortal( name : String, sector : Entity ) : Entity {
+    public function createPortal( name : String, sector : Entity, pos : Vec2 ) : Entity {
         var e = world.createEntity();
         var nameCmp = new NameIdCmp( name );
         var lookCmp = new LookCmp();
-        var posCmp = new PosCmp( sector, new Vec2( 20, 20 ) );
+        var posCmp = new PosCmp( sector, pos );
         var staticCmp = new StaticPosCmp();
         var portalCmp = new PortalCmp();
+        var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )] );
         var contCmp = new ContainableCmp( containerMgr, sector, sector );
-        var renderCmp = new RenderCmp();
+        var renderCmp = new RenderCmp( 0x00ff00 );
         
         lookCmp.lookText = "This is the player";
         
@@ -89,6 +94,7 @@ class EntityBuilder
         e.addComponent( staticCmp );
         e.addComponent( contCmp );
         e.addComponent( renderCmp );
+        e.addComponent( regionCmp );
         e.addComponent( nameCmp );
 
         world.addEntity( e );
@@ -99,14 +105,18 @@ class EntityBuilder
     public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
         var e = world.createEntity();
         var nameCmp = new NameIdCmp( "sector:" + name );
+        var posCmp = new PosCmp( e, pos );
+        var staticCmp = new StaticPosCmp();
         var lookCmp = new LookCmp();
-        var regionCmp = new RegionCmp( pos, polygonAreas );
-        var renderCmp = new RenderCmp();
+        var regionCmp = new RegionCmp( polygonAreas );
+        var renderCmp = new RenderCmp( 0x00ffff );
         var containerCmp = new ContainerCmp();
         
         lookCmp.lookText = "This is some room #" + Std.random(1000);
         
         e.addComponent( nameCmp );
+        e.addComponent( posCmp );
+        e.addComponent( staticCmp );
         e.addComponent( lookCmp );
         e.addComponent( regionCmp );
         e.addComponent( renderCmp );

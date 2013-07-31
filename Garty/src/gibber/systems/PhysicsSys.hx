@@ -13,7 +13,7 @@ import utils.Vec2;
 class PhysicsSys extends EntitySystem
 {
     public function new() {
-        super( Aspect.getAspectForAll( [PosCmp] ) );
+        super( Aspect.getAspectForAll( [PosCmp] ).exclude( [StaticPosCmp] ) );
     }
 
     override public function initialize() : Void {
@@ -39,11 +39,14 @@ class PhysicsSys extends EntitySystem
             
             posCmp = posMapper.get( e );
             posCmp.dp = posCmp.dp.scale( 0.8 );
-            sectorPos = regionMapper.get( posCmp.sector ).pos;
             pos = posCmp.pos; // transform player pos in sector-local coord system
             newPos = pos.add( posCmp.dp );
             
-            sectorPolys = regionMapper.get( posCmp.sector ).polys;
+            var region = regionMapper.get( posCmp.sector );
+            sectorPolys = region.polys;
+            for ( p in region.portals ) {
+                sectorPolys.concat( regionMapper.get( p ).polys );
+            }
             
             isColl = true;
             minVec.x = minVec.y = 0;

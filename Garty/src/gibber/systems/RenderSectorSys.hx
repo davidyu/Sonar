@@ -8,6 +8,7 @@ import com.artemisx.utils.Bag;
 import flash.display.Graphics;
 import flash.display.MovieClip;
 import flash.display.Sprite;
+import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
 import utils.Polygon;
@@ -15,7 +16,7 @@ import utils.Polygon;
 class RenderSectorSys extends EntitySystem
 {
     public function new( root : MovieClip ) {
-        super( Aspect.getAspectForAll( [RegionCmp, RenderCmp] ) );
+        super( Aspect.getAspectForAll( [RegionCmp, RenderCmp, PosCmp] ) );
         
         buffer = new Sprite();
         this.root = root;
@@ -25,6 +26,7 @@ class RenderSectorSys extends EntitySystem
     override public function initialize() : Void {
         regionMapper = world.getMapper( RegionCmp );
         renderMapper = world.getMapper( RenderCmp );
+        posMapper = world.getMapper( PosCmp );
     }
     
     override public function onInserted( e : Entity ) : Void {
@@ -52,15 +54,20 @@ class RenderSectorSys extends EntitySystem
             polys = region.polys;
             
             render = renderMapper.get( e );
-            render.sprite.x = region.pos.x;
-            render.sprite.y = region.pos.y;
+            var posCmp = posMapper.get( e );
+            var pos = posCmp.pos;
+            if ( posCmp.sector != null && posCmp.sector != e ) {
+                pos = pos.add( posMapper.get( posCmp.sector ).pos );
+            }
+            render.sprite.x = pos.x;
+            render.sprite.y = pos.y;
             g = render.sprite.graphics;
             g.clear();
             
             for ( j in 0...polys.length ) {
                 p = polys[j];
                 
-                g.beginFill( 0xffff00 );
+                g.beginFill( render.colour );
                 g.moveTo( p.edges[0].x, p.edges[0].y );
                 for ( k in 0...p.edges.length ) {
                     g.lineTo( p.edges[k].x, p.edges[k].y );
@@ -72,6 +79,7 @@ class RenderSectorSys extends EntitySystem
     
     var regionMapper : ComponentMapper<RegionCmp>;
     var renderMapper : ComponentMapper<RenderCmp>;
+    var posMapper : ComponentMapper<PosCmp>;
     
     var root : MovieClip;
     var buffer : Sprite;

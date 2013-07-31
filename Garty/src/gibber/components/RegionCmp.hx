@@ -1,6 +1,7 @@
 package gibber.components;
 import com.artemisx.Component;
 import com.artemisx.Entity;
+import gibber.gabby.Region;
 import gibber.scripts.VoidExecuteScript;
 import utils.Polygon;
 import utils.Vec2;
@@ -8,19 +9,20 @@ import utils.Vec2;
 class RegionCmp implements Component
 {
     @:isVar public var polys ( default, default ) : Array<Polygon>;
-    @:isVar public var pos ( default, default ) : Vec2;
-
-    public function new( pos : Vec2, polygonAreas : Array<Polygon> = null, enter : VoidExecuteScript=null, exit : VoidExecuteScript=null ) {
+    @:isVar public var parent : Entity;
+    @:isVar public var owner : Entity;
+    @:isVar public var portals : Array<Entity>;
+    
+    public function new( polygonAreas : Array<Polygon> = null, enter : VoidExecuteScript=null, exit : VoidExecuteScript=null ) {
         enterScript = enter;
         exitScript = exit;
         
-        if ( polygonAreas != null ) {
-            polys = polygonAreas;
-        } else {
-            polys = new Array();
+        if ( polygonAreas == null ) {
+            polygonAreas = new Array<Polygon>();
         }
         
-        this.pos = pos;
+        this.polys = polygonAreas;
+        this.portals = new Array();
     }
     
     public function onEnter( mover : Entity, fromSector : Entity ) : Void {
