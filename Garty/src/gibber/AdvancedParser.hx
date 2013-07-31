@@ -49,6 +49,10 @@ class AdvancedParser
 
                 return "";
 
+            case "clear":
+                god.debugClear();
+                return "";
+
             default:
                 god.debugPrintln( "I'm sorry Dave, I can't let you do that." );
 

@@ -152,21 +152,37 @@ class God
     function onEnterKey( e : flash.events.KeyboardEvent ) : Void {
         switch ( e.keyCode ) {
             case Keyboard.ENTER:
-                outputTextfield.text += inputTextfield.text + "\n";
-                parser.parse( inputTextfield.text );
-
+                var line = inputTextfield.text;
                 inputTextfield.text = "";
+                debugPrintln( line );
+                parser.parse( line );
+
             case Keyboard.DELETE:
-                outputTextfield.text = "";
-                
+                debugClear();
+
             //case Keyboard.RIGHT:
                 //player.getComponent( PosCmp ).dp.x = 2;
             //case Keyboard.LEFT:
                 //player.getComponent( PosCmp ).dp.x = -2;
-                
         }
     }
-    
+
+    //debug convenience methods
+    public function debugPrint( str )
+    {
+        outputTextfield.text += str;
+    }
+
+    public function debugPrintln( str )
+    {
+        debugPrint( str + "\n" );
+    }
+
+    public function debugClear()
+    {
+        outputTextfield.text = "";
+    }
+
     var root : MovieClip;
     var inputTextfield : TextField;
     var baseTextFormat : TextFormat;
