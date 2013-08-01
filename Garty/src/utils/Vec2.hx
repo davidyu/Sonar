@@ -9,6 +9,15 @@ class Vec2
         this.x = x;
         this.y = y;
     }
+    
+    public function clone() : Vec2 {
+        return new Vec2( x, y );
+    }
+    
+    public function set( v : Vec2 ) : Vec2 {
+        x = v.x; y = v.y;
+        return this;
+    }
 
     public inline function add( rhs : Vec2 ) : Vec2 {
         return new Vec2( x + rhs.x, y + rhs.y );

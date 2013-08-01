@@ -1,4 +1,5 @@
 package gibber;
+import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import gibber.components.PosCmp;
 import haxe.ds.GenericStack;
@@ -8,45 +9,15 @@ class Util
 {
     public static function init( g : God ) {
         god = g;
+        posMapper = god.world.getMapper( PosCmp );
     }
     
-    public static function relativeCoords( e : Entity, anchor : Entity ) : Vec2 {
-        var posCmp = e.getComponent( PosCmp );
-        var sec = posCmp.regionStack.head;
-        var pos = posCmp.pos;
-        var hitAnchor = false;
-        while ( !hitAnchor ) {
-            if ( sec == null ) {
-                throw "Invalid anchor for entity";
-            }
-            pos = pos.add( sec.elt.getComponent( PosCmp ).pos );
-            if ( sec.elt == anchor) {
-                hitAnchor = true;
-            }
-            sec = sec.next;
-        }
-        
-        return pos;
+    public static inline function worldCoords( pos : Vec2, sector : Entity ) : Vec2 {
+        return pos.add( posMapper.get( sector ).pos );
     }
     
-    public static function localCoords( pos : Vec2, e : Entity, local : Entity, anchor : Entity ) : Vec2 {
-        var posCmp = e.getComponent( PosCmp );
-        var sec = posCmp.regionStack.head;
-        
-        while ( sec != null && sec.elt != local ) {
-            sec = sec.next;
-        }
-        
-        while ( sec.elt != anchor ) {
-            pos = pos.sub( sec.elt.getComponent( PosCmp ).pos );
-            sec = sec.next;
-            
-            if ( sec == null ) {
-                throw "Invalid anchor";
-            }
-        }
-        
-        return pos;
+    public static function localCoords( pos : Vec2, local : Entity ) : Vec2 {
+        return pos.sub( posMapper.get( local ).pos );
     }
     
     public static function peek( s : GenericStack<Entity> ) : Entity {
@@ -64,12 +35,13 @@ class Util
         return ret;
     }
     
-    public static function clear( s : GenericStack<Entity> ) : Void {
+    public static function clear( s : List<Entity> ) : Void {
         while ( !s.isEmpty() ) {
             s.pop();
         }
     }
     
     static var god : God;
+    static var posMapper : ComponentMapper<PosCmp>;
     
 }

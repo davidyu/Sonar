@@ -25,8 +25,8 @@ class TransitScript
         // Enter the room the player will be in
         destRegion.onEnter( mover, playerPos.sector );
         
-        playerPos.regionStack.clear();
-        playerPos.regionStack.add( pDest );
+        playerPos.regionsIn.clear();
+        playerPos.regionsIn.add( pDest );
         playerPos.pos = destPosCmp.pos;
         
         return ["moved to a sector", true];

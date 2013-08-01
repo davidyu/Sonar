@@ -39,7 +39,7 @@ class EntityBuilder
         portalCmp.edges = portalCmp.edges.concat( edges );
         portal.addComponent( portalCmp );
         
-        portal.getComponent( PosCmp ).regionStack.first().getComponent( RegionCmp ).portals.push( portal ); // temp add this portal to sector region
+        portal.getComponent( PosCmp ).regionsIn.first().getComponent( RegionCmp ).portals.push( portal ); // temp add this portal to sector region
 
     }
     
