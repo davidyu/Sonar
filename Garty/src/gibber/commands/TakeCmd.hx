@@ -7,6 +7,7 @@ import gibber.components.PosCmp;
 import gibber.components.ContainableCmp;
 import gibber.components.RegionCmp;
 import gibber.gabby.PortalEdge;
+import gibber.components.ContainerCmp;
 
 class TakeCmd implements Command
 {
@@ -15,21 +16,23 @@ class TakeCmd implements Command
     @:isVar public var newLoc( default, null ) : Entity;
     @:isVar public var state : Command.TCmdRes;
 
-    public function new( cf : CmdFactory, obj : Entity, oldLoc : Entity, newLoc : Entity ) {
+    public function new( cf : CmdFactory, obj : Entity, newLoc : Entity ) {
         this.state = Command.TCmdRes.NEW;
         this.newLoc = newLoc;
-        this.oldLoc = oldLoc;
         this.obj = obj;
 
         this.containerMapper = cf.god.world.getMapper( ContainerCmp );
+        this.containableMapper = cf.god.world.getMapper( ContainableCmp );
         this.nameMapper = cf.god.world.getMapper( NameIdCmp );
     }
 
     public function onStart() : Void {
         //check object is actually containable
+        //TODO @desktop: remove this when new ContainerManager is checked in
         var objSig       = Aspect.getAspectForAll( [NameIdCmp, ContainableCmp, PosCmp] );
 
         if ( Aspect.matches( objSig, obj.componentBits ) ) {
+            oldLoc = containableMapper.get( obj ).container;
             state = Command.TCmdRes.PENDING;
         } else {
             state = Command.TCmdRes.FAIL;
@@ -53,6 +56,7 @@ class TakeCmd implements Command
         
     }
 
+    var containerMapper : ComponentMapper<ContainerCmp>;
     var containableMapper : ComponentMapper<ContainableCmp>;
-    var nameMapper : NameMapper<NameIdCmp>;
+    var nameMapper : ComponentMapper<NameIdCmp>;
 }

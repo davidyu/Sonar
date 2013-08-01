@@ -142,6 +142,33 @@ class EntityBuilder
         return e;
     }
     
+    public function createObject( name : String, pos : Vec2 ) : Entity
+    {
+        var e = world.createEntity();
+        var lookCmp = new LookCmp();
+        var nameIdCmp = new NameIdCmp( "chest" );
+        var posCmp = new PosCmp( god.sectors[0], pos );
+        var renderCmp = new RenderCmp();
+        var containableCmp = new ContainableCmp( containerMgr, god.sectors[0], god.sectors[0] );
+
+        var firstChar = name.charAt( 0 );
+        if ( firstChar == "a" || firstChar == "e" || firstChar == "i" || firstChar == "o" || firstChar == "u" ) {
+            lookCmp.lookText = "An " + name.toLowerCase();
+        } else {
+            lookCmp.lookText = "A " + name.toLowerCase();
+        }
+
+        e.addComponent( nameIdCmp );
+        e.addComponent( lookCmp );
+        e.addComponent( posCmp );
+        e.addComponent( renderCmp );
+        e.addComponent( containableCmp );
+
+        world.addEntity( e );
+
+        return e;
+    }
+
     public function testPolygon() {
         var p = new Polygon( [ new Vec2( -2, 1 ), new Vec2( 2, 3 ), new Vec2( 3, -2 ), new Vec2( -2, -2 ) ] );
         trace(p.getLineIntersection( new Vec2( -4, 0 ), new Vec2( 0, 0 ) ) );

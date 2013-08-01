@@ -113,6 +113,7 @@ class God
         portals.push( entityBuilder.createPortal( "door10", sectors[1], new Vec2( 0, 0 ) ) );
         
         player = entityBuilder.createPlayer( "Bob" );
+        var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ) );
         
         entityBuilder.addPortalEdges( portals[0], [new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) )] );
         entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[0], scriptFactory.createScript( "transit" ) )] );

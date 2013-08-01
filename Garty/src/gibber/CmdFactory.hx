@@ -2,6 +2,7 @@ package gibber;
 import gibber.commands.Command;
 import gibber.commands.MoveCmd;
 import gibber.commands.TransitCmd;
+import gibber.commands.TakeCmd;
 
 @:access(gibber.commands)
 class CmdFactory
@@ -18,6 +19,8 @@ class CmdFactory
                 return new MoveCmd( this, args[0], args[1] );
             case "transit":
                 return new TransitCmd( args[0], args[1] );
+            case "take":
+                return new TakeCmd( args[0], args[1], args[2] );
             default:
                 return null;
                 
