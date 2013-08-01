@@ -11,6 +11,7 @@ import utils.Polygon;
 import utils.Vec2;
 
 using gibber.Util;
+using utils.Geo;
 
 class PhysicsSys extends EntitySystem
 {
@@ -44,33 +45,36 @@ class PhysicsSys extends EntitySystem
             pos = posCmp.pos; // transform player pos in sector-local coord system
             newPos = pos.add( posCmp.dp );
             
-            var region = regionMapper.get( posCmp.regionStack.head.elt );
-            sectorPolys = region.polys;
+            var region = regionMapper.get( posCmp.regionsIn.first() );
+            sectorPolys = region.polys.copy();
+            sectorPos = posMapper.get( posCmp.sector ).pos;
             
             isColl = true;
             minVec.x = minVec.y = 0;
             minDist = Math.POSITIVE_INFINITY; //must reset for each entity
             dist = 0.0;
             
-            for ( j in 0...sectorPolys.length ) {
-                if ( sectorPolys[j].isPointinPolygon( newPos ) ) {
-                    isColl = false;
+            for ( p in region.portals ) {
+                var region = regionMapper.get( p );
+                var portalPos = posMapper.get( p );
+                var polys = region.polys;
+                var transPolys = new Array<Polygon>();
+                for ( p in polys ) {
+                    transPolys.push( p.transform( sectorPos.add( portalPos.pos ) ) );
+                }
+                sectorPolys = sectorPolys.concat( transPolys );
+                for ( j in polys ) {
+                    if ( j.isPointinPolygon( Util.localCoords( newPos, p ) ) ) {
+                        isColl = false;
+                        region.onEnter( e, p );
+                    } else {
+                    }
                 }
             }
             
-            for ( p in region.portals ) {
-                var region = regionMapper.get( p );
-                var polys = region.polys;
-                for ( j in polys ) {
-                    posCmp.regionStack.add( p );
-                    trace( Util.localCoords( newPos, e, p, posCmp.sector ) );
-                    if ( j.isPointinPolygon( Util.localCoords( newPos, e, p, posCmp.sector ) ) ) {
-                        isColl = false;
-                        region.onEnter( e, posCmp.regionStack.peek() );
-                       
-                    } else {
-                        posCmp.regionStack.pop();
-                    }
+            for ( j in 0...sectorPolys.length ) {
+                if ( sectorPolys[j].isPointinPolygon( newPos ) ) {
+                    isColl = false;
                 }
             }
 

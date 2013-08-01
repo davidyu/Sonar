@@ -54,7 +54,7 @@ class RenderSys extends EntitySystem
             g.clear();
             
             posCmp = posMapper.get( e );
-            pos = Util.relativeCoords( e, posCmp.sector );
+            pos = Util.worldCoords( posCmp.pos, posCmp.sector );
             
             g.beginFill( render.colour );
                 g.drawCircle( pos.x, pos.y, 3 );

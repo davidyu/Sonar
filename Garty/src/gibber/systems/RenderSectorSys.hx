@@ -11,7 +11,9 @@ import flash.display.Sprite;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
+import gibber.Util;
 import utils.Polygon;
+import utils.Vec2;
 
 class RenderSectorSys extends EntitySystem
 {
@@ -55,9 +57,9 @@ class RenderSectorSys extends EntitySystem
             
             render = renderMapper.get( e );
             var posCmp = posMapper.get( e );
-            var pos = posCmp.pos;
+            var pos : Vec2 = posCmp.pos.clone();
             if ( posCmp.sector != null && posCmp.sector != e ) {
-                pos = pos.add( posMapper.get( posCmp.sector ).pos );
+                pos = Util.worldCoords( posCmp.pos, posCmp.sector );
             }
             render.sprite.x = pos.x;
             render.sprite.y = pos.y;

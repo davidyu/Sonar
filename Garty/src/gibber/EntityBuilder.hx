@@ -39,7 +39,7 @@ class EntityBuilder
         portalCmp.edges = portalCmp.edges.concat( edges );
         portal.addComponent( portalCmp );
         
-        portal.getComponent( PosCmp ).regionStack.first().getComponent( RegionCmp ).portals.push( portal ); // temp add this portal to sector region
+        portal.getComponent( PosCmp ).regionsIn.first().getComponent( RegionCmp ).portals.push( portal ); // temp add this portal to sector region
 
     }
     
@@ -140,11 +140,6 @@ class EntityBuilder
         world.addEntity( e );
         
         return e;
-    }
-    
-    public function testPolygon() {
-        var p = new Polygon( [ new Vec2( -2, 1 ), new Vec2( 2, 3 ), new Vec2( 3, -2 ), new Vec2( -2, -2 ) ] );
-        trace(p.getLineIntersection( new Vec2( -4, 0 ), new Vec2( 0, 0 ) ) );
     }
 
     var god : God;
