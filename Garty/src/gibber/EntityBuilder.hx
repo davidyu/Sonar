@@ -169,11 +169,6 @@ class EntityBuilder
         return e;
     }
 
-    public function testPolygon() {
-        var p = new Polygon( [ new Vec2( -2, 1 ), new Vec2( 2, 3 ), new Vec2( 3, -2 ), new Vec2( -2, -2 ) ] );
-        trace(p.getLineIntersection( new Vec2( -4, 0 ), new Vec2( 0, 0 ) ) );
-    }
-
     var god : God;
     var world : World;
     var containerMgr : ContainerMgr;

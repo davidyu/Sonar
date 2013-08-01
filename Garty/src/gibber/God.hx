@@ -157,7 +157,7 @@ class God
             case Keyboard.ENTER:
                 var line = inputTextfield.text;
                 inputTextfield.text = "";
-                debugPrintln( line );
+                debugPrintln( line, true );
                 parser.parse( line );
 
             case Keyboard.DELETE:
@@ -176,9 +176,15 @@ class God
         outputTextfield.text += str;
     }
 
-    public function debugPrintln( str )
+    public function debugPrintln( str, ?fromInput=false )
     {
-        debugPrint( str + "\n" );
+        var prefix = " →  ";
+
+        if ( fromInput ) {
+            prefix = " ←  ";
+        }
+
+        debugPrint( prefix + str + "\n" );
     }
 
     public function debugClear()
