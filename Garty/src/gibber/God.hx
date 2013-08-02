@@ -108,7 +108,7 @@ class God
         //var bridgeArray1 = Vec2.getVecArray( [0, 17, 135, 17, 135, 23, 0, 23, 0, 23] );
         //var vectorArray2 = Vec2.getVecArray( [135, 0, 165, 0, 165, 30, 135, 30] );
         sectors.push( entityBuilder.createSector( "sector0", new Vec2( 50, 200 ), [new Polygon( vectorArray1 )] ) );
-        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 81, 200 ), [ new Polygon( vectorArray1 )] ) );
+        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 80, 200 ), [ new Polygon( vectorArray1 )] ) );
         //sectors.push( entityBuilder.createSector( "sector2", new Vec2( 381, 200 ), [new Polygon( vectorArray1 ), new Polygon( bridgeArray1 ), new Polygon( vectorArray2 )] ) );
 
         portals.push( entityBuilder.createPortal( "door01", sectors[0], new Vec2( 25, 0 ) ) );
@@ -117,7 +117,10 @@ class God
         player = entityBuilder.createPlayer( "Bob" );
         var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ) );
         
-        entityBuilder.addPortalEdges( portals[0], [new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) )] );
+        entityBuilder.addRegionEdge( portals[0], sectors[1] );
+        entityBuilder.addRegionEdge( portals[1], sectors[0] );
+        
+        //entityBuilder.addPortalEdges( portals[0], [new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) )] );
         //entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[0], scriptFactory.createScript( "transit" ) )] );
         
         var pCmp = portals[0].getComponent( PortalCmp );
@@ -139,7 +142,7 @@ class God
     }
     
     function input() : Void {
-        var speed = 2.0;
+        var speed = 1.0;
         
         if ( Key.isDown( Keyboard.RIGHT ) ) {
             player.getComponent( PosCmp ).dp.x = speed;

@@ -10,6 +10,7 @@ import gibber.components.StaticPosCmp;
 import utils.Polygon;
 import utils.Vec2;
 
+using Lambda;
 using gibber.Util;
 using utils.Geo;
 
@@ -32,9 +33,6 @@ class PhysicsSys extends EntitySystem
         var collPoint : Vec2;   // Collision point with wall
         var sectorPolys : Array<Polygon>; // Walls
         var sectorPos : Vec2;       // Origin of sector
-        var dist = 0.0;
-        var minVec = new Vec2();
-        var minDist;
         var isColl = true;
         
         for ( i in 0...actives.size ) {
@@ -42,56 +40,112 @@ class PhysicsSys extends EntitySystem
             
             posCmp = posMapper.get( e );
             posCmp.dp = posCmp.dp.scale( 0.8 );
-            pos = posCmp.pos; // transform player pos in sector-local coord system
-            newPos = pos.add( posCmp.dp );
+            newPos = posCmp.pos.add( posCmp.dp );
+                        
+            // If entity is in an adjacent and nested region to the sector, add this region to player pos
+            var sectorRegionCmp = regionMapper.get( posCmp.sector );
             
-            var region = regionMapper.get( posCmp.regionsIn.first() );
-            sectorPolys = region.polys.copy();
-            sectorPos = posMapper.get( posCmp.sector ).pos;
-            
-            isColl = true;
-            minVec.x = minVec.y = 0;
-            minDist = Math.POSITIVE_INFINITY; //must reset for each entity
-            dist = 0.0;
-            
-            for ( p in region.portals ) {
-                var region = regionMapper.get( p );
-                var portalPos = posMapper.get( p );
-                var polys = region.polys;
-                var transPolys = new Array<Polygon>();
+            for ( re in sectorRegionCmp.adj ) {
+                var adjRegionCmp = regionMapper.get( re );
+                var polys = adjRegionCmp.polys;
+                
                 for ( p in polys ) {
-                    transPolys.push( p.transform( sectorPos.add( portalPos.pos ) ) );
-                }
-                sectorPolys = sectorPolys.concat( transPolys );
-                for ( j in polys ) {
-                    if ( j.isPointinPolygon( Util.localCoords( newPos, p ) ) ) {
-                        isColl = false;
-                        region.onEnter( e, p );
-                    } else {
+                    if ( p.isPointinPolygon( Util.localCoords( posCmp.pos, re ) ) && !posCmp.regionsIn.exists( function( v ) { return re.id == v.id; } ) ) {
+                        posCmp.regionsIn.push( re );
+                        adjRegionCmp.onEnter( e, posCmp.sector );
                     }
                 }
             }
             
-            for ( j in 0...sectorPolys.length ) {
-                if ( sectorPolys[j].isPointinPolygon( newPos ) ) {
-                    isColl = false;
-                }
-            }
+            // Must reset for each entity
+            var minDist = Math.POSITIVE_INFINITY; 
+            var dist = 0.0;
+            var minVec = newPos.clone();
+            var minSector = posCmp.sector;
+            isColl = true;
 
+            // Check if entity is in an adjacent region to its nested region (i.e. new sector)
+            for ( re in posCmp.regionsIn ) {
+                var reRegionCmp = regionMapper.get( re );
+                var regions = reRegionCmp.adj;
+                
+                // This is actual loop that grabs adjacent sectors to current portal
+                for ( adj in regions ) {
+                    var adjRegionCmp = regionMapper.get( adj );
+                    var polys = adjRegionCmp.polys;
+                    
+                    for ( p in polys ) {
+                        if ( p.isPointinPolygon( Util.sectorCoords( newPos, posCmp.sector, adj ) ) ) {
+                            isColl = false;
+                            minSector = adj;                            
+                            posCmp.regionsIn.clear(); // todo Add exit first
+                            break;
+                        } else {
+                            // Get distance between newPos and closest polygon for determining closest sector
+                            var np = Util.sectorCoords( newPos, posCmp.sector, adj );
+                            collPoint = p.getClosestPoint( np );
+                            dist = collPoint.sub( np ).lengthsq();
+                            if ( dist < minDist ) {
+                                minDist = dist;
+                                minVec = Util.sectorCoords( collPoint, posCmp.sector, adj );
+                                minSector = adj;
+                            }
+                        }
+                    }
+                    if ( !isColl ) { break; } // I wish haxe had a goto
+                }
+                if ( !isColl ) { break; }
+            }
+            
+            // Check for collisions within local sector
             if ( isColl ) {
-                for ( i in 0...sectorPolys.length ) {
-                    collPoint = sectorPolys[i].getClosestPoint( newPos );
-                    dist = collPoint.sub( newPos ).lengthsq();
-                    if ( dist < minDist ) {
-                        minDist = dist;
-                        minVec = collPoint;
+                sectorPolys = sectorRegionCmp.polys;
+                for ( j in 0...sectorPolys.length ) {
+                    if ( sectorPolys[j].isPointinPolygon( newPos ) ) {
+                        isColl = false;
+                        minVec = newPos.clone();
+                        break;
                     }
                 }
-                newPos = minVec;
+                
+                // If the position is out of bounds, move it to closest valid location
+                if ( isColl ) {
+                    for ( i in 0...sectorPolys.length ) {
+                        collPoint = sectorPolys[i].getClosestPoint( newPos );
+                        dist = collPoint.sub( newPos ).lengthsq();
+                        if ( dist < minDist ) {
+                            minDist = dist;
+                            minVec = collPoint.clone();
+                            minSector = posCmp.sector;
+                        }
+                    }
+                }
             }
+            
+            // Handle new sector transition
+            if ( minSector != posCmp.sector ) {
+                minVec = Util.sectorCoords( newPos, posCmp.sector, minSector );
+                posCmp.sector = minSector;
+                while ( !posCmp.regionsIn.isEmpty() ) {
+                    regionMapper.get( posCmp.regionsIn.pop() ).onExit( e, posCmp.sector );
+                }
+            }
+            
+            newPos = minVec;
             posCmp.pos = newPos;
             
-            
+            // Check if entity is no  an adjacent region to its nested region (i.e. new sector)
+            for ( re in posCmp.regionsIn ) {
+                var regionCmp = regionMapper.get( re );
+                var polys = regionCmp.polys;
+                
+                for ( p in polys ) {
+                    if ( !p.isPointinPolygon( Util.localCoords( posCmp.pos, re ) ) ) {
+                        regionCmp.onExit( e, posCmp.sector );
+                        posCmp.regionsIn.remove( re );
+                    }
+                }
+            }   
         }
     }
     var once = true;

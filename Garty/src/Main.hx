@@ -22,8 +22,6 @@ class Main
         
         var g = new God( Lib.current );
         
-
-
     }
 
 }

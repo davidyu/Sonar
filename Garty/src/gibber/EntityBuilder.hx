@@ -1,5 +1,6 @@
 package gibber;
 import com.artemisx.Aspect;
+import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import com.artemisx.World;
 import gibber.components.ContainableCmp;
@@ -26,11 +27,18 @@ import utils.Vec2;
 using Lambda;
 
 class EntityBuilder
-    {
+{
     public function new( g : God ) {
        god = g;
        world = god.world;
-       containerMgr = god.world.getManager( ContainerMgr );
+       
+       init();
+    }
+    
+    public function init() : Void {
+        containerMgr = god.world.getManager( ContainerMgr );
+        regionMapper = world.getMapper( RegionCmp );
+        posMapper = world.getMapper( PosCmp );
     }
     
     public function addPortalEdges( portal : Entity, edges : Array<PortalEdge> ) : Void {
@@ -39,8 +47,18 @@ class EntityBuilder
         portalCmp.edges = portalCmp.edges.concat( edges );
         portal.addComponent( portalCmp );
         
-        portal.getComponent( PosCmp ).regionsIn.first().getComponent( RegionCmp ).portals.push( portal ); // temp add this portal to sector region
+        portal.getComponent( PosCmp ).sector.getComponent( RegionCmp ).adj.push( portal ); // temp add this portal to sector region
+        portal.getComponent( RegionCmp ).adj.push( god.sectors[1] );
 
+    }
+    
+    public function addRegionEdge( portal : Entity, destSector : Entity ) : Void {
+        var portalRegionCmp = regionMapper.get( portal );
+        var portalPosCmp = posMapper.get( portal );
+        
+        portalRegionCmp.adj.push( portalPosCmp.sector );
+        portalRegionCmp.adj.push( destSector );
+        regionMapper.get( portalPosCmp.sector ).adj.push( portal );
     }
     
     public function createWordRef( tag : SynTag ) {
@@ -148,6 +166,7 @@ class EntityBuilder
         var lookCmp = new LookCmp();
         var nameIdCmp = new NameIdCmp( "chest" );
         var posCmp = new PosCmp( god.sectors[0], pos );
+        var staticCmp = new StaticPosCmp();
         var renderCmp = new RenderCmp();
         var containableCmp = new ContainableCmp( containerMgr, god.sectors[0], god.sectors[0] );
 
@@ -161,6 +180,7 @@ class EntityBuilder
         e.addComponent( nameIdCmp );
         e.addComponent( lookCmp );
         e.addComponent( posCmp );
+        e.addComponent( staticCmp );
         e.addComponent( renderCmp );
         e.addComponent( containableCmp );
 
@@ -172,4 +192,7 @@ class EntityBuilder
     var god : God;
     var world : World;
     var containerMgr : ContainerMgr;
+    
+    var regionMapper : ComponentMapper<RegionCmp>;
+    var posMapper : ComponentMapper<PosCmp>;
 }

@@ -65,6 +65,7 @@ class RenderSectorSys extends EntitySystem
             render.sprite.y = pos.y;
             g = render.sprite.graphics;
             g.clear();
+            g.lineStyle( 1, 0xffeedd );
             
             for ( j in 0...polys.length ) {
                 p = polys[j];
