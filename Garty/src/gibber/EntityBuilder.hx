@@ -43,21 +43,16 @@ class EntityBuilder
     
     public function addPortalEdges( portal : Entity, edges : Array<PortalEdge> ) : Void {
         var portalCmp = portal.getComponent( PortalCmp );
-        
-        portalCmp.edges = portalCmp.edges.concat( edges );
-        portal.addComponent( portalCmp );
-        
-        portal.getComponent( PosCmp ).sector.getComponent( RegionCmp ).adj.push( portal ); // temp add this portal to sector region
-        portal.getComponent( RegionCmp ).adj.push( god.sectors[1] );
-
-    }
-    
-    public function addRegionEdge( portal : Entity, destSector : Entity ) : Void {
         var portalRegionCmp = regionMapper.get( portal );
         var portalPosCmp = posMapper.get( portal );
         
+        portalCmp.edges = portalCmp.edges.concat( edges );
+        portal.addComponent( portalCmp );
+           
         portalRegionCmp.adj.push( portalPosCmp.sector );
-        portalRegionCmp.adj.push( destSector );
+        for ( e in edges ) {
+            portalRegionCmp.adj.push( posMapper.get( e.pDest ).sector );
+        }
         regionMapper.get( portalPosCmp.sector ).adj.push( portal );
     }
     

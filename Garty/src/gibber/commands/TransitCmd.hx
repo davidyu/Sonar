@@ -12,12 +12,15 @@ class TransitCmd implements Command
     @:isVar public var mover( default, null ) : Entity;
     @:isVar public var edge : PortalEdge;
     @:isVar public var state : Command.TCmdRes;
+   
+    @:isVar public var portal : Entity;
 
    
-    public function new( mover : Entity, portalEdge : PortalEdge ) {
+    public function new( mover : Entity, portal : Entity, portalEdge : PortalEdge=null ) {
         this.state = Command.TCmdRes.NEW;
         this.mover = mover;
         this.edge = portalEdge;
+        this.portal = portal;
     }
     
     /* INTERFACE gibber.commands.Command */
@@ -26,12 +29,13 @@ class TransitCmd implements Command
     }
     
     public function Execute() : Array<Dynamic> {
-        var res : Array<Dynamic> = null;
-        
-        res = edge.transitScript.execute( mover, edge.pSrc, edge.pDest );
-        
+        //var 
+        portal.getComponent( RegionCmp ).isOpen = true;
+        //
+        //res = edge.transitScript.execute( mover, edge.pSrc, edge.pDest );
+        //
         state = Command.TCmdRes.PASS;
-        return res;
+        return null;
     }
     
     public function onFinished() : Void {

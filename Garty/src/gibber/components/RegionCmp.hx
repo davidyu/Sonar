@@ -11,6 +11,7 @@ class RegionCmp implements Component
     @:isVar public var parent : Entity;
     @:isVar public var owner : Entity;
     @:isVar public var adj : Array<Entity>;
+    @:isVar public var isOpen : Bool;
     
     public function new( polygonAreas : Array<Polygon> = null, enter : VoidExecuteScript=null, exit : VoidExecuteScript=null ) {
         enterScript = enter;
@@ -22,6 +23,7 @@ class RegionCmp implements Component
         
         this.polys = polygonAreas;
         this.adj = new Array();
+        this.isOpen = false;
     }
     
     public function onEnter( mover : Entity, fromSector : Entity ) : Void {

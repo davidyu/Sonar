@@ -12,15 +12,15 @@ class Util
         posMapper = god.world.getMapper( PosCmp );
     }
     
-    public static function worldCoords( pos : Vec2, sector : Entity ) : Vec2 {
+    public static inline function worldCoords( pos : Vec2, sector : Entity ) : Vec2 {
         return pos.add( posMapper.get( sector ).pos );
     }
     
-    public static function sectorCoords( pos : Vec2, oldSector : Entity, newSector : Entity ) : Vec2 {
-        return localCoords( worldCoords( pos, oldSector ), newSector );
+    public static inline function sectorCoords( pos : Vec2, ref : Entity, tar : Entity ) : Vec2 {
+        return localCoords( worldCoords( pos, ref ), tar );
     }
     
-    public static function localCoords( pos : Vec2, local : Entity ) : Vec2 {
+    public static inline function localCoords( pos : Vec2, local : Entity ) : Vec2 {
         var p = posMapper.get( local );
         return pos.sub( posMapper.get( local ).pos );
     }

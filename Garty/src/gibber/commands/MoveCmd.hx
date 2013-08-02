@@ -6,18 +6,22 @@ import gibber.components.PosCmp;
 import gibber.God;
 import utils.Vec2;
 
+using gibber.Util;
+
 class MoveCmd implements Command
 {
     @:isVar public var dest : Vec2;
+    @:isVar public var sector : Entity;
     @:isVar public var e : Entity;
     @:isVar public var state : Command.TCmdRes;
 
     
-    function new( cf : CmdFactory, e : Entity, dest : Vec2 ) {
+    function new( cf : CmdFactory, e : Entity, dest : Vec2, sector : Entity ) {
         this.state = Command.TCmdRes.NEW;
         this.cf = cf;
         this.e = e;
         this.dest = dest;
+        this.sector = sector;
         
         this.posMapper = cf.god.world.getMapper( PosCmp );
     }
@@ -28,7 +32,8 @@ class MoveCmd implements Command
     
     public function Execute() : Array<Dynamic>  {
         var posCmp = posMapper.get( e );
-        var delta = dest.sub( posCmp.pos );
+        var destT = dest.sectorCoords( sector, posCmp.sector );
+        var delta = destT.sub( posCmp.pos );
         var scale = delta.lengthsq() > 4 ? 2.0 / delta.length() : 1.0;
         
         posCmp.dp = delta.mul( scale );

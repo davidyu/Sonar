@@ -69,6 +69,10 @@ class PhysicsSys extends EntitySystem
                 var reRegionCmp = regionMapper.get( re );
                 var regions = reRegionCmp.adj;
                 
+                if ( !reRegionCmp.isOpen ) {
+                    continue;
+                }
+                
                 // This is actual loop that grabs adjacent sectors to current portal
                 for ( adj in regions ) {
                     var adjRegionCmp = regionMapper.get( adj );
@@ -100,8 +104,8 @@ class PhysicsSys extends EntitySystem
             // Check for collisions within local sector
             if ( isColl ) {
                 sectorPolys = sectorRegionCmp.polys;
-                for ( j in 0...sectorPolys.length ) {
-                    if ( sectorPolys[j].isPointinPolygon( newPos ) ) {
+                for ( p in sectorPolys ) {
+                    if ( p.isPointinPolygon( newPos ) ) {
                         isColl = false;
                         minVec = newPos.clone();
                         break;
@@ -110,8 +114,8 @@ class PhysicsSys extends EntitySystem
                 
                 // If the position is out of bounds, move it to closest valid location
                 if ( isColl ) {
-                    for ( i in 0...sectorPolys.length ) {
-                        collPoint = sectorPolys[i].getClosestPoint( newPos );
+                    for ( p in sectorPolys ) {
+                        collPoint = p.getClosestPoint( newPos );
                         dist = collPoint.sub( newPos ).lengthsq();
                         if ( dist < minDist ) {
                             minDist = dist;

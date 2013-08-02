@@ -117,17 +117,23 @@ class God
         player = entityBuilder.createPlayer( "Bob" );
         var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ) );
         
-        entityBuilder.addRegionEdge( portals[0], sectors[1] );
-        entityBuilder.addRegionEdge( portals[1], sectors[0] );
-        
-        //entityBuilder.addPortalEdges( portals[0], [new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) )] );
+        //entityBuilder.addRegionEdge( portals[0], sectors[1] );
+        //entityBuilder.addRegionEdge( portals[1], sectors[0] );
+        var edge = new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) );
+        entityBuilder.addPortalEdges( portals[0], [edge] );
         //entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[0], scriptFactory.createScript( "transit" ) )] );
         
-        var pCmp = portals[0].getComponent( PortalCmp );
+        //var pCmp = portals[0].getComponent( PortalCmp );
         //var pCmp2 = portals[1].getComponent( PortalCmp );
 
         var cmdCmp = player.getComponent( CmdQueue );
-        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 100, 20 )] ) );
+        var p0PosCmp = portals[0].getComponent( PosCmp );
+        var p1PosCmp = portals[1].getComponent( PosCmp );
+        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p0PosCmp.pos, p0PosCmp.sector] ) );
+        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p1PosCmp.pos, p1PosCmp.sector] ) );
+        cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, portals[0]] ) );
+        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 25, 25 ), p1PosCmp.sector] ) );
+        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, edge] ) );
         //cmdCmp.enqueue( cmdFactory.createCmd( "transit", player, pCmp.edges[0]] ) );
         //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 100, 20 )] ) );
         //cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, pCmp2.edges[0]] ) );
