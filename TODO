@@ -12,3 +12,10 @@ TODO compile:
               unlock door with key
               open door
               open door with key    > KEY USE DOOR
+TODO controller architecture:
+    approach 1: DOING ControllerSys manages all actions (entities)
+    approach 2: Logic is distributed across different ControllerSys, with one MasterControllerSys
+TODO (easy) inventory test
+TODO serialize json object into entity with respective components
+    proof-of-concept: create the ChestEntity with a script for OnOpen (prints "chest opened")
+TODO design architecture for printing to stdout
