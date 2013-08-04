@@ -114,35 +114,22 @@ class God
         portals = new Array();
         
         var vectorArray1 = Vec2.getVecArray( [0, 0, 30, 0, /*45, 15,*/ 30, 30, 0, 30, 0, 30 ] );
-        //var bridgeArray1 = Vec2.getVecArray( [0, 17, 135, 17, 135, 23, 0, 23, 0, 23] );
-        //var vectorArray2 = Vec2.getVecArray( [135, 0, 165, 0, 165, 30, 135, 30] );
         sectors.push( entityBuilder.createSector( "sector0", new Vec2( 50, 200 ), [new Polygon( vectorArray1 )] ) );
         sectors.push( entityBuilder.createSector( "sector1", new Vec2( 80, 200 ), [ new Polygon( vectorArray1 )] ) );
-        //sectors.push( entityBuilder.createSector( "sector2", new Vec2( 381, 200 ), [new Polygon( vectorArray1 ), new Polygon( bridgeArray1 ), new Polygon( vectorArray2 )] ) );
 
         portals.push( entityBuilder.createPortal( "door01", sectors[0], new Vec2( 25, 0 ) ) );
         portals.push( entityBuilder.createPortal( "door10", sectors[1], new Vec2( 0, 0 ) ) );
-        
+
         player = entityBuilder.createPlayer( "Bob" );
         var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ) );
-        
-        //entityBuilder.addRegionEdge( portals[0], sectors[1] );
-        //entityBuilder.addRegionEdge( portals[1], sectors[0] );
+
         var edge = new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) );
         entityBuilder.addPortalEdges( portals[0], [edge] );
         entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[0], scriptFactory.createScript( "transit" ) )] );
-        
-        //var pCmp = portals[0].getComponent( PortalCmp );
-        //var pCmp2 = portals[1].getComponent( PortalCmp );
 
         var cmdCmp = player.getComponent( CmdQueue );
         var p0PosCmp = portals[0].getComponent( PosCmp );
         var p1PosCmp = portals[1].getComponent( PosCmp );
-        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p0PosCmp.pos, p0PosCmp.sector] ) );
-        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, portals[0]] ) );
-        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p1PosCmp.pos, p1PosCmp.sector] ) );
-        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 25, 25 ), p1PosCmp.sector] ) );
-        
     }
         
     public function tick(_) : Void {
