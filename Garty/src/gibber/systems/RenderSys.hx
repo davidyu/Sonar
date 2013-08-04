@@ -14,6 +14,8 @@ import gibber.components.StaticPosCmp;
 import gibber.Util;
 import utils.Vec2;
 
+using Lambda;
+
 class RenderSys extends EntitySystem
 {
     public function new( root : MovieClip ) {
@@ -22,6 +24,7 @@ class RenderSys extends EntitySystem
         buffer = new Sprite();
         this.root = root;
         root.addChild( buffer );
+        entitySpriteMap = new List();
     }
     
     override public function initialize() : Void {
@@ -34,12 +37,24 @@ class RenderSys extends EntitySystem
         var renderCmp = renderMapper.get( e );
         renderCmp.sprite = new Sprite();
         root.addChild( renderCmp.sprite );
+        entitySpriteMap.add( { e : e, s : renderCmp.sprite } );
     }
     
     override public function onRemoved( e : Entity ) : Void {
         root.removeChild( renderMapper.get( e ).sprite );
     }
     
+    override public function onChanged( e : Entity ) : Void {
+        if ( renderMapper.getSafe( e ) == null ) {
+           for ( v in entitySpriteMap ) {
+               if ( v.e == e ) {
+                   root.removeChild( v.s );
+                   entitySpriteMap.remove( v );
+               }
+           }
+           actives.remove( e );
+        }
+    }
     override public function processEntities( entities : Bag<Entity> ) : Void  {
         var g : Graphics;
         var e : Entity;
@@ -68,6 +83,7 @@ class RenderSys extends EntitySystem
     
     var root : MovieClip;
     var buffer : Sprite;
+    var entitySpriteMap : List<{ e : Entity, s : Sprite }>;
     
     
 }

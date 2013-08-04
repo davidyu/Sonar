@@ -33,6 +33,7 @@ class God
     @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
     @:isvar public var entityDeserializer ( default, null ) : EntityDeserializer;
     @:isVar public var scriptFactory ( default, null ) : ScriptFactory;
+    @:isVar public var entityResolver ( default, null ) : EntityResolver;
     
     public function new( r : MovieClip ) {
         root = r;
@@ -56,6 +57,8 @@ class God
         parser = new AdvancedParser( this );
         commander = new Commander( this );
         scriptFactory = new ScriptFactory( this );
+        entityResolver = new EntityResolver( this );
+        
         
         initializeEntities();
         
@@ -133,13 +136,13 @@ class God
         var cmdCmp = player.getComponent( CmdQueue );
         var p0PosCmp = portals[0].getComponent( PosCmp );
         var p1PosCmp = portals[1].getComponent( PosCmp );
+                
     }
         
     public function tick(_) : Void {
         input();
         world.process();
-        //testBed.tick();
-        
+        //testBed.tick();        
     }
     
     function input() : Void {
@@ -153,6 +156,8 @@ class God
             player.getComponent( PosCmp ).dp.y = -speed;
         } if ( Key.isDown( Keyboard.DOWN ) ) {
             player.getComponent( PosCmp ).dp.y = speed;
+        } if ( Key.isDown( Keyboard.A ) ) {
+            commander.goToSector( player, sectors[1] );
         }
     }
     

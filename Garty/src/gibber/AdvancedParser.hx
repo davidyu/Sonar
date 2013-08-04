@@ -1,8 +1,11 @@
 package gibber;
+import com.artemisx.ComponentType;
 import com.artemisx.Entity;
 import gibber.components.CmdQueue;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
+import gibber.components.PortalCmp;
+import gibber.components.RenderCmp;
 import gibber.managers.NameRegistry;
 import gibber.managers.ContainerMgr;
 import com.artemisx.Entity;
@@ -17,12 +20,17 @@ class AdvancedParser
 
     public function new( g : God ) {
         god = g;
+        initialize();
+    }
+    
+    public function initialize() : Void {
+        posMapper = god.world.getMapper( PosCmp );
+        nameMapper = god.world.getMapper( NameIdCmp );
+        portalMapper = god.world.getMapper( PortalCmp );
     }
     
     public function parse( command : String ) : String {
 
-        var posMapper : ComponentMapper<PosCmp> = god.world.getMapper( PosCmp );
-        var nameMapper : ComponentMapper<NameIdCmp> = god.world.getMapper( NameIdCmp );
         var words = command.split( " " );
         
         switch( words[0] ) {
@@ -39,8 +47,19 @@ class AdvancedParser
                             } else {
                                 god.debugPrintln( "Usage: go " + words[1] + " x y " );
                             }
+                        case "through", "thru":
+                            var portals = god.entityResolver.globalResolve( words[2] );
+                            if ( portals != null ) {
+                                var destSector = portalMapper.get( portals[0] ).edges[0].getDestSector();
+                                god.commander.goToSector( god.player, destSector );
+                            }
                         default:
-                            god.debugPrintln( "I don't understand that flag for 'go.'");
+                            var destSectors = god.entityResolver.globalResolve( words[1] );
+                            if ( destSectors != null ) {
+                                god.commander.goToSector( god.player, destSectors[0] );
+                            } else {
+                                god.debugPrintln( "I don't understand that flag for 'go.'");
+                            }
                             return "";
                     }
                 }
@@ -81,11 +100,16 @@ class AdvancedParser
 
                 var objName = words[1];
 
-                var obj:Entity = god.world.getManager( NameRegistry ).getEntity( objName );
+                var objs = god.entityResolver.globalResolve( objName );
                 var newLoc:Entity = god.player;
-
-                var cmdCmp = god.player.getComponent( CmdQueue );
-                cmdCmp.enqueue( god.cmdFactory.createCmd( "take", [ god.cmdFactory, obj, newLoc ] ) );
+                if ( objs != null ) {
+                    var cmdCmp = god.player.getComponent( CmdQueue );
+                    var posCmp = posMapper.get( objs[0] );
+                    cmdCmp.enqueue( god.cmdFactory.createCmd( "move", [ newLoc, posCmp.pos, posCmp.sector] ) );
+                    cmdCmp.enqueue( god.cmdFactory.createCmd( "take", [ objs[0], newLoc ] ) );
+                } else {
+                    god.debugPrintln( "No such item exists" );
+                }
 
                 return "";
 
@@ -102,5 +126,8 @@ class AdvancedParser
     }
     
     var god : God;
+    var posMapper : ComponentMapper<PosCmp>;
+    var nameMapper : ComponentMapper<NameIdCmp>;
+    var portalMapper : ComponentMapper<PortalCmp>;
     
 }

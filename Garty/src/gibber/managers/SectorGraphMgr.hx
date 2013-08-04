@@ -43,8 +43,6 @@ class SectorGraphMgr extends Manager
             if ( indexI != -1 ) {
                 if ( indexI > adjMat.length - 1 ) {
                     adjMat.realInsert( indexI, new Array() );
-                } else {
-                    throw "Src sector not registered";
                 }
                 for ( re in subRegionCmp.adj ) {
                     if ( re == subRegionCmp.parent ) {
@@ -53,12 +51,16 @@ class SectorGraphMgr extends Manager
                     var indexJ = sectorIndex.indexOf( re );
                     if ( indexJ != -1 ) {
                         if ( indexJ > adjMat[indexI].length - 1 ) {
-                            adjMat[indexI].realInsert( indexJ, e );
+                            adjMat[indexI].realInsert( indexJ, [e] );
                         } else {
-                            throw "Dest sector not registered";
+                            adjMat[indexI][indexJ].push( e );
                         }
+                    } else {
+                        throw "Dest sector not registered";
                     }
                 }
+            } else {
+                throw "Src sector not registered";
             }
             
         }
@@ -73,18 +75,24 @@ class SectorGraphMgr extends Manager
             var index = sectorIndex.indexOf( e );
             if ( index != -1 ) {
                 for ( i in 0...adjMat.length ) {
-                    var portal = adjMat[i][index];
-                    if ( portal != null ) {
-                        // Maybe should just remove regionCmp here...
-                        world.deleteEntity( portal );
+                    for ( k in 0...adjMat[i][index].length ) {
+                        var portal = adjMat[i][index][k];
+                        if ( portal != null ) {
+                            // Maybe should just remove regionCmp here...
+                            world.deleteEntity( portal );
+                        }
+                        adjMat[i][index][k] = null;
                     }
                     adjMat[i][index] = null;
                 }
                 for ( i in 0...adjMat[index].length ) {
-                    var portal = adjMat[index][i];
-                    if ( portal != null ) {
-                        // No need to delete here as containerMgr handles it
-                        //world.deleteEntity( portal );
+                    for ( k in 0...adjMat[index][i].length ) {
+                        var portal = adjMat[index][i];
+                        if ( portal != null ) {
+                            adjMat[index][i][k] = null;
+                            // No need to delete here as containerMgr handles it
+                            //world.deleteEntity( portal );
+                        }
                     }
                 }
                 adjMat[index] = null;
@@ -116,13 +124,25 @@ class SectorGraphMgr extends Manager
         }
     }
     
+    public function getEdges( srcSector : Entity, destSector : Entity ) : Array<Entity> {
+        return adjMat[indexOf( srcSector )][indexOf( destSector )];
+    }
+    
+    //public function getEdges( sector : Entity ) : Array<Entity> {
+        //return null;
+    //}
+    
+    public inline function indexOf( sector : Entity ) : Int {
+        return sectorIndex.indexOf( sector );
+    }
+    
     // TODO
     override public function onChanged( e : Entity ) : Void {
         
     }
     
     var sectorIndex : Array<Entity>;
-    var adjMat : Array<Array<Entity>>; // A[src][dest]
+    var adjMat : Array<Array<Array<Entity>>>; // A[src][dest] -> array of portals from i to j
     var regionMapper : ComponentMapper<RegionCmp>;
     var posMapper : ComponentMapper<PosCmp>;
 }

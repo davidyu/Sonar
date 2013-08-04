@@ -20,7 +20,7 @@ class CmdFactory
             case "transit":
                 return new TransitCmd( args[0], args[1] );
             case "take":
-                return new TakeCmd( args[0], args[1], args[2] );
+                return new TakeCmd( this, args[0], args[1] );
             default:
                 return null;
                 

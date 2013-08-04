@@ -169,13 +169,12 @@ class ContainerMgr extends Manager
         //entityContainer.set( nameMapper.get( e ).name, newContainer );
     }
     
-    //@ dyu: FIX THIS METHOD
     public function getAllEntitiesOfContainer( container : Entity ) : Array<Entity> {
         var res = new Array<Entity>();
         var maps = containerEntities.get( nameMapper.get( container ).name );
         
         for ( el in maps.iterator() ) {
-            res.concat( el );
+            res = res.concat( el );
         }
         return res;
     }

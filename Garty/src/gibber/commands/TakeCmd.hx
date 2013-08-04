@@ -2,10 +2,12 @@ package gibber.commands;
 import com.artemisx.ComponentMapper;
 import com.artemisx.Aspect;
 import com.artemisx.Entity;
+import gibber.CmdFactory;
 import gibber.components.NameIdCmp;
 import gibber.components.PosCmp;
 import gibber.components.ContainableCmp;
 import gibber.components.RegionCmp;
+import gibber.components.RenderCmp;
 import gibber.gabby.PortalEdge;
 import gibber.components.ContainerCmp;
 
@@ -20,6 +22,7 @@ class TakeCmd implements Command
         this.state = Command.TCmdRes.NEW;
         this.newLoc = newLoc;
         this.obj = obj;
+        this.cf = cf;
 
         this.containerMapper = cf.god.world.getMapper( ContainerCmp );
         this.containableMapper = cf.god.world.getMapper( ContainableCmp );
@@ -45,6 +48,7 @@ class TakeCmd implements Command
         if ( Aspect.matches( containerSig, newLoc.componentBits ) ) {
             containableMapper.get( obj ).container = newLoc;
             state = Command.TCmdRes.PASS;
+            cf.god.debugPrintln( nameMapper.get( newLoc ).name + " took " + nameMapper.get( obj ).name );
             return [ "moved to " + nameMapper.get( newLoc ).name, true ];
         }
 
@@ -53,9 +57,11 @@ class TakeCmd implements Command
     }
     
     public function onFinished() : Void {
+        obj.removeComponent( RenderCmp );
         
     }
 
+    var cf : CmdFactory;
     var containerMapper : ComponentMapper<ContainerCmp>;
     var containableMapper : ComponentMapper<ContainableCmp>;
     var nameMapper : ComponentMapper<NameIdCmp>;

@@ -1,5 +1,6 @@
 package gibber.gabby;
 import com.artemisx.Entity;
+import gibber.components.PosCmp;
 import gibber.scripts.TransitScript;
 
 class PortalEdge
@@ -12,5 +13,13 @@ class PortalEdge
         this.pSrc = sourcePortal;
         this.pDest = destPortal;
         this.transitScript = transitScript;
-    }   
+    }
+    
+    public function getSrcSector() : Entity {
+        return pSrc.getComponent( PosCmp ).sector;
+    }
+    
+    public function getDestSector() : Entity {
+        return pDest.getComponent( PosCmp ).sector;
+    }
 }
