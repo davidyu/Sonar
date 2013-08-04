@@ -31,6 +31,7 @@ class God
     @:isVar public var world ( default, null ) : World;
     @:isVar public var cmdFactory ( default, null ) : CmdFactory;
     @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
+    @:isvar public var entityDeserializer ( default, null ) : EntityDeserializer;
     @:isVar public var scriptFactory ( default, null ) : ScriptFactory;
     
     public function new( r : MovieClip ) {
@@ -50,7 +51,8 @@ class God
 
         cmdFactory = new CmdFactory( this );
         entityBuilder = new EntityBuilder( this );
-        
+        entityDeserializer = new EntityDeserializer( entityBuilder );
+
         parser = new AdvancedParser( this );
         commander = new Commander( this );
         scriptFactory = new ScriptFactory( this );
@@ -122,6 +124,7 @@ class God
 
         player = entityBuilder.createPlayer( "Bob" );
         var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ) );
+        var jar = entityDeserializer.fromJson( haxe.Resource.getString( "item_jar" ) );
 
         var edge = new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) );
         entityBuilder.addPortalEdges( portals[0], [edge] );

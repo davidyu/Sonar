@@ -10,5 +10,7 @@
 -swf-header 700:500:30:256CB8
 -swf-version 11.7
 
+-resource resource/item_jar.json@item_jar
+
 -swf bin/Engine.swf
 -main Main

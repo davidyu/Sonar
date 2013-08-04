@@ -1,5 +1,6 @@
 package gibber;
 import com.artemisx.Aspect;
+import com.artemisx.Component;
 import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import com.artemisx.World;
@@ -183,6 +184,23 @@ class EntityBuilder
         world.addEntity( e );
 
         return e;
+    }
+
+    public function createObjectWithCmp( name : String, pos : Vec2, cmps : List<Component> )
+    {
+        var e = world.createEntity();
+
+        for ( cmp in cmps ) {
+            e.addComponent( cmp );
+        }
+
+        world.addEntity( e );
+        return e;
+    }
+
+    // DONT EVEN THINK ABOUT CALLING THIS OR I WILL CHOP YOUR HANDS OFF
+    public function pipeDebug( str ) {
+        god.debugPrintln( str );
     }
 
     var god : God;
