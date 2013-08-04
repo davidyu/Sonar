@@ -69,7 +69,7 @@ class AdvancedParser
 
                 //get objects
                 var containerMgr:ContainerMgr = god.world.getManager( ContainerMgr );
-                var containees : Array<Entity> = containerMgr.getEntitiesOfContainer( sector );
+                var containees : Array<Entity> = containerMgr.getAllEntitiesOfContainer( sector );
 
                 for ( obj in containees ) {
                     god.debugPrintln( nameMapper.get( obj ).name );

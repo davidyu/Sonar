@@ -1,4 +1,5 @@
 package gibber;
+import com.artemisx.Aspect;
 import com.artemisx.Entity;
 import com.artemisx.World;
 import flash.display.MovieClip;
@@ -9,9 +10,11 @@ import flash.ui.Keyboard;
 import gibber.components.CmdQueue;
 import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
+import gibber.components.TakeCmp;
 import gibber.gabby.PortalEdge;
 import gibber.managers.ContainerMgr;
 import gibber.managers.NameRegistry;
+import gibber.managers.SectorGraphMgr;
 import gibber.managers.SynonymMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.PhysicsSys;
@@ -56,7 +59,6 @@ class God
         
         //this.testBed = new TestBed(this);
         //testBed.run();
-        
     }
     
     public function setupConsole() : Void {
@@ -87,9 +89,16 @@ class God
     }
 
     public function initializeSystems() : Void {
-        world.setManager( new NameRegistry() );
-        world.setManager( new ContainerMgr() );
+        var cm = new ContainerMgr();
+        cm.registerAspect( "item", Aspect.getAspectForAll( [TakeCmp] ) );
+        cm.registerAspect( "portal", Aspect.getAspectForAll( [PortalCmp] ) );
+        cm.registerAspect( "char", Aspect.getAspectForAll( [CmdQueue, PosCmp] ) );
+        
+        world.setManager( cm );
+        world.setManager( new SectorGraphMgr() );
         world.setManager( new SynonymMgr() );
+        world.setManager( new NameRegistry() ); // Needs to be last
+
         
         //world.setSystem( new TransitRequestSys() );
         world.setSystem( new PhysicsSys() );
@@ -121,7 +130,7 @@ class God
         //entityBuilder.addRegionEdge( portals[1], sectors[0] );
         var edge = new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) );
         entityBuilder.addPortalEdges( portals[0], [edge] );
-        //entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[0], scriptFactory.createScript( "transit" ) )] );
+        entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[0], scriptFactory.createScript( "transit" ) )] );
         
         //var pCmp = portals[0].getComponent( PortalCmp );
         //var pCmp2 = portals[1].getComponent( PortalCmp );
@@ -129,14 +138,10 @@ class God
         var cmdCmp = player.getComponent( CmdQueue );
         var p0PosCmp = portals[0].getComponent( PosCmp );
         var p1PosCmp = portals[1].getComponent( PosCmp );
-        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p0PosCmp.pos, p0PosCmp.sector] ) );
-        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p1PosCmp.pos, p1PosCmp.sector] ) );
-        cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, portals[0]] ) );
-        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 25, 25 ), p1PosCmp.sector] ) );
-        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, edge] ) );
-        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", player, pCmp.edges[0]] ) );
-        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 100, 20 )] ) );
-        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, pCmp2.edges[0]] ) );
+        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p0PosCmp.pos, p0PosCmp.sector] ) );
+        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, portals[0]] ) );
+        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p1PosCmp.pos, p1PosCmp.sector] ) );
+        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 25, 25 ), p1PosCmp.sector] ) );
         
     }
         

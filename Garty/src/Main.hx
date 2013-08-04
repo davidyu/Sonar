@@ -1,12 +1,21 @@
 package ;
 
+import com.artemisx.Aspect;
+import com.artemisx.utils.Bitset;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.Lib;
+import gibber.components.ContainableCmp;
+import gibber.components.PosCmp;
+import gibber.components.RegionCmp;
+import gibber.components.RenderCmp;
+import gibber.components.TakeCmp;
 import gibber.components.TransitRequestCmp;
 import gibber.God;
 import gibber.scripts.GenericScript;
 import haxe.ds.GenericStack;
+
+using gibber.Util;
 
 class Main 
 {
@@ -21,6 +30,7 @@ class Main
         trace( "Starting up God" );
         
         var g = new God( Lib.current );
+
         
     }
 

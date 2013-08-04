@@ -1,0 +1,462 @@
+diff --git a/Garty/src/Main.hx b/Garty/src/Main.hx
+index 2573182..223a737 100644
+--- a/Garty/src/Main.hx
++++ b/Garty/src/Main.hx
+@@ -1,13 +1,22 @@
+ package ;
+ 
++import com.artemisx.Aspect;
++import com.artemisx.utils.Bitset;
+ import flash.display.StageAlign;
+ import flash.display.StageScaleMode;
+ import flash.Lib;
++import gibber.components.ContainableCmp;
++import gibber.components.PosCmp;
++import gibber.components.RegionCmp;
++import gibber.components.RenderCmp;
++import gibber.components.TakeCmp;
+ import gibber.components.TransitRequestCmp;
+ import gibber.God;
+ import gibber.scripts.GenericScript;
+ import haxe.ds.GenericStack;
+ 
++using gibber.Util;
++
+ class Main 
+ {
+ 
+@@ -21,6 +30,7 @@ class Main
+         trace( "Starting up God" );
+         
+         var g = new God( Lib.current );
++
+         
+     }
+ 
+diff --git a/Garty/src/gibber/AdvancedParser.hx b/Garty/src/gibber/AdvancedParser.hx
+index 3a25ecd..0e1c76c 100644
+--- a/Garty/src/gibber/AdvancedParser.hx
++++ b/Garty/src/gibber/AdvancedParser.hx
+@@ -69,7 +69,7 @@ class AdvancedParser
+ 
+                 //get objects
+                 var containerMgr:ContainerMgr = god.world.getManager( ContainerMgr );
+-                var containees : Array<Entity> = containerMgr.getEntitiesOfContainer( sector );
++                var containees : Array<Entity> = containerMgr.getAllEntitiesOfContainer( sector );
+ 
+                 for ( obj in containees ) {
+                     god.debugPrintln( nameMapper.get( obj ).name );
+diff --git a/Garty/src/gibber/EntityBuilder.hx b/Garty/src/gibber/EntityBuilder.hx
+index 1068e1b..051d520 100644
+--- a/Garty/src/gibber/EntityBuilder.hx
++++ b/Garty/src/gibber/EntityBuilder.hx
+@@ -49,7 +49,7 @@ class EntityBuilder
+         portalCmp.edges = portalCmp.edges.concat( edges );
+         portal.addComponent( portalCmp );
+            
+-        portalRegionCmp.adj.push( portalPosCmp.sector );
++        portalRegionCmp.parent = portalPosCmp.sector;
+         for ( e in edges ) {
+             portalRegionCmp.adj.push( posMapper.get( e.pDest ).sector );
+         }
+@@ -99,7 +99,7 @@ class EntityBuilder
+         var posCmp = new PosCmp( sector, pos );
+         var staticCmp = new StaticPosCmp();
+         var portalCmp = new PortalCmp();
+-        var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )] );
++        var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )], sector );
+         var contCmp = new ContainableCmp( containerMgr, sector, sector );
+         var renderCmp = new RenderCmp( 0x00ff00 );
+         
+@@ -121,7 +121,7 @@ class EntityBuilder
+ 
+     public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
+         var e = world.createEntity();
+-        var nameCmp = new NameIdCmp( "sector:" + name );
++        var nameCmp = new NameIdCmp( name );
+         var posCmp = new PosCmp( e, pos );
+         var staticCmp = new StaticPosCmp();
+         var lookCmp = new LookCmp();
+diff --git a/Garty/src/gibber/God.hx b/Garty/src/gibber/God.hx
+index 2eec8fe..29aac42 100644
+--- a/Garty/src/gibber/God.hx
++++ b/Garty/src/gibber/God.hx
+@@ -1,4 +1,5 @@
+ package gibber;
++import com.artemisx.Aspect;
+ import com.artemisx.Entity;
+ import com.artemisx.World;
+ import flash.display.MovieClip;
+@@ -9,9 +10,11 @@ import flash.ui.Keyboard;
+ import gibber.components.CmdQueue;
+ import gibber.components.PortalCmp;
+ import gibber.components.PosCmp;
++import gibber.components.TakeCmp;
+ import gibber.gabby.PortalEdge;
+ import gibber.managers.ContainerMgr;
+ import gibber.managers.NameRegistry;
++import gibber.managers.SectorGraphMgr;
+ import gibber.managers.SynonymMgr;
+ import gibber.systems.CmdProcessSys;
+ import gibber.systems.PhysicsSys;
+@@ -56,7 +59,6 @@ class God
+         
+         //this.testBed = new TestBed(this);
+         //testBed.run();
+-        
+     }
+     
+     public function setupConsole() : Void {
+@@ -87,9 +89,16 @@ class God
+     }
+ 
+     public function initializeSystems() : Void {
+-        world.setManager( new NameRegistry() );
+-        world.setManager( new ContainerMgr() );
++        var cm = new ContainerMgr();
++        cm.registerAspect( "item", Aspect.getAspectForAll( [TakeCmp] ) );
++        cm.registerAspect( "portal", Aspect.getAspectForAll( [PortalCmp] ) );
++        cm.registerAspect( "char", Aspect.getAspectForAll( [CmdQueue, PosCmp] ) );
++        
++        world.setManager( cm );
++        //world.setManager( new SectorGraphMgr() );
+         world.setManager( new SynonymMgr() );
++        world.setManager( new NameRegistry() ); // Needs to be last
++
+         
+         //world.setSystem( new TransitRequestSys() );
+         world.setSystem( new PhysicsSys() );
+@@ -121,7 +130,7 @@ class God
+         //entityBuilder.addRegionEdge( portals[1], sectors[0] );
+         var edge = new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) );
+         entityBuilder.addPortalEdges( portals[0], [edge] );
+-        //entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[0], scriptFactory.createScript( "transit" ) )] );
++        entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[0], scriptFactory.createScript( "transit" ) )] );
+         
+         //var pCmp = portals[0].getComponent( PortalCmp );
+         //var pCmp2 = portals[1].getComponent( PortalCmp );
+@@ -129,14 +138,10 @@ class God
+         var cmdCmp = player.getComponent( CmdQueue );
+         var p0PosCmp = portals[0].getComponent( PosCmp );
+         var p1PosCmp = portals[1].getComponent( PosCmp );
+-        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p0PosCmp.pos, p0PosCmp.sector] ) );
+-        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p1PosCmp.pos, p1PosCmp.sector] ) );
+-        cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, portals[0]] ) );
+-        cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 25, 25 ), p1PosCmp.sector] ) );
+-        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, edge] ) );
+-        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", player, pCmp.edges[0]] ) );
+-        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 100, 20 )] ) );
+-        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, pCmp2.edges[0]] ) );
++        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p0PosCmp.pos, p0PosCmp.sector] ) );
++        //cmdCmp.enqueue( cmdFactory.createCmd( "transit", [player, portals[0]] ) );
++        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, p1PosCmp.pos, p1PosCmp.sector] ) );
++        //cmdCmp.enqueue( cmdFactory.createCmd( "move", [player, new Vec2( 25, 25 ), p1PosCmp.sector] ) );
+         
+     }
+         
+diff --git a/Garty/src/gibber/Util.hx b/Garty/src/gibber/Util.hx
+index 867e2b3..e8de219 100644
+--- a/Garty/src/gibber/Util.hx
++++ b/Garty/src/gibber/Util.hx
+@@ -25,21 +25,15 @@ class Util
+         return pos.sub( posMapper.get( local ).pos );
+     }
+     
+-    public static function peek( s : GenericStack<Entity> ) : Entity {
+-        return s.head.elt;
+-    }
+-    
+-    public static function base( s : GenericStack<Entity> ) : Entity {
+-        var st = s.head;
+-        var ret = null;
+-        
+-        while ( st != null ) {
+-            ret = st.elt;
+-            st = st.next;
++    // Dunno how to do with generic...
++    public static inline function realInsert<T>( a : Array<T>, i : Int, v : T ) : Void {
++        while ( i >= a.length ) {
++            a.push( null );
+         }
+-        return ret;
++        a[i] = v;
+     }
+     
++    
+     public static function clear( s : List<Entity> ) : Void {
+         while ( !s.isEmpty() ) {
+             s.pop();
+diff --git a/Garty/src/gibber/components/RegionCmp.hx b/Garty/src/gibber/components/RegionCmp.hx
+index a1d107e..baab417 100644
+--- a/Garty/src/gibber/components/RegionCmp.hx
++++ b/Garty/src/gibber/components/RegionCmp.hx
+@@ -13,7 +13,7 @@ class RegionCmp implements Component
+     @:isVar public var adj : Array<Entity>;
+     @:isVar public var isOpen : Bool;
+     
+-    public function new( polygonAreas : Array<Polygon> = null, enter : VoidExecuteScript=null, exit : VoidExecuteScript=null ) {
++    public function new( polygonAreas : Array<Polygon> = null, parent : Entity=null, enter : VoidExecuteScript=null, exit : VoidExecuteScript=null ) {
+         enterScript = enter;
+         exitScript = exit;
+         
+@@ -22,8 +22,9 @@ class RegionCmp implements Component
+         }
+         
+         this.polys = polygonAreas;
++        this.parent = parent;
+         this.adj = new Array();
+-        this.isOpen = false;
++        this.isOpen = true;
+     }
+     
+     public function onEnter( mover : Entity, fromSector : Entity ) : Void {
+diff --git a/Garty/src/gibber/managers/ContainerMgr.hx b/Garty/src/gibber/managers/ContainerMgr.hx
+index 80df1c9..894c6e7 100644
+--- a/Garty/src/gibber/managers/ContainerMgr.hx
++++ b/Garty/src/gibber/managers/ContainerMgr.hx
+@@ -4,19 +4,25 @@ import com.artemisx.Aspect;
+ import com.artemisx.ComponentMapper;
+ import com.artemisx.Entity;
+ import com.artemisx.Manager;
++import com.artemisx.utils.Bitset;
+ import gibber.components.ContainableCmp;
+ import gibber.components.ContainerCmp;
+ import gibber.components.NameIdCmp;
+ import gibber.components.PosCmp;
+ import gibber.components.RegionCmp;
+ import gibber.components.TakeCmp;
++import haxe.ds.ObjectMap;
+ import haxe.ds.StringMap;
++import haxe.ds.StringMap;
++
++using Lambda;
+ 
+ class ContainerMgr extends Manager
+ {
+     public function new() {
+         containerEntities = new StringMap();
+         entityContainer = new StringMap();
++        aspectMap = new Array();
+     }
+     
+     override public function initialize() : Void {
+@@ -25,56 +31,112 @@ class ContainerMgr extends Manager
+     }
+     
+     override public function onAdded( e : Entity ) : Void {
+-        var containerSig = Aspect.getAspectForAll( [ContainerCmp, NameIdCmp] );
+-        var objSig       = Aspect.getAspectForAll( [NameIdCmp, ContainableCmp, PosCmp] );
++        var containerSig = Aspect.getAspectForAll( [NameIdCmp, ContainerCmp] );
++        var objSig       = Aspect.getAspectForAll( [NameIdCmp, ContainableCmp] );
+         
+         if ( Aspect.matches( containerSig, e.componentBits ) ) {
+             var eName = nameMapper.get( e ).name;
+             var entities = containerEntities.get( eName );
+ 
+             if ( entities == null ) {
+-                containerEntities.set( eName, new Array() );
++                containerEntities.set( eName, new StringMap() );
+             } else {
+                 throw "Adding same container entity twice: " + eName;
+             }
+-        } else if ( Aspect.matches( objSig, e.componentBits ) ) {
+-            // Get item's container entity thru TakeCmp, and set both hashes
++        }
++        
++        var aspectName = getAspectName( e.componentBits );
++        
++        if ( Aspect.matches( objSig, e.componentBits ) && aspectName != null ) {
++            // Get item's container entity thru ContainableCmp, and set both hashes
+             var container = containableMapper.get( e ).container;
+             var eName = nameMapper.get( e ).name;
+ 
+             if ( container != null ) {
+-                entityContainer.set( eName, container ); // Set contianer for entity
+-                containerEntities.get( nameMapper.get( container ).name ).push( e ); // Add entity to container
++                var cName = nameMapper.get( container ).name;
++                var containerEnts = containerEntities.get( cName );
++                var entArr = containerEnts.get( aspectName );
++                
++                if ( entArr == null ) {
++                    entArr = new Array<Entity>();
++                    containerEnts.set( aspectName, entArr );
++                }
++                entArr.push( e );                   // Add entity to container
++                entityContainer.set( eName, container );  // Set container for entity
+             } else {
+-                throw "Invalid container for entity: " + eName;
++                throw "Invalid container for entity: " + eName + ", aspect: " + aspectName + ", container: " + container;
+             }
+         }
+     }
+     
+     override public function onDeleted( e : Entity ) : Void {
+-        var nameCmp = nameMapper.getSafe( e );
++        var containerSig = Aspect.getAspectForAll( [NameIdCmp, ContainerCmp] );
++        var objSig       = Aspect.getAspectForAll( [NameIdCmp, ContainableCmp] );
+         
+-        if ( nameCmp == null ) {
+-            return;
++        if ( Aspect.matches( containerSig, e.componentBits ) ) {
++            var eName = nameMapper.get( e ).name;
++            var entities = containerEntities.get( eName );
++
++            if ( entities != null ) {
++                for ( map in entities ) {
++                    for ( item in map.iterator() ) {
++                        entityContainer.remove( nameMapper.get( item ).name );
++                        world.deleteEntity( item );
++                    }
++                }
++                containerEntities.remove( eName );
++            } else {
++                throw "Container not registered but deleted... " + eName;
++            }
+         }
+         
+-        var name = nameCmp.name;
+-        var entities = containerEntities.get( name );
++        var aspectName = getAspectName( e.componentBits );
+         
+-        if ( entities != null ) {
+-            for ( e in entities ) {
+-                entityContainer.remove( name );
++        if ( Aspect.matches( objSig, e.componentBits ) && aspectName != null ) {
++            // Get item's container entity thru ContainableCmp, and set both hashes
++            var container = containableMapper.get( e ).container;
++            var eName = nameMapper.get( e ).name;
++
++            if ( container != null ) {
++                var cName = nameMapper.get( container ).name;
++                var containerEnts = containerEntities.get( cName );
++                if ( containerEnts != null ) {
++                    var entArr = containerEnts.get( aspectName );
++                
++                    if ( !entArr.remove( e ) ) {
++                        throw "Didn't deleted entity cause couldn't find...";
++                    }
++                }
++
++                entityContainer.remove( nameMapper.get( e ).name );
++            } else {
++                throw "Containable not registered but deleted: " + eName + ", aspect: " + aspectName + ", container: " + container;
+             }
+-            
+-            containerEntities.remove( name );
+-            return;
+         }
+-        
+-        var container = entityContainer.get( name );
+-        
+-        if ( !containerEntities.get( nameMapper.get( container ).name ).remove( e ) ) {
+-            throw "Removing entity that doesn't exist in container: " + name;
+-        };
++        //var nameCmp = nameMapper.getSafe( e );
++        //
++        //if ( nameCmp == null ) {
++            //return;
++        //}
++        //
++        //var name = nameCmp.name;
++        //var entities = containerEntities.get( name );
++        //
++        //if ( entities != null ) {
++            //for ( i in entities ) {
++                //entityContainer.remove( name );
++                //world.deleteEntity( i );
++            //}
++            //
++            //containerEntities.remove( name );
++            //return;
++        //}
++        //
++        //var container = entityContainer.get( name );
++        //
++        //if ( !containerEntities.get( nameMapper.get( container ).name ).get( getAspectName( e.componentBits ) ).remove( e ) ) {
++            //throw "Removing entity that doesn't exist in container: " + name;
++        //};
+     }
+     
+     //TODO IMPLEMENT THIS - need to remove entities that don't match signature, and add entities that match
+@@ -82,24 +144,62 @@ class ContainerMgr extends Manager
+         
+     }
+ 
++    public function getAspectName( toMatch : Bitset ) : String {
++        for ( a in aspectMap ) {
++            if ( Aspect.matches( a.aspect, toMatch ) ) {
++                return a.name;
++            }
++        }
++        return null;
++    }
++
++    // All calls should happen before entities are created
++    // Aspect signatures must be unique and non-overlapping
++    // TODO Perhaps should check if same aspect is given for two different names
++    public function registerAspect( n : String , a : Aspect ) : Void {
++        if ( !aspectMap.exists( function(v) { return v.aspect.equals( a ) || v.name == n; } ) ) {
++            aspectMap.push( { name : n , aspect : a } );
++        } else {
++            throw "Aspect of name or signature already exists";
++        }
++    }
+     
+     public function changeContainerOfEntity( e : Entity, oldContainer : Entity, newContainer : Entity ) : Void {
+-        getEntitiesOfContainer( oldContainer ).remove( e );
+-        entityContainer.set( nameMapper.get( e ).name, newContainer );
++        //getEntitiesOfContainer( oldContainer ).remove( e );
++        //entityContainer.set( nameMapper.get( e ).name, newContainer );
+     }
+     
+-    public function getEntitiesOfContainer( container : Entity ) : Array<Entity> {
+-        return containerEntities.get( nameMapper.get( container ).name );
++    public function getAllEntitiesOfContainer( container : Entity ) : Array<Entity> {
++        var res = new Array<Entity>();
++        var maps = containerEntities.get( nameMapper.get( container ).name );
++        
++        for ( el in maps.iterator() ) {
++            res.concat( el );
++        }
++        return res;
++    }
++    
++    public function getEntitiesOfContainer( container : Entity, aspect : Aspect ) : Array<Entity> {
++        for ( a in aspectMap ) {
++            var cont = containerEntities.get( nameMapper.get( container ).name );
++            if ( cont != null && Aspect.fufills( a.aspect, aspect ) ) {
++                return cont.get( a.name );
++            }
++        }
++        return null;
+     }
+     
+     public function getContainerOfEntity( e : Entity ) : Entity {
+         return entityContainer.get( nameMapper.get( e ).name );
+     }
+     
+-    var containerEntities : StringMap<Array<Entity>>;
++    var containerEntities : StringMap<StringMap<Array<Entity>>>;
+     var entityContainer : StringMap<Entity>;
+     
+     var nameMapper : ComponentMapper<NameIdCmp>;
+     var containableMapper : ComponentMapper<ContainableCmp>;
+     
++    var aspectMap : Array<{ aspect : Aspect, name : String}>;
++    
++    
+ }
+\ No newline at end of file
+diff --git a/Garty/src/gibber/managers/SynonymMgr.hx b/Garty/src/gibber/managers/SynonymMgr.hx
+index 91d53df..419d659 100644
+--- a/Garty/src/gibber/managers/SynonymMgr.hx
++++ b/Garty/src/gibber/managers/SynonymMgr.hx
+@@ -72,7 +72,7 @@ class SynonymMgr extends Manager
+         var tagCmp = tagMapper.getSafe( nameRegistry.getEntity( nameCmp.name ) );
+         
+         if ( tagCmp == null ) {
+-            throw "Tag cmp null for: " + nameCmp.name;
++            return;
+         }
+         
+         var tag = tagCmp.tag;

@@ -49,6 +49,7 @@ class EntityBuilder
         portalCmp.edges = portalCmp.edges.concat( edges );
         portal.addComponent( portalCmp );
            
+        portalRegionCmp.parent = portalPosCmp.sector;
         portalRegionCmp.adj.push( portalPosCmp.sector );
         for ( e in edges ) {
             portalRegionCmp.adj.push( posMapper.get( e.pDest ).sector );
@@ -99,7 +100,7 @@ class EntityBuilder
         var posCmp = new PosCmp( sector, pos );
         var staticCmp = new StaticPosCmp();
         var portalCmp = new PortalCmp();
-        var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )] );
+        var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )], sector );
         var contCmp = new ContainableCmp( containerMgr, sector, sector );
         var renderCmp = new RenderCmp( 0x00ff00 );
         
@@ -121,7 +122,7 @@ class EntityBuilder
 
     public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
         var e = world.createEntity();
-        var nameCmp = new NameIdCmp( "sector:" + name );
+        var nameCmp = new NameIdCmp( name );
         var posCmp = new PosCmp( e, pos );
         var staticCmp = new StaticPosCmp();
         var lookCmp = new LookCmp();

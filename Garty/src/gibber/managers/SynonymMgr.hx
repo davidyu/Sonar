@@ -72,7 +72,7 @@ class SynonymMgr extends Manager
         var tagCmp = tagMapper.getSafe( nameRegistry.getEntity( nameCmp.name ) );
         
         if ( tagCmp == null ) {
-            throw "Tag cmp null for: " + nameCmp.name;
+            return;
         }
         
         var tag = tagCmp.tag;

@@ -25,20 +25,14 @@ class Util
         return pos.sub( posMapper.get( local ).pos );
     }
     
-    public static function peek( s : GenericStack<Entity> ) : Entity {
-        return s.head.elt;
+    // Dunno how to do with generic...
+    public static inline function realInsert<T>( a : Array<T>, i : Int, v : T ) : Void {
+        while ( i >= a.length ) {
+            a.push( null );
+        }
+        a[i] = v;
     }
     
-    public static function base( s : GenericStack<Entity> ) : Entity {
-        var st = s.head;
-        var ret = null;
-        
-        while ( st != null ) {
-            ret = st.elt;
-            st = st.next;
-        }
-        return ret;
-    }
     
     public static function clear( s : List<Entity> ) : Void {
         while ( !s.isEmpty() ) {
