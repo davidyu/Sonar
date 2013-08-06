@@ -3,6 +3,7 @@ import com.artemisx.Aspect;
 import com.artemisx.Entity;
 import com.artemisx.World;
 import flash.display.MovieClip;
+import flash.events.Event;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFieldType;
@@ -110,7 +111,7 @@ class God
         
         world.initialize();
     }
-    
+
     public function initializeEntities() : Void {
         sectors = new Array();
         portals = new Array();
@@ -124,7 +125,8 @@ class God
 
         player = entityBuilder.createPlayer( "Bob" );
         var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ) );
-        var jar = entityDeserializer.fromJson( haxe.Resource.getString( "item_jar" ) );
+
+        entityDeserializer.fromFile( "item_jar.json" );
 
         var edge = new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) );
         entityBuilder.addPortalEdges( portals[0], [edge] );
