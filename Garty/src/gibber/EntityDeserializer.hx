@@ -9,23 +9,30 @@ import utils.Vec2;
 
 class EntityDeserializer
 {
+    @:isVar public var RESOURCE_PATH ( default, null ) : String = "../resource";
     @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
 
     public function new( builder : EntityBuilder ) {
         entityBuilder = builder;
     }
 
-    private function loadFile( file:String, processFile:Dynamic->Dynamic ) {
-#if flash
-        var loader:URLLoader = new URLLoader();
-        loader.load( new URLRequest( file ) );
-        loader.addEventListener( Event.COMPLETE, processFile );
-#elseif neko
-#end
+    private function defaultDeserializeFromFile( data : String ) {
+        return fromJson( data );
     }
 
-    public function fromJsonFile() {
-    
+    public function fromFile( file:String, ?processFile = null ) {
+
+        if ( processFile == null ) {
+            processFile = defaultDeserializeFromFile;
+        }
+
+#if flash
+        var loader:URLLoader = new URLLoader();
+        loader.load( new URLRequest( '$RESOURCE_PATH/$file' ) );
+        loader.addEventListener( Event.COMPLETE, function( e : Event) {
+            var entity = processFile( e.target.data );
+        } );
+#end
     }
 
     public function fromJson( json:String ) : Entity {
