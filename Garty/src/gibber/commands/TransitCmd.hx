@@ -7,6 +7,7 @@ import gibber.gabby.PortalEdge;
 import gibber.scripts.TransitScript;
 import utils.Vec2;
 
+@:rtti
 class TransitCmd implements Command
 {
     @:isVar public var mover( default, null ) : Entity;
