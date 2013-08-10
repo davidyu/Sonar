@@ -1,5 +1,6 @@
 package utils;
 
+@:rtti
 class Vec2
 {
     //public static function normalized( v : Vec2 ) {

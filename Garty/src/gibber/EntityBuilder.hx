@@ -157,7 +157,7 @@ class EntityBuilder
         return e;
     }
     
-    public function createObject( name : String, pos : Vec2 ) : Entity
+    public function createObject( name : String, pos : Vec2, lookText : String ) : Entity
     {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
@@ -167,11 +167,15 @@ class EntityBuilder
         var renderCmp = new RenderCmp();
         var containableCmp = new ContainableCmp( containerMgr, god.sectors[0], god.sectors[0] );
 
-        var firstChar = name.charAt( 0 );
-        if ( firstChar == "a" || firstChar == "e" || firstChar == "i" || firstChar == "o" || firstChar == "u" ) {
-            lookCmp.lookText = "An " + name.toLowerCase();
+        if ( lookText == "" || lookText == null ) {
+            var firstChar = name.charAt( 0 );
+            if ( firstChar == "a" || firstChar == "e" || firstChar == "i" || firstChar == "o" || firstChar == "u" ) {
+                lookCmp.lookText = "An " + name.toLowerCase();
+            } else {
+                lookCmp.lookText = "A " + name.toLowerCase();
+            }
         } else {
-            lookCmp.lookText = "A " + name.toLowerCase();
+            lookCmp.lookText = lookText;
         }
 
         e.addComponent( nameIdCmp );
