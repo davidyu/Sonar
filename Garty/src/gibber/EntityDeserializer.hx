@@ -89,8 +89,8 @@ class EntityDeserializer
         for ( field in Reflect.fields( obj ) ) {
             // if we've got an entry for the class name, optimistically assume we can deserialize it
             if ( classpathTable.exists( field ) ) {
-                var ctorParamValues = new Array<Dynamic>(); //alloc a list for constructor parameter values...
-                var fieldValue = Reflect.field( obj, field );  //useful ctor data wrapped in JSON object...
+                var ctorParamList = new Array<Dynamic>(); //alloc a list for constructor parameter values...
+                var ctorData = Reflect.field( obj, field );  //useful ctor data wrapped in JSON object...
 
                 // following codes extract the right ctor params
                 var clazz = Type.resolveClass( classpathTable.get( field ) ); //get class
@@ -106,7 +106,7 @@ class EntityDeserializer
                                         for ( p in params ) {
                                             // for each parameter, find corresponding param in our JSON
                                             // object, and push that to our list of parameter values
-                                            ctorParamValues.push( Reflect.field( fieldValue, p.name ) );
+                                            ctorParamList.push( Reflect.field( ctorData, p.name ) );
                                         }
                                     default:
                                 }
@@ -116,7 +116,7 @@ class EntityDeserializer
                 }
 
                 // build that shit! Pain in the arse.
-                var instance = Type.createInstance( clazz, ctorParamValues );
+                var instance = Type.createInstance( clazz, ctorParamList );
                 return instance;
 
             } else { //this field can't be deserialized into an instance of a class, so just keep it anon

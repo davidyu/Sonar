@@ -6,6 +6,7 @@ import utils.Vec2;
 
 using gibber.Util;
 
+@:rtti
 class PosCmp implements Component
 {
     @:isVar public var regionsIn : List<Entity>;

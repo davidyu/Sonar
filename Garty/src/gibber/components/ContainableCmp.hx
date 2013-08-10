@@ -4,6 +4,7 @@ import com.artemisx.Component;
 import com.artemisx.Entity;
 import gibber.managers.ContainerMgr;
 
+@:rtti
 class ContainableCmp implements Component
 {
     @:isVar public var container ( default, set_container ) : Entity;
