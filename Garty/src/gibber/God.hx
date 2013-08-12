@@ -53,7 +53,7 @@ class God
 
         cmdFactory = new CmdFactory( this );
         entityBuilder = new EntityBuilder( this );
-        entityDeserializer = new EntityDeserializer( entityBuilder );
+        entityDeserializer = new EntityDeserializer( this );
 
         parser = new AdvancedParser( this );
         commander = new Commander( this );

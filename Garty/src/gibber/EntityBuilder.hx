@@ -157,11 +157,11 @@ class EntityBuilder
         return e;
     }
     
-    public function createObject( name : String, pos : Vec2, lookText : String ) : Entity
+    public function createObject( name : String, pos : Vec2, ?lookText : String ) : Entity
     {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
-        var nameIdCmp = new NameIdCmp( "chest" );
+        var nameIdCmp = new NameIdCmp( name );
         var posCmp = new PosCmp( god.sectors[0], pos );
         var staticCmp = new StaticPosCmp();
         var renderCmp = new RenderCmp();
@@ -190,7 +190,7 @@ class EntityBuilder
         return e;
     }
 
-    public function createObjectWithCmp( name : String, pos : Vec2, cmps : List<Component> )
+    public function createEntityWithCmps( cmps : List<Component> )
     {
         var e = world.createEntity();
 
