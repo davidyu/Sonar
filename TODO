@@ -26,9 +26,8 @@ DOIN serialize json object into entity with respective components
     DONE create default object with a script for Look (prints "a jar of pickles")
     DONE implement automatic serialization of Vec2
     DONE implement automatic serialization of any object via constructor
-    DONE implement automatic serialization of any object via field-filling
-    DONE integrate NameRegistry so can get Entity from name
-    TODO refactor deserialize class
+    TODO implement automatic serialization of any object via field-filling
+    TODO integrate NameRegistry so can get Entity from name
     ???? do we want to dynamically build components at runtime and be able to reference them?
     ???? do we need a robust debugger for dynamic object creation via scripts?
 }
