@@ -5,10 +5,10 @@
         [
             { "LookCmp": { "lookText" : "An unopened jar of pickles. You can't tell if they've been around for a while." } },
             { "NameIdCmp" : { "n" : "PickleJar2" } },
-            { "PosCmp" : { "sec" : "#sector0", "pos" : { "Vec2" : { "x" : 10, "y" : 10 } } } },
+            { "PosCmp" : { "sec" : "$sector0", "pos" : { "Vec2" : { "x" : 10, "y" : 10 } } } },
             { "StaticPosCmp" : { } },
             { "RenderCmp" : { } },
-            { "ContainableCmp" : { "mgr" : "$containerMgr", "parent" : "#sector0", "container" : "#sector0" } }
+            { "ContainableCmp" : { "mgr" : "@containerMgr", "parent" : "$sector0", "container" : "$sector0" } }
         ]
     }
 }
