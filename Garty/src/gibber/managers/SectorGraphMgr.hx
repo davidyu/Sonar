@@ -8,6 +8,7 @@ import com.artemisx.Manager;
 import gibber.components.ContainableCmp;
 import gibber.components.ContainerCmp;
 import gibber.components.NameIdCmp;
+import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 
@@ -16,6 +17,8 @@ using gibber.Util;
 
 class SectorGraphMgr extends Manager
 {
+    public static var subsectorSig = Aspect.getAspectForAll( [NameIdCmp, RegionCmp] ).exclude( [ContainerCmp] );
+    public static var sectorSig = Aspect.getAspectForAll( [NameIdCmp, ContainerCmp, RegionCmp] );
     public function new() {
         sectorIndex = new Array();
         adjMat = new Array();
@@ -24,12 +27,10 @@ class SectorGraphMgr extends Manager
     override public function initialize() : Void {
         regionMapper = world.getMapper( RegionCmp );
         posMapper = world.getMapper( PosCmp );
+        portalMapper = world.getMapper( PortalCmp );
     }
     
     override public function onAdded( e : Entity ) : Void {
-        var sectorSig    = Aspect.getAspectForAll( [NameIdCmp, ContainerCmp, RegionCmp] );
-        var subsectorSig = Aspect.getAspectForAll( [NameIdCmp, ContainableCmp, RegionCmp] ).exclude( [ContainerCmp] );
-        
         if ( Aspect.matches( sectorSig, e.componentBits ) ) {
             if ( !sectorIndex.exists( function(v) { return v.id == e.id; } ) ) {
                 sectorIndex.push( e );
@@ -37,18 +38,17 @@ class SectorGraphMgr extends Manager
                 throw "Adding same sector twice to sector graph...";
             }
         } else if ( Aspect.matches( subsectorSig, e.componentBits ) ) {
-            var subRegionCmp = regionMapper.get( e );
-            var indexI = sectorIndex.indexOf( subRegionCmp.parent );
+            var portalCmp = portalMapper.get( e );
             
-            if ( indexI != -1 ) {
-                if ( indexI > adjMat.length - 1 ) {
-                    adjMat.realInsert( indexI, new Array() );
-                }
-                for ( re in subRegionCmp.adj ) {
-                    if ( re == subRegionCmp.parent ) {
-                        continue;
+            for ( edge in portalCmp.edges ) {
+                var indexI = sectorIndex.indexOf( edge.pSrc );
+                
+                if ( indexI != -1 ) {
+                    if ( indexI > adjMat.length - 1 ) {
+                        adjMat.realInsert( indexI, new Array() );
                     }
-                    var indexJ = sectorIndex.indexOf( re );
+                    var indexJ = sectorIndex.indexOf( edge.pDest );
+                    
                     if ( indexJ != -1 ) {
                         if ( indexJ > adjMat[indexI].length - 1 ) {
                             adjMat[indexI].realInsert( indexJ, [e] );
@@ -58,19 +58,15 @@ class SectorGraphMgr extends Manager
                     } else {
                         throw "Dest sector not registered";
                     }
+                } else {
+                    throw "Src sector not registered";
                 }
-            } else {
-                throw "Src sector not registered";
             }
-            
         }
     }
     
     // 
     override public function onDeleted( e : Entity ) : Void {
-        var sectorSig    = Aspect.getAspectForAll( [NameIdCmp, ContainerCmp, RegionCmp] );
-        var subsectorSig = Aspect.getAspectForAll( [NameIdCmp, ContainableCmp, RegionCmp] ).exclude( [ContainerCmp] );
-        
         if ( Aspect.matches( sectorSig, e.componentBits ) ) {
             var index = sectorIndex.indexOf( e );
             if ( index != -1 ) {
@@ -145,4 +141,5 @@ class SectorGraphMgr extends Manager
     var adjMat : Array<Array<Array<Entity>>>; // A[src][dest] -> array of portals from i to j
     var regionMapper : ComponentMapper<RegionCmp>;
     var posMapper : ComponentMapper<PosCmp>;
+    var portalMapper : ComponentMapper<PortalCmp>;
 }

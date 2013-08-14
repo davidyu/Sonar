@@ -4,6 +4,7 @@ import com.artemisx.Component;
 import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import com.artemisx.World;
+import flash.utils.IDataInput2;
 import gibber.components.ContainableCmp;
 import gibber.components.StaticPosCmp;
 import gibber.gabby.PortalEdge;
@@ -50,12 +51,13 @@ class EntityBuilder
         portalCmp.edges = portalCmp.edges.concat( edges );
         portal.addComponent( portalCmp );
            
-        portalRegionCmp.parent = portalPosCmp.sector;
-        portalRegionCmp.adj.push( portalPosCmp.sector );
+        //portalRegionCmp.parent = portalPosCmp.sector;
+        //portalRegionCmp.adj.push( portalPosCmp.sector );
         for ( e in edges ) {
-            portalRegionCmp.adj.push( posMapper.get( e.pDest ).sector );
+            portalRegionCmp.adj.push( e.pSrc );
+            portalRegionCmp.adj.push( e.pDest );
+            regionMapper.get( e.pSrc ).adj.push( portal );
         }
-        regionMapper.get( portalPosCmp.sector ).adj.push( portal );
     }
     
     public function createWordRef( tag : SynTag ) {
@@ -94,18 +96,45 @@ class EntityBuilder
         return e;
     }
 
-    public function createPortal( name : String, sector : Entity, pos : Vec2 ) : Entity {
+    public function createPortal( name : String, pos : Vec2 ) : Entity {
         var e = world.createEntity();
         var nameCmp = new NameIdCmp( name );
         var lookCmp = new LookCmp();
-        var posCmp = new PosCmp( sector, pos );
+        var posCmp = new PosCmp( null, pos );
         var staticCmp = new StaticPosCmp();
         var portalCmp = new PortalCmp();
-        var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )], sector );
-        var contCmp = new ContainableCmp( containerMgr, sector, sector );
+        var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )] );
+        //var contCmp = new ContainableCmp( containerMgr, sector, sector );
         var renderCmp = new RenderCmp( 0x00ff00 );
         
         lookCmp.lookText = "This is the player";
+        
+        e.addComponent( posCmp );
+        e.addComponent( lookCmp );
+        e.addComponent( portalCmp );
+        e.addComponent( staticCmp );
+        //e.addComponent( contCmp );
+        e.addComponent( renderCmp );
+        e.addComponent( regionCmp );
+        e.addComponent( nameCmp );
+
+        world.addEntity( e );
+        
+        return e;
+    }    
+    
+    public function create2Portal( name : String, s1 : Entity, s2 : Entity, posS1 : Vec2 ) : God.P2 {
+        var e = world.createEntity();
+        var nameCmp = new NameIdCmp( name + "1" );
+        var lookCmp = new LookCmp();
+        var posCmp = new PosCmp( s1, posS1 );
+        var staticCmp = new StaticPosCmp();
+        var portalCmp = new PortalCmp();
+        var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )], s1 );
+        var contCmp = new ContainableCmp( containerMgr, s1, s1 );
+        var renderCmp = new RenderCmp( 0x00ff00 );
+        
+        lookCmp.lookText = "This is the portal";
         
         e.addComponent( posCmp );
         e.addComponent( lookCmp );
@@ -118,7 +147,30 @@ class EntityBuilder
 
         world.addEntity( e );
         
-        return e;
+        var e2 = world.createEntity();
+        nameCmp = new NameIdCmp( name + "2" );
+        lookCmp = new LookCmp();
+        posCmp = new PosCmp( s2, Util.sectorCoords( posS1, s1, s2 ) );
+        staticCmp = new StaticPosCmp();
+        portalCmp = new PortalCmp();
+        regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )], s2 );
+        contCmp = new ContainableCmp( containerMgr, s2, s2 );
+        renderCmp = new RenderCmp( 0x00ff00 );
+        
+        lookCmp.lookText = "This is the portal";
+        
+        e.addComponent( posCmp );
+        e.addComponent( lookCmp );
+        e.addComponent( portalCmp );
+        e.addComponent( staticCmp );
+        e.addComponent( contCmp );
+        e.addComponent( renderCmp );
+        e.addComponent( regionCmp );
+        e.addComponent( nameCmp );
+
+        world.addEntity( e2 );
+        
+        return { p1 : e, p2 : e2 };
     }
 
     public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {

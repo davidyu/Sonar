@@ -119,25 +119,35 @@ class God
         sectors = new Array();
         portals = new Array();
         
-        var vectorArray1 = Vec2.getVecArray( [0, 0, 30, 0, /*45, 15,*/ 30, 30, 0, 30, 0, 30 ] );
-        sectors.push( entityBuilder.createSector( "sector0", new Vec2( 50, 200 ), [new Polygon( vectorArray1 )] ) );
-        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 80, 200 ), [ new Polygon( vectorArray1 )] ) );
+        var s1 = Vec2.getVecArray( [0, 0, 30, 0, /*45, 15,*/ 30, 40, 0, 40, ] );
+        
+        var s2 = Vec2.getVecArray( [0, 0, 70, 0, 70, 70, 0, 70, 0, 70] );
+        var s3 = Vec2.getVecArray( [40, 0, 60, 0, 60, 60, 0, 60, 0, 40, 40, 40] );
+        var s4 = Vec2.getVecArray( [0, 0, 130, 0, 130, 30, 0, 30, ] );
+        
+        sectors.push( entityBuilder.createSector( "sector0", new Vec2( 50, 200 ), [new Polygon( s1 )] ) );
+        sectors.push( entityBuilder.createSector( "sector1", new Vec2( 80, 170 ), [new Polygon( s2 )] ) );
+        sectors.push( entityBuilder.createSector( "sector2", new Vec2( 90, 240 ), [new Polygon( s3 )] ) );
+        sectors.push( entityBuilder.createSector( "sector3", new Vec2( 150, 190 ), [new Polygon( s4 )] ) );
+        sectors.push( entityBuilder.createSector( "sector4", new Vec2( 280, 180 ), [new Polygon( s2 )] ) );
 
-        portals.push( entityBuilder.createPortal( "door01", sectors[0], new Vec2( 25, 0 ) ) );
-        portals.push( entityBuilder.createPortal( "door10", sectors[1], new Vec2( 0, 0 ) ) );
+        //portals.push
+        portals.push( entityBuilder.createPortal( "door01", new Vec2( 75, 200 ) ) );
+        portals.push( entityBuilder.createPortal( "door12", new Vec2( 65, 30 ) ) );
+        portals.push( entityBuilder.createPortal( "door13", new Vec2( 45, 65 ) ) );
+        portals.push( entityBuilder.createPortal( "door34", new Vec2( 125, 5 ) ) );
 
         player = entityBuilder.createPlayer( "Bob" );
         var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ) );
 
         entityDeserializer.fromFile( "item_jar.json" );
-
-        var edge = new PortalEdge( portals[0], portals[1], scriptFactory.createScript( "transit" ) );
+//
+        var edge = new PortalEdge( sectors[0], sectors[1], scriptFactory.createScript( "transit" ) );
         entityBuilder.addPortalEdges( portals[0], [edge] );
-        entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[0], scriptFactory.createScript( "transit" ) )] );
+        entityBuilder.addPortalEdges( portals[0], [new PortalEdge( sectors[1], sectors[0], scriptFactory.createScript( "transit" ) )] );
+        //entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[2], scriptFactory.createScript( "transit" ) )] );
 
         var cmdCmp = player.getComponent( CmdQueue );
-        var p0PosCmp = portals[0].getComponent( PosCmp );
-        var p1PosCmp = portals[1].getComponent( PosCmp );
                 
     }
         
@@ -219,3 +229,6 @@ class God
     public var player : Entity;
     
 }
+
+typedef P2 = { p1 : Entity, p2 : Entity };
+

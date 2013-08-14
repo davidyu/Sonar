@@ -2,10 +2,13 @@ package ;
 
 import com.artemisx.Aspect;
 import com.artemisx.utils.Bitset;
+import com.artemisx.World;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.Lib;
+import gibber.components.CharCmp;
 import gibber.components.ContainableCmp;
+import gibber.components.NameIdCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
@@ -14,6 +17,7 @@ import gibber.components.TransitRequestCmp;
 import gibber.God;
 import gibber.scripts.GenericScript;
 import haxe.ds.GenericStack;
+import haxe.Unserializer;
 
 using gibber.Util;
 
@@ -30,8 +34,15 @@ class Main
         trace( "Starting up God" );
         
         var g = new God( Lib.current );
-
+        var w = new World();
         
+        //var t = new NameIdCmp( "hello" );
+//
+        //var h = haxe.Serializer.run( w );
+        //trace( h );
+        //
+        //var l : NameIdCmp = Unserializer.run( h );
+        //trace( l.name );
     }
 
 }
