@@ -92,6 +92,10 @@ class EntityDeserializer
                 var components = new List<Component>();
 
                 for ( cmpDat in componentDataArray ) {
+                    if ( cmpDat == null ) {
+                        trace("Dave: I want to see this! Here's the full printout of info:");
+                        trace( info );
+                    }
                     var cmp = recursiveCompile( cmpDat );
                     components.push( cmp );
                 }
