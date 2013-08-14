@@ -53,7 +53,7 @@ class God
 
         cmdFactory = new CmdFactory( this );
         entityBuilder = new EntityBuilder( this );
-        entityDeserializer = new EntityDeserializer( entityBuilder );
+        entityDeserializer = new EntityDeserializer( this );
 
         parser = new AdvancedParser( this );
         commander = new Commander( this );
@@ -138,7 +138,7 @@ class God
         portals.push( entityBuilder.createPortal( "door34", new Vec2( 125, 5 ) ) );
 
         player = entityBuilder.createPlayer( "Bob" );
-        var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ) );
+        var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ), "" );
 
         entityDeserializer.fromFile( "item_jar.json" );
 //

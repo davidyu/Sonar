@@ -1,0 +1,13 @@
+{
+    "createObject":
+    {
+        "name" : "PickleJar",
+        "pos"  : {
+            "Vec2" : {
+                "x" : 10,
+                "y" : 10
+            }
+        },
+        "lookText" : "An unopened jar of pickles. You can't tell if they've been around for a while. But you decide it's best not to try your luck."
+    }
+}

@@ -1,3 +1,6 @@
+Features
+========
+
 TODO for parser
 DOIN discuss architecture for gcc
 TODO design interface for loading game vocabulary/lang specs
@@ -12,10 +15,43 @@ TODO compile:
               unlock door with key
               open door
               open door with key    > KEY USE DOOR
-TODO controller architecture:
-    approach 1: DOING ControllerSys manages all actions (entities)
-    approach 2: Logic is distributed across different ControllerSys, with one MasterControllerSys
-TODO (easy) inventory test
-TODO serialize json object into entity with respective components
-    proof-of-concept: create the ChestEntity with a script for OnOpen (prints "chest opened")
+DONE controller architecture:
+{
+    first-effort: ControllerSys manages all actions (entities)
+    refine-if-necessary: Logic is distributed across different ControllerSys, with one MasterControllerSys
+}
+DONE inventory test
+DOIN serialize json object into entity with respective components
+{
+    DONE create default object with a script for Look (prints "a jar of pickles")
+    DONE implement automatic serialization of Vec2
+    DONE implement automatic serialization of any object via constructor
+    DONE implement automatic serialization of any object via field-filling
+    DONE integrate NameRegistry so can get Entity from name
+    DONE refactor deserialize class
+    TODO find a way to acquire managers at runtime from a string of text, or don't do it at all
+    ???? do we want to dynamically build components at runtime and be able to reference them?
+    ???? do we need a robust debugger for dynamic object creation via scripts?
+}
+TODO write Makefiles and buildscripts for faster iteration
+TODO design architecture for Teracts
+TODO implment proof-of-concept (MVP) of Teracts
 TODO design architecture for printing to stdout
+TODO design story-flow and state architecture
+{
+    Main plot flow -> Tree/DAG/Linked List
+    Sub plot flow -> Separate tree/DAG/Linked List
+    How to query plot flow? Query main module or use components
+    OR decentralized story flow (components never share data)
+}
+TODO design game save mechanics and architecture
+
+Wishlists
+=========
+
++ if have time, architect better portal/sector architecture
+
+Bugfixes
+========
+
+TODO fix AdvancedParser ls command - maybe to do with bad getAllEntitiesOfContainer

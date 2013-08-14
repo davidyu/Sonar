@@ -8,6 +8,7 @@ import utils.Vec2;
 
 using gibber.Util;
 
+@:rtti
 class MoveCmd implements Command
 {
     @:isVar public var dest : Vec2;

@@ -11,6 +11,7 @@ import gibber.components.RenderCmp;
 import gibber.gabby.PortalEdge;
 import gibber.components.ContainerCmp;
 
+@:rtti
 class TakeCmd implements Command
 {
     @:isVar public var obj   ( default, null ) : Entity;

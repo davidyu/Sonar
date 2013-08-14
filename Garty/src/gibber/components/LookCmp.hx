@@ -1,6 +1,7 @@
 package gibber.components;
 import com.artemisx.Component;
 
+@:rtti
 class LookCmp implements Component
 {
 
