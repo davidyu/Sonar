@@ -54,10 +54,19 @@ class EntityBuilder
         //portalRegionCmp.parent = portalPosCmp.sector;
         //portalRegionCmp.adj.push( portalPosCmp.sector );
         for ( e in edges ) {
-            portalRegionCmp.adj.push( e.pSrc );
-            portalRegionCmp.adj.push( e.pDest );
+            if ( !portalRegionCmp.adj.has( e.pSrc ) ) {
+                portalRegionCmp.adj.push( e.pSrc );
+            }
+            if ( !portalRegionCmp.adj.has( e.pDest ) ) {
+                portalRegionCmp.adj.push( e.pDest );
+            }
             regionMapper.get( e.pSrc ).adj.push( portal );
         }
+    }
+    
+    public function doubleEdge( portal : Entity, s1 : Entity, s2 : Entity ) : Void {
+        addPortalEdges( portal, [new PortalEdge( s1, s2, god.sf.createScript( "transit" ) )] );
+        addPortalEdges( portal, [new PortalEdge( s2, s1, god.sf.createScript( "transit" ) )] );
     }
     
     public function createWordRef( tag : SynTag ) {

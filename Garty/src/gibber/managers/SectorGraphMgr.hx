@@ -44,15 +44,16 @@ class SectorGraphMgr extends Manager
                 var indexI = sectorIndex.indexOf( edge.pSrc );
                 
                 if ( indexI != -1 ) {
-                    if ( indexI > adjMat.length - 1 ) {
+                    if ( indexI > adjMat.length - 1 || adjMat[indexI] == null) {
                         adjMat.realInsert( indexI, new Array() );
                     }
                     var indexJ = sectorIndex.indexOf( edge.pDest );
                     
                     if ( indexJ != -1 ) {
                         if ( indexJ > adjMat[indexI].length - 1 ) {
+                            trace( e.id );
                             adjMat[indexI].realInsert( indexJ, [e] );
-                        } else {
+                        } else if ( !adjMat[indexI][indexJ].has( e ) ){
                             adjMat[indexI][indexJ].push( e );
                         }
                     } else {

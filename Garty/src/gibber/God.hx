@@ -33,7 +33,7 @@ class God
     @:isVar public var cmdFactory ( default, null ) : CmdFactory;
     @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
     @:isvar public var entityDeserializer ( default, null ) : EntityDeserializer;
-    @:isVar public var scriptFactory ( default, null ) : ScriptFactory;
+    @:isVar public var sf ( default, null ) : ScriptFactory;
     @:isVar public var entityResolver ( default, null ) : EntityResolver;
     
     public function new( r : MovieClip ) {
@@ -57,7 +57,7 @@ class God
 
         parser = new AdvancedParser( this );
         commander = new Commander( this );
-        scriptFactory = new ScriptFactory( this );
+        sf = new ScriptFactory( this );
         entityResolver = new EntityResolver( this );
         
         
@@ -133,19 +133,20 @@ class God
 
         //portals.push
         portals.push( entityBuilder.createPortal( "door01", new Vec2( 75, 200 ) ) );
-        portals.push( entityBuilder.createPortal( "door12", new Vec2( 65, 30 ) ) );
-        portals.push( entityBuilder.createPortal( "door13", new Vec2( 45, 65 ) ) );
-        portals.push( entityBuilder.createPortal( "door34", new Vec2( 125, 5 ) ) );
+        portals.push( entityBuilder.createPortal( "door12", new Vec2( 45 + 80, 65 + 170 ) ) );
+        portals.push( entityBuilder.createPortal( "door13", new Vec2( 65 + 80, 30 + 170 ) ) );
+        portals.push( entityBuilder.createPortal( "door34", new Vec2( 125 + 150, 5 +190 ) ) );
 
         player = entityBuilder.createPlayer( "Bob" );
         var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ), "" );
 
         entityDeserializer.fromFile( "item_jar.json" );
 //
-        var edge = new PortalEdge( sectors[0], sectors[1], scriptFactory.createScript( "transit" ) );
-        entityBuilder.addPortalEdges( portals[0], [edge] );
-        entityBuilder.addPortalEdges( portals[0], [new PortalEdge( sectors[1], sectors[0], scriptFactory.createScript( "transit" ) )] );
-        //entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[2], scriptFactory.createScript( "transit" ) )] );
+        entityBuilder.doubleEdge( portals[0], sectors[0], sectors[1] );
+        entityBuilder.doubleEdge( portals[1], sectors[1], sectors[2] );
+        entityBuilder.doubleEdge( portals[2], sectors[1], sectors[3] );
+        entityBuilder.doubleEdge( portals[3], sectors[3], sectors[4] );
+        //entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[2], sf.createScript( "transit" ) )] );
 
         var cmdCmp = player.getComponent( CmdQueue );
                 

@@ -11,7 +11,6 @@ CmdQueue gibber.components.CmdQueue
 CommandCmp gibber.components.CommandCmp
 ContainableCmp gibber.components.ContainableCmp
 ContainerCmp gibber.components.ContainerCmp
-EntityRefCmp gibber.components.EntityRefCmp
 InventoryCmp gibber.components.InventoryCmp
 LookCmp gibber.components.LookCmp
 NameIdCmp gibber.components.NameIdCmp

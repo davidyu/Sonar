@@ -41,7 +41,6 @@ class PhysicsSys extends EntitySystem
             posCmp = posMapper.get( e );
             posCmp.dp = posCmp.dp.scale( 0.8 );
             newPos = posCmp.pos.add( posCmp.dp );
-            trace( posCmp.sector.id );
                         
             // If entity is in an adjacent and nested region to the sector, add this region to player pos
             var sectorRegionCmp = regionMapper.get( posCmp.sector );
@@ -75,6 +74,11 @@ class PhysicsSys extends EntitySystem
                     continue;
                 }
                 
+                var str = "";
+                for ( adj in regions ) {
+                    str += adj.id + ", ";
+                }
+                trace( str );
                 // This is actual loop that grabs adjacent sectors to current portal
                 for ( adj in regions ) {
                     var adjRegionCmp = regionMapper.get( adj );
@@ -86,12 +90,15 @@ class PhysicsSys extends EntitySystem
                             isColl = false;
                             minSector = adj;                            
                             posCmp.regionsIn.clear(); // todo Add exit first
-                            break;
+                            break;  
                         } else {
                             // Get distance between newPos and closest polygon for determining closest sector
                             var np = Util.sectorCoords( newPos, posCmp.sector, adj );
                             collPoint = p.getClosestPoint( np );
                             dist = collPoint.sub( np ).lengthsq();
+                                                    trace( minVec );
+                                                    trace( posMapper.get( adj ).pos );
+
                             if ( dist < minDist ) {
                                 minDist = dist;
                                 minVec = Util.sectorCoords( collPoint, posCmp.sector, adj );
@@ -102,6 +109,31 @@ class PhysicsSys extends EntitySystem
                     if ( !isColl ) { break; } // I wish haxe had a goto
                 }
                 if ( !isColl ) { break; }
+            }
+            
+            // Check for collisions within local sector
+            if ( isColl ) {
+                sectorPolys = sectorRegionCmp.polys;
+                for ( p in sectorPolys ) {
+                    if ( p.isPointinPolygon( newPos ) ) {
+                        isColl = false;
+                        minVec = newPos.clone();
+                        break;
+                    }
+                }
+                
+                // If the position is out of bounds, move it to closest valid location
+                if ( isColl ) {
+                    for ( p in sectorPolys ) {
+                        collPoint = p.getClosestPoint( newPos );
+                        dist = collPoint.sub( newPos ).lengthsq();
+                        if ( dist < minDist ) {
+                            minDist = dist;
+                            minVec = collPoint.clone();
+                            minSector = posCmp.sector;
+                        }
+                    }
+                }
             }
             
             // Handle new sector transition

@@ -9,9 +9,9 @@ class PortalEdge
     @:isVar public var pDest : Entity;
     @:isVar public var transitScript : TransitScript;
     
-    public function new( sourcePortal : Entity, destPortal : Entity, transitScript : TransitScript ) {
-        this.pSrc = sourcePortal;
-        this.pDest = destPortal;
+    public function new( srcSec : Entity, destSec : Entity, transitScript : TransitScript ) {
+        this.pSrc = srcSec;
+        this.pDest = destSec;
         this.transitScript = transitScript;
     }
     
