@@ -105,8 +105,8 @@ class AdvancedParser
                 if ( objs != null ) {
                     var cmdCmp = god.player.getComponent( CmdQueue );
                     var posCmp = posMapper.get( objs[0] );
-                    cmdCmp.enqueue( god.cmdFactory.createCmd( "move", [ newLoc, posCmp.pos, posCmp.sector] ) );
-                    cmdCmp.enqueue( god.cmdFactory.createCmd( "take", [ objs[0], newLoc ] ) );
+                    cmdCmp.enqueue( god.cf.createCmd( "move", [ newLoc, posCmp.pos, posCmp.sector] ) );
+                    cmdCmp.enqueue( god.cf.createCmd( "take", [ objs[0], newLoc ] ) );
                 } else {
                     god.debugPrintln( "No such item exists" );
                 }

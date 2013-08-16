@@ -30,7 +30,7 @@ class TestBed
         sectors.push( entityBuilder.createSector( "sector5", new Vec2( 0, 0 ), [] ) );
         sectors.push( entityBuilder.createSector( "sector6", new Vec2( 0, 0 ), [] ) );
         
-        player = entityBuilder.createPlayer( "Bob" );
+        player = entityBuilder.createPlayer( "Bob" , sectors[0] );
         var syns = new List<String>();
         syns.push("player");
         syns.push("me");

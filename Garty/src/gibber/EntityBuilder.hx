@@ -80,11 +80,11 @@ class EntityBuilder
         return e;
     }
     
-    public function createPlayer( name : String ) : Entity {
+    public function createPlayer( name : String, sector : Entity ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
         var nameCmp = new NameIdCmp( name );
-        var posCmp = new PosCmp( god.sectors[0], new Vec2( 20, 20 ) );
+        var posCmp = new PosCmp( sector, new Vec2( 20, 20 ) );
         var renderCmp = new RenderCmp();
         var cmdCmp = new CmdQueue();
         var containerCmp = new ContainerCmp(); //temporary hack solution

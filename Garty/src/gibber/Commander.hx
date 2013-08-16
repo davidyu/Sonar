@@ -31,7 +31,7 @@ class Commander
 
     public function goToPosition( mover : Entity, newLoc : Vec2 ) : Void {
         var curSector : Entity   = mover.getComponent( PosCmp ).sector;
-        var moveCmd   : Command  = god.cmdFactory.createCmd( "move", [ mover, newLoc, curSector ] );
+        var moveCmd   : Command  = god.cf.createCmd( "move", [ mover, newLoc, curSector ] );
         var cq        : CmdQueue = mover.getComponent( CmdQueue );
         cq.enqueue( moveCmd );
     }
@@ -45,7 +45,7 @@ class Commander
             var dest = posMapper.get( portalCmp.edges[0].pDest ).pos;
             var cq  = mover.getComponent( CmdQueue );
             
-            cq.enqueue( god.cmdFactory.createCmd( "move", [ mover, dest, destSector] ) );
+            cq.enqueue( god.cf.createCmd( "move", [ mover, dest, destSector] ) );
         } else {
             
         }

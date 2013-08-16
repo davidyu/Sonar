@@ -30,7 +30,7 @@ import utils.Vec2;
 class God
 {
     @:isVar public var world ( default, null ) : World;
-    @:isVar public var cmdFactory ( default, null ) : CmdFactory;
+    @:isVar public var cf ( default, null ) : CmdFactory;
     @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
     @:isvar public var entityDeserializer ( default, null ) : EntityDeserializer;
     @:isVar public var sf ( default, null ) : ScriptFactory;
@@ -51,7 +51,7 @@ class God
         
         Util.init( this );
 
-        cmdFactory = new CmdFactory( this );
+        cf = new CmdFactory( this );
         entityBuilder = new EntityBuilder( this );
         entityDeserializer = new EntityDeserializer( this );
 
@@ -137,7 +137,15 @@ class God
         portals.push( entityBuilder.createPortal( "door13", new Vec2( 65 + 80, 30 + 170 ) ) );
         portals.push( entityBuilder.createPortal( "door34", new Vec2( 125 + 150, 5 +190 ) ) );
 
-        player = entityBuilder.createPlayer( "Bob" );
+        player = entityBuilder.createPlayer( "Bob", sectors[0] );
+        var rob = entityBuilder.createPlayer( "robot", sectors[3] );
+        var cmdq = rob.getComponent( CmdQueue );
+        for ( i in 0...100 ) {
+            cmdq.enqueue( cf.createCmd( "move", [ rob, new Vec2( 120, 10 ), sectors[3]] ) );
+            cmdq.enqueue( cf.createCmd( "move", [ rob, new Vec2( 10, 10 ), sectors[3]] ) );
+        }
+        
+     
         var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ), "" );
 
         entityDeserializer.fromFile( "item_jar.json" );

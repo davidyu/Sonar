@@ -7886,8 +7886,9 @@
 	<c path="utils.Vec2"/>
 	<c path="com.artemisx.Entity"/>
 </f></createPortal>
-		<createPlayer public="1" set="method" line="83"><f a="name">
+		<createPlayer public="1" set="method" line="83"><f a="name:sector">
 	<c path="String"/>
+	<c path="com.artemisx.Entity"/>
 	<c path="com.artemisx.Entity"/>
 </f></createPlayer>
 		<createWordRef public="1" set="method" line="72"><f a="tag">
@@ -7994,22 +7995,22 @@
 		<baseTextFormat><c path="flash.text.TextFormat"/></baseTextFormat>
 		<inputTextfield><c path="flash.text.TextField"/></inputTextfield>
 		<root><c path="flash.display.MovieClip"/></root>
-		<debugClear public="1" set="method" line="212"><f a=""><x path="Void"/></f></debugClear>
-		<debugPrintln public="1" set="method" line="201"><f a="str:?fromInput">
+		<debugClear public="1" set="method" line="220"><f a=""><x path="Void"/></f></debugClear>
+		<debugPrintln public="1" set="method" line="209"><f a="str:?fromInput">
 	<c path="String"/>
 	<x path="Bool"/>
 	<x path="Void"/>
 </f></debugPrintln>
-		<debugPrint public="1" set="method" line="196"><f a="str">
+		<debugPrint public="1" set="method" line="204"><f a="str">
 	<c path="String"/>
 	<x path="Void"/>
 </f></debugPrint>
-		<onEnterKey set="method" line="177"><f a="e">
+		<onEnterKey set="method" line="185"><f a="e">
 	<c path="flash.events.KeyboardEvent"/>
 	<x path="Void"/>
 </f></onEnterKey>
-		<input set="method" line="161"><f a=""><x path="Void"/></f></input>
-		<tick public="1" set="method" line="155"><f a="_">
+		<input set="method" line="169"><f a=""><x path="Void"/></f></input>
+		<tick public="1" set="method" line="163"><f a="_">
 	<unknown/>
 	<x path="Void"/>
 </f></tick>
@@ -8032,10 +8033,10 @@
 			<c path="gibber.EntityBuilder"/>
 			<meta><m n=":isVar"/></meta>
 		</entityBuilder>
-		<cmdFactory public="1" set="null">
+		<cf public="1" set="null">
 			<c path="gibber.CmdFactory"/>
 			<meta><m n=":isVar"/></meta>
-		</cmdFactory>
+		</cf>
 		<world public="1" set="null">
 			<c path="com.artemisx.World"/>
 			<meta><m n=":isVar"/></meta>
