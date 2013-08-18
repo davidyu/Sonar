@@ -96,8 +96,6 @@ class PhysicsSys extends EntitySystem
                             var np = Util.sectorCoords( newPos, posCmp.sector, adj );
                             collPoint = p.getClosestPoint( np );
                             dist = collPoint.sub( np ).lengthsq();
-                                                    trace( minVec );
-                                                    trace( posMapper.get( adj ).pos );
 
                             if ( dist < minDist ) {
                                 minDist = dist;

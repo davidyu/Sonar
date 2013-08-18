@@ -561,7 +561,7 @@
 	element does not imply copying the whole array content every time.</haxe_doc>
 		<meta><m n=":keep"/></meta>
 	</class>
-	<class path="Main" params="" file="src/Main.hx"><main set="method" line="27" static="1">
+	<class path="Main" params="" file="src/Main.hx"><main set="method" line="30" static="1">
 	<f a=""><x path="Void"/></f>
 	<meta><m n=":keep"/></meta>
 </main></class>
@@ -8291,7 +8291,11 @@
 	</class>
 	<class path="gibber.components.NameIdCmp" params="" file="src/gibber/components/NameIdCmp.hx">
 		<implements path="com.artemisx.Component"/>
-		<__rtti public="1" line="6" static="1"><c path="String"/></__rtti>
+		<__rtti public="1" line="7" static="1"><c path="String"/></__rtti>
+		<syns public="1">
+			<c path="gibber.gabby.SynTag"/>
+			<meta><m n=":isVar"/></meta>
+		</syns>
 		<name public="1">
 			<c path="String"/>
 			<meta><m n=":isVar"/></meta>
@@ -8300,7 +8304,7 @@
 			<c path="com.artemisx.Entity"/>
 			<meta><m n=":isVar"/></meta>
 		</tagEntityRef>
-		<new public="1" set="method" line="11"><f a="n">
+		<new public="1" set="method" line="13"><f a="n">
 	<c path="String"/>
 	<x path="Void"/>
 </f></new>
@@ -8625,15 +8629,34 @@
 		<initialize public="1" set="method" line="29" override="1"><f a=""><x path="Void"/></f></initialize>
 		<new public="1" set="method" line="24"><f a=""><x path="Void"/></f></new>
 	</class>
+	<class path="gibber.scripts.Script" params="" file="src/gibber/scripts/Script.hx" interface="1"/>
 	<class path="gibber.scripts.GenericScript" params="" file="src/gibber/scripts/GenericScript.hx">
-		<execute public="1" set="method" line="14"><f a="args">
-	<c path="Array"><d/></c>
-	<c path="Array"><d/></c>
+		<implements path="gibber.scripts.Script"/>
+		<scriptBase><c path="gibber.ScriptFactory"/></scriptBase>
+		<execute public="1" set="method" line="14"><f a="invoker:invokees:params">
+	<c path="com.artemisx.Entity"/>
+	<c path="Array"><c path="com.artemisx.Entity"/></c>
+	<c path="Array"><c path="String"/></c>
+	<a>
+		<res><e path="gibber.scripts.ExeRes"/></res>
+		<outs><c path="Array"><d/></c></outs>
+		<msg><c path="String"/></msg>
+	</a>
 </f></execute>
-		<new public="1" set="method" line="10"><f a=""><x path="Void"/></f></new>
-		<haxe_doc>* ...
- * @author ...</haxe_doc>
+		<codes public="1">
+			<c path="String"/>
+			<meta><m n=":isVar"/></meta>
+		</codes>
+		<new public="1" set="method" line="9"><f a="scriptBase:codes">
+	<c path="gibber.ScriptFactory"/>
+	<c path="String"/>
+	<x path="Void"/>
+</f></new>
 	</class>
+	<enum path="gibber.scripts.ExeRes" params="" file="src/gibber/scripts/Script.hx" module="gibber.scripts.Script">
+		<PASS/>
+		<FAIL/>
+	</enum>
 	<class path="gibber.scripts.TransitScript" params="" file="src/gibber/scripts/TransitScript.hx">
 		<god><c path="gibber.God"/></god>
 		<execute public="1" set="method" line="16"><f a="mover:pSrc:pDest">
@@ -8744,6 +8767,57 @@
 		<initialize public="1" set="method" line="18" override="1"><f a=""><x path="Void"/></f></initialize>
 		<new public="1" set="method" line="14"><f a=""><x path="Void"/></f></new>
 	</class>
+	<class path="gibber.teracts.Teract" params="" file="src/gibber/teracts/Teract.hx" interface="1">
+		<executeEffect public="1" set="method"><f a="invoker:invokees:params">
+	<c path="com.artemisx.Entity"/>
+	<c path="Array"><c path="com.artemisx.Entity"/></c>
+	<c path="Array"><c path="String"/></c>
+	<c path="String"/>
+</f></executeEffect>
+		<matchParams public="1" set="method"><f a="invoker:invokees:params">
+	<c path="com.artemisx.Entity"/>
+	<c path="Array"><c path="com.artemisx.Entity"/></c>
+	<c path="Array"><c path="String"/></c>
+	<a>
+		<msg><c path="String"/></msg>
+		<match><e path="gibber.teracts.TMatch"/></match>
+	</a>
+</f></matchParams>
+		<syns public="1"><c path="gibber.gabby.SynTag"/></syns>
+	</class>
+	<class path="gibber.teracts.LookTeract" params="" file="src/gibber/teracts/LookTeract.hx">
+		<implements path="gibber.teracts.Teract"/>
+		<lookScript><c path="gibber.scripts.GenericScript"/></lookScript>
+		<god><c path="gibber.God"/></god>
+		<executeEffect public="1" set="method" line="30"><f a="invoker:invokees:params">
+	<c path="com.artemisx.Entity"/>
+	<c path="Array"><c path="com.artemisx.Entity"/></c>
+	<c path="Array"><c path="String"/></c>
+	<c path="String"/>
+</f></executeEffect>
+		<matchParams public="1" set="method" line="21"><f a="invoker:invokees:params">
+	<c path="com.artemisx.Entity"/>
+	<c path="Array"><c path="com.artemisx.Entity"/></c>
+	<c path="Array"><c path="String"/></c>
+	<a>
+		<msg><c path="String"/></msg>
+		<match><e path="gibber.teracts.TMatch"/></match>
+	</a>
+</f></matchParams>
+		<syns public="1">
+			<c path="gibber.gabby.SynTag"/>
+			<meta><m n=":isVar"/></meta>
+		</syns>
+		<new set="method" line="15"><f a="god:syns">
+	<c path="gibber.God"/>
+	<c path="gibber.gabby.SynTag"/>
+	<x path="Void"/>
+</f></new>
+	</class>
+	<enum path="gibber.teracts.TMatch" params="" file="src/gibber/teracts/Teract.hx" module="gibber.teracts.Teract">
+		<NOMATCH/>
+		<MATCH/>
+	</enum>
 	<class path="haxe.EnumTools" params="" file="C:\code\haxe/std/haxe/EnumTools.hx" extern="1">
 		<getName public="1" params="T" get="inline" set="null" line="41" static="1">
 			<f a="e">
@@ -9536,4 +9610,9 @@
 </f></new>
 		<meta><m n=":rtti"/></meta>
 	</class>
+	<class path="utils.Words" params="" file="src/utils/Words.hx"><wordsInOrder public="1" set="method" line="5" static="1"><f a="ordered:all">
+	<c path="Array"><c path="String"/></c>
+	<c path="Array"><c path="String"/></c>
+	<x path="Bool"/>
+</f></wordsInOrder></class>
 </haxe>

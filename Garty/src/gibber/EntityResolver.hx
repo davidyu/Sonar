@@ -43,6 +43,8 @@ class EntityResolver
         return res;
     }
     
+    
+    
     var god : God;
     var cm : ContainerMgr;
     var nr : NameRegistry;
