@@ -35,6 +35,19 @@ DOIN serialize json object into entity with respective components
 }
 TODO write Makefiles and buildscripts for faster iteration
 TODO design architecture for Teracts
+{
+    NOTE needs to be able to respond to match and not match and match but incorrect
+    NOTE before we even get to Teracts we need to resolve player input into in-game entities
+}
+TODO write simple parser to handle resolving player entities
+{
+    TODO resolve the player input into a list of potential entities
+}
+TODO think about the hard stuffs
+{
+    TODO how to resolve player input? (Parser)
+    TODO how to handle player input on the backend? (Parser/Model interaction)
+}
 TODO implment proof-of-concept (MVP) of Teracts
 TODO design architecture for printing to stdout
 TODO design story-flow and state architecture
