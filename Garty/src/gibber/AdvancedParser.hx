@@ -8,6 +8,7 @@ import gibber.components.PortalCmp;
 import gibber.components.RenderCmp;
 import gibber.managers.NameRegistry;
 import gibber.managers.ContainerMgr;
+import gibber.managers.SynonymMgr;
 import com.artemisx.Entity;
 import com.artemisx.ComponentMapper;
 import com.artemisx.ComponentMapper;
@@ -112,6 +113,18 @@ class AdvancedParser
                 }
 
                 return "";
+				
+			case "resolve":
+				if ( words.length >= 2 ) {
+					var synonym : String = words[1];
+					var synonymMgr : SynonymMgr = god.world.getManager( SynonymMgr );
+					for ( n in synonymMgr.resolveSynonym( synonym ) ) {
+						god.debugPrintln( n );
+					}
+				} else {
+					god.debugPrintln( "usage: resolve <synonym> " );
+				}
+				return "";
 
             case "clear":
                 god.debugClear();
