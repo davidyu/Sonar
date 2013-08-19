@@ -61,6 +61,10 @@ class SynonymMgr extends Manager
             record.push( entityNameId );
         }
     }
+	
+	public function resolveSynonym( s : String ) : List<String> {
+		return entitiesFromSynonyms.get( s );
+	}
     
     override public function onDeleted( e : Entity ) : Void {
         var nameCmp = nameMapper.getSafe( e );
