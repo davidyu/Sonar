@@ -6,13 +6,15 @@ import gibber.components.NameIdCmp;
 import gibber.gabby.SynTag;
 import gibber.God;
 import gibber.scripts.GenericScript;
+import haxe.ds.StringMap;
+import haxe.ds.StringMap;
 import utils.Words;
 
 class LookTeract implements Teract
 {
     @:isVar public var syns : SynTag;
     
-    function new( god : God, syns : SynTag ) {
+    public function new( god : God, syns : SynTag ) {
         this.syns = syns;
         this.god = god;
     }
@@ -27,11 +29,19 @@ class LookTeract implements Teract
         }
     }
     
-    public function executeEffect( invoker : Entity, invokees : Array<Entity>, params : Array<String> ) : String {
+    public function executeEffect( invoker : Entity, invokees : Array<Entity>, params : StringMap<Dynamic> ) : String {
+        var outs : StringMap<Dynamic> = new StringMap();
+        
+        if ( params == null ) {
+            params = new StringMap();
+        }
+        params.set( "invoker", invoker );
+        params.set( "invokees", invokees );
+        
         if ( lookScript == null ) {
             return invokees[0].getComponent( LookCmp ).lookText;
         } else {
-            return lookScript.execute( invoker, invokees, params ).msg;
+            return lookScript.execute( params, outs );
         }
     }
     

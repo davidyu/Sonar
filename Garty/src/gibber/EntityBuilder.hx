@@ -7,6 +7,7 @@ import com.artemisx.World;
 import flash.utils.IDataInput2;
 import gibber.components.ContainableCmp;
 import gibber.components.StaticPosCmp;
+import gibber.components.TeractNodeCmp;
 import gibber.gabby.PortalEdge;
 import gibber.gabby.SynTag;
 import gibber.commands.MoveCmd;
@@ -23,6 +24,7 @@ import gibber.components.SynListCmp;
 import gibber.components.TransitRequestCmp;
 import gibber.managers.ContainerMgr;
 import gibber.scripts.TransitScript;
+import gibber.teracts.LookTeract;
 import utils.Polygon;
 import utils.Vec2;
 
@@ -88,6 +90,7 @@ class EntityBuilder
         var renderCmp = new RenderCmp();
         var cmdCmp = new CmdQueue();
         var containerCmp = new ContainerCmp(); //temporary hack solution
+        var teractCmp = new TeractNodeCmp( [new LookTeract( god, null )]);
         var inventoryCmp = new InventoryCmp();
         
         lookCmp.lookText = "This is the player";
@@ -97,6 +100,7 @@ class EntityBuilder
         e.addComponent( posCmp );
         e.addComponent( renderCmp );
         e.addComponent( cmdCmp );
+        e.addComponent( teractCmp );
         e.addComponent( containerCmp );
         e.addComponent( inventoryCmp );
 

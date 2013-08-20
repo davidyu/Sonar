@@ -74,11 +74,6 @@ class PhysicsSys extends EntitySystem
                     continue;
                 }
                 
-                var str = "";
-                for ( adj in regions ) {
-                    str += adj.id + ", ";
-                }
-                trace( str );
                 // This is actual loop that grabs adjacent sectors to current portal
                 for ( adj in regions ) {
                     var adjRegionCmp = regionMapper.get( adj );

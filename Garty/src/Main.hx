@@ -24,6 +24,23 @@ import utils.Words;
 
 using gibber.Util;
 
+class Test
+{
+    public function new() {
+        v = 10;
+    }
+    public var v : Int;
+}
+
+class Best
+{
+    public var t : Test;
+    public function new() {
+        t = new Test();
+        t.v = 30;
+    }
+}
+
 class Main 
 {
 
@@ -37,6 +54,8 @@ class Main
         trace( "Starting up God" );
         
         var g = new God( Lib.current );
+        
+                
         
         //var t = new NameIdCmp( "hello" );
 //

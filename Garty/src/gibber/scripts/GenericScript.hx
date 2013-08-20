@@ -1,20 +1,20 @@
 package gibber.scripts;
 import com.artemisx.Entity;
 import gibber.ScriptFactory;
+import haxe.ds.StringMap;
 
 class GenericScript implements Script
 {
-    @:isVar public var codes : String;
+    @:isVar public var script : String;
     
-    public function new( scriptBase : ScriptFactory, codes : String ) {
-        this.codes = codes;
-        this.scriptBase = scriptBase;
+    public function new( scriptBase : ScriptFactory, script : String ) {
+        this.script = script;
+        this.sb = scriptBase;
     }
     
-    public function execute( invoker : Entity, invokees : Array<Entity>, params : Array<String> ) : { msg : String,  res : Script.ExeRes, outs : Array<Dynamic> } {
-        return null;
+    public function execute( params : StringMap<Dynamic>, outs : StringMap<Dynamic> ) : String {
+        return sb.executeScript( script, params, outs );
     }
     
-    var scriptBase : ScriptFactory;
-    
+    var sb : ScriptFactory;
 }

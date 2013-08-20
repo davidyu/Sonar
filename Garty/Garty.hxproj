@@ -17,6 +17,7 @@
   <classpaths>
     <class path="src" />
     <class path="..\..\artemis-haxelib\src" />
+    <class path="..\..\..\lib\hscript\2,0,1" />
   </classpaths>
   <!-- Build options -->
   <build>
