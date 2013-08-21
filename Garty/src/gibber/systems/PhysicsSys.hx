@@ -74,11 +74,6 @@ class PhysicsSys extends EntitySystem
                     continue;
                 }
                 
-                var str = "";
-                for ( adj in regions ) {
-                    str += adj.id + ", ";
-                }
-                trace( str );
                 // This is actual loop that grabs adjacent sectors to current portal
                 for ( adj in regions ) {
                     var adjRegionCmp = regionMapper.get( adj );
@@ -96,8 +91,6 @@ class PhysicsSys extends EntitySystem
                             var np = Util.sectorCoords( newPos, posCmp.sector, adj );
                             collPoint = p.getClosestPoint( np );
                             dist = collPoint.sub( np ).lengthsq();
-                                                    trace( minVec );
-                                                    trace( posMapper.get( adj ).pos );
 
                             if ( dist < minDist ) {
                                 minDist = dist;

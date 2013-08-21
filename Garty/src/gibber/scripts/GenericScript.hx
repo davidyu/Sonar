@@ -1,19 +1,20 @@
 package gibber.scripts;
+import com.artemisx.Entity;
+import gibber.ScriptFactory;
+import haxe.ds.StringMap;
 
-/**
- * ...
- * @author ...
- */
-class GenericScript
+class GenericScript implements Script
 {
-
-    public function new() {
-        
+    @:isVar public var script : String;
+    
+    public function new( scriptBase : ScriptFactory, script : String ) {
+        this.script = script;
+        this.sb = scriptBase;
     }
     
-    public function execute( args : Array<Dynamic> ) : Array<Dynamic> {
-        
-        return ["moved to a sector", true];
+    public function execute( params : StringMap<Dynamic>, outs : StringMap<Dynamic> ) : String {
+        return sb.executeScript( script, params, outs );
     }
     
+    var sb : ScriptFactory;
 }

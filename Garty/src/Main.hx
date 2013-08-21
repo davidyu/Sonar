@@ -14,12 +14,32 @@ import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
 import gibber.components.TakeCmp;
 import gibber.components.TransitRequestCmp;
+import gibber.gabby.SynTag;
 import gibber.God;
 import gibber.scripts.GenericScript;
+import gibber.teracts.LookTeract;
 import haxe.ds.GenericStack;
 import haxe.Unserializer;
+import utils.Words;
 
 using gibber.Util;
+
+class Test
+{
+    public function new() {
+        v = 10;
+    }
+    public var v : Int;
+}
+
+class Best
+{
+    public var t : Test;
+    public function new() {
+        t = new Test();
+        t.v = 30;
+    }
+}
 
 class Main 
 {
@@ -34,7 +54,8 @@ class Main
         trace( "Starting up God" );
         
         var g = new God( Lib.current );
-        var w = new World();
+        
+                
         
         //var t = new NameIdCmp( "hello" );
 //
@@ -44,5 +65,6 @@ class Main
         //var l : NameIdCmp = Unserializer.run( h );
         //trace( l.name );
     }
+    
 
 }

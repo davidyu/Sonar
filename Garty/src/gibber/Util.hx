@@ -3,8 +3,13 @@ import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import gibber.components.PosCmp;
 import haxe.ds.GenericStack;
+import haxe.ds.StringMap;
+import hscript.Interp;
 import utils.Vec2;
 
+using Lambda;
+
+@:access(hscript)
 class Util
 {
     public static function init( g : God ) {
@@ -33,11 +38,29 @@ class Util
         a[i] = v;
     }
     
-    
     public static function clear( s : List<Entity> ) : Void {
         while ( !s.isEmpty() ) {
             s.pop();
         }
+    }
+    
+    public static function mapCopy<V>( m : StringMap<V> ) : StringMap<V> {
+        var res = new StringMap<V>();
+        for ( key in res.keys() ) {
+            res.set( key, res.get( key ) );
+        }
+        
+        return res;
+    }
+    
+    
+    public static function interpCopy( i : Interp ) : Interp {
+        var res = new Interp();
+        res.variables = mapCopy( i.variables );
+        res.locals = mapCopy( i.locals );
+        res.binops = mapCopy( i.binops );
+        res.declared = i.declared.copy();
+        return res;
     }
     
     static var god : God;

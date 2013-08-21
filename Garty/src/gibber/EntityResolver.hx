@@ -43,6 +43,11 @@ class EntityResolver
         return res;
     }
     
+    
+    public function resolve( name : String ) : Array<Entity> {
+        return null;
+    }
+    
     var god : God;
     var cm : ContainerMgr;
     var nr : NameRegistry;

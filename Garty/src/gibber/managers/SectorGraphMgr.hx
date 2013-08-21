@@ -51,7 +51,6 @@ class SectorGraphMgr extends Manager
                     
                     if ( indexJ != -1 ) {
                         if ( indexJ > adjMat[indexI].length - 1 ) {
-                            trace( e.id );
                             adjMat[indexI].realInsert( indexJ, [e] );
                         } else if ( !adjMat[indexI][indexJ].has( e ) ){
                             adjMat[indexI][indexJ].push( e );
