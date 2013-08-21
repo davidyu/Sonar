@@ -113,18 +113,30 @@ class AdvancedParser
                 }
 
                 return "";
-				
-			case "resolve":
-				if ( words.length >= 2 ) {
-					var synonym : String = words[1];
-					var synonymMgr : SynonymMgr = god.world.getManager( SynonymMgr );
-					for ( n in synonymMgr.resolveSynonym( synonym ) ) {
-						god.debugPrintln( n );
-					}
-				} else {
-					god.debugPrintln( "usage: resolve <synonym> " );
-				}
-				return "";
+
+            case "resolve":
+                if ( words.length >= 2 ) {
+
+                    if ( words[1] == "-p" ) {
+                        var synonymMgr : SynonymMgr = god.world.getManager( SynonymMgr );
+                        var syns = synonymMgr.getListOfRegisteredSynonyms(); 
+                        god.debugPrint("{ ");
+                        for ( syn in syns ) {
+                            god.debugPrint( syn + " " );
+                        }
+                        god.debugPrint("}\n");
+                        return "";
+                    }
+
+                    var synonym : String = words[1];
+                    var synonymMgr : SynonymMgr = god.world.getManager( SynonymMgr );
+                    for ( n in synonymMgr.resolveSynonym( synonym ) ) {
+                        god.debugPrintln( n );
+                    }
+                } else {
+                    god.debugPrintln( "usage: resolve <synonym> " );
+                }
+                return "";
 
             case "clear":
                 god.debugClear();

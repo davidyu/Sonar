@@ -137,7 +137,7 @@ class EntityDeserializer
             } else {
                 return resolve( obj );
             }
-        } else { // recursive case ( key->data store in obj )
+        } else if ( Reflect.fields( obj ).length == 1 ) { // recursive case ( key->data store in obj )
             var key = Reflect.fields( obj )[0];
             // if we've got an entry for the class name, optimistically assume we can deserialize it
             if ( classpathTable.exists( key ) ) {
@@ -216,6 +216,13 @@ class EntityDeserializer
                 Reflect.setField( out, key, compiledObj );
                 return out;
             }
+        } else { //an array! Deserialize it to a (generic) list
+            var list = new List();
+            for ( index in Reflect.fields( obj ) ) {
+                list.add( Reflect.field( obj, index ) );
+            }
+
+            return list;
         }
 
         throw "We should never be here!";

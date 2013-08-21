@@ -33,6 +33,21 @@ class SynonymMgr extends Manager
         nameRegistry = world.getManager( NameRegistry );
     }
 
+    public function getRegisteredSynonyms() : Iterator<String> {
+        return entitiesFromSynonyms.keys();
+    }
+
+    public function getListOfRegisteredSynonyms() : List<String> {
+        var keys : Iterator<String> = getRegisteredSynonyms();
+        var keyList : List<String> = new List<String>();
+
+        while ( keys.hasNext() ) {
+            keyList.push( keys.next() );
+        }
+
+        return keyList;
+    }
+
     override public function onAdded( e : Entity ) : Void {
         var tagCmp = tagMapper.getSafe( e );
         

@@ -1,0 +1,17 @@
+{
+    "Entity":
+    {
+        "components":
+        [
+            { "LookCmp": { "lookText" : "A jar of prunes." } },
+            { "NameIdCmp" : { "n" : "PruneJar" } },
+            { "PosCmp" : { "sec" : "$sector0", "pos" : { "Vec2" : { "x" : 10, "y" : 20 } } } },
+            { "StaticPosCmp" : { } },
+            { "RenderCmp" : { } },
+            { "ContainableCmp" : { "mgr" : "@containerMgr", "parent" : "$sector0", "container" : "$sector0" } },
+            { "SynListCmp" : { "tag" : 
+                { "SynTag" : { "name" : "prune jar tag", "entityNameId" : "PruneJar", "synonyms" : [ "jar", "glass", "bottle", "prunes" ] } }
+            } }
+        ]
+    }
+}

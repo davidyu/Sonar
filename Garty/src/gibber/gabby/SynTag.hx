@@ -2,7 +2,7 @@ package gibber.gabby;
 import com.artemisx.Component;
 
 using Lambda;
-
+@:rtti
 class SynTag implements Component
 {
     @:isVar public var name : String; // The id of the tag
