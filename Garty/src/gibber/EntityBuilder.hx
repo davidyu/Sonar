@@ -20,7 +20,6 @@ import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
-import gibber.components.SynListCmp;
 import gibber.components.TransitRequestCmp;
 import gibber.managers.ContainerMgr;
 import gibber.scripts.TransitScript;
@@ -71,25 +70,26 @@ class EntityBuilder
         addPortalEdges( portal, [new PortalEdge( s2, s1, god.sf.createScript( "transit" ) )] );
     }
     
-    public function createWordRef( tag : SynTag ) {
-        var e = world.createEntity();
-        var tagCmp = new SynListCmp( tag );
-        
-        e.addComponent( tagCmp );
-        
-        world.addEntity( e );
-        
-        return e;
-    }
+    //public function createWordRef( tag : SynTag ) {
+        //var e = world.createEntity();
+        //var tagCmp = new SynListCmp( tag );
+        //
+        //e.addComponent( tagCmp );
+        //
+        //world.addEntity( e );
+        //
+        //return e;
+    //}
     
-    public function createPlayer( name : String, sector : Entity ) : Entity {
+    public function createPlayer( name : String, sector : Entity, syns : SynTag ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
-        var nameCmp = new NameIdCmp( name );
+        var nameCmp = new NameIdCmp( name, syns );
         var posCmp = new PosCmp( sector, new Vec2( 20, 20 ) );
         var renderCmp = new RenderCmp();
         var cmdCmp = new CmdQueue();
         var containerCmp = new ContainerCmp(); //temporary hack solution
+        var containableCmp = new ContainableCmp( containerMgr, e, sector ); //temporary hack solution
         var teractCmp = new TeractNodeCmp( [new LookTeract( god, null )]);
         var inventoryCmp = new InventoryCmp();
         
@@ -102,6 +102,7 @@ class EntityBuilder
         e.addComponent( cmdCmp );
         e.addComponent( teractCmp );
         e.addComponent( containerCmp );
+        e.addComponent( containableCmp );
         e.addComponent( inventoryCmp );
 
         world.addEntity( e );
@@ -111,13 +112,13 @@ class EntityBuilder
 
     public function createPortal( name : String, pos : Vec2 ) : Entity {
         var e = world.createEntity();
-        var nameCmp = new NameIdCmp( name );
+        var nameCmp = new NameIdCmp( name, new SynTag( name, new Array<String>() ) );
         var lookCmp = new LookCmp();
         var posCmp = new PosCmp( null, pos );
         var staticCmp = new StaticPosCmp();
         var portalCmp = new PortalCmp();
         var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )] );
-        //var contCmp = new ContainableCmp( containerMgr, sector, sector );
+        //var contCmp = new ContainableCmp( containerMgr, e, null );
         var renderCmp = new RenderCmp( 0x00ff00 );
         
         lookCmp.lookText = "This is the player";
@@ -136,59 +137,10 @@ class EntityBuilder
         return e;
     }    
     
-    public function create2Portal( name : String, s1 : Entity, s2 : Entity, posS1 : Vec2 ) : God.P2 {
-        var e = world.createEntity();
-        var nameCmp = new NameIdCmp( name + "1" );
-        var lookCmp = new LookCmp();
-        var posCmp = new PosCmp( s1, posS1 );
-        var staticCmp = new StaticPosCmp();
-        var portalCmp = new PortalCmp();
-        var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )], s1 );
-        var contCmp = new ContainableCmp( containerMgr, s1, s1 );
-        var renderCmp = new RenderCmp( 0x00ff00 );
-        
-        lookCmp.lookText = "This is the portal";
-        
-        e.addComponent( posCmp );
-        e.addComponent( lookCmp );
-        e.addComponent( portalCmp );
-        e.addComponent( staticCmp );
-        e.addComponent( contCmp );
-        e.addComponent( renderCmp );
-        e.addComponent( regionCmp );
-        e.addComponent( nameCmp );
-
-        world.addEntity( e );
-        
-        var e2 = world.createEntity();
-        nameCmp = new NameIdCmp( name + "2" );
-        lookCmp = new LookCmp();
-        posCmp = new PosCmp( s2, Util.sectorCoords( posS1, s1, s2 ) );
-        staticCmp = new StaticPosCmp();
-        portalCmp = new PortalCmp();
-        regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )], s2 );
-        contCmp = new ContainableCmp( containerMgr, s2, s2 );
-        renderCmp = new RenderCmp( 0x00ff00 );
-        
-        lookCmp.lookText = "This is the portal";
-        
-        e.addComponent( posCmp );
-        e.addComponent( lookCmp );
-        e.addComponent( portalCmp );
-        e.addComponent( staticCmp );
-        e.addComponent( contCmp );
-        e.addComponent( renderCmp );
-        e.addComponent( regionCmp );
-        e.addComponent( nameCmp );
-
-        world.addEntity( e2 );
-        
-        return { p1 : e, p2 : e2 };
-    }
 
     public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
         var e = world.createEntity();
-        var nameCmp = new NameIdCmp( name );
+        var nameCmp = new NameIdCmp( name, new SynTag( name, [name] ) );
         var posCmp = new PosCmp( e, pos );
         var staticCmp = new StaticPosCmp();
         var lookCmp = new LookCmp();
@@ -226,7 +178,7 @@ class EntityBuilder
     {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
-        var nameIdCmp = new NameIdCmp( name );
+        var nameIdCmp = new NameIdCmp( name, new SynTag( name, new Array<String>() ) );
         var posCmp = new PosCmp( god.sectors[0], pos );
         var staticCmp = new StaticPosCmp();
         var renderCmp = new RenderCmp();

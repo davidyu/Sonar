@@ -11,6 +11,7 @@ import gibber.components.NameIdCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.TakeCmp;
+import haxe.ds.IntMap;
 import haxe.ds.ObjectMap;
 import haxe.ds.StringMap;
 import haxe.ds.StringMap;
@@ -20,8 +21,8 @@ using Lambda;
 class ContainerMgr extends Manager
 {
     public function new() {
-        containerEntities = new StringMap();
-        entityContainer = new StringMap();
+        containerEntities = new IntMap();
+        entityContainer = new IntMap();
         aspectMap = new Array();
     }
     
@@ -36,10 +37,10 @@ class ContainerMgr extends Manager
         
         if ( Aspect.matches( containerSig, e.componentBits ) ) {
             var eName = nameMapper.get( e ).name;
-            var entities = containerEntities.get( eName );
+            var entities = containerEntities.get( e.id );
 
             if ( entities == null ) {
-                containerEntities.set( eName, new StringMap() );
+                containerEntities.set( e.id, new StringMap() );
             } else {
                 throw "Adding same container entity twice: " + eName;
             }
@@ -50,11 +51,9 @@ class ContainerMgr extends Manager
         if ( Aspect.matches( objSig, e.componentBits ) && aspectName != null ) {
             // Get item's container entity thru ContainableCmp, and set both hashes
             var container = containableMapper.get( e ).container;
-            var eName = nameMapper.get( e ).name;
 
             if ( container != null ) {
-                var cName = nameMapper.get( container ).name;
-                var containerEnts = containerEntities.get( cName );
+                var containerEnts = containerEntities.get( container.id );
                 var entArr = containerEnts.get( aspectName );
                 
                 if ( entArr == null ) {
@@ -62,9 +61,9 @@ class ContainerMgr extends Manager
                     containerEnts.set( aspectName, entArr );
                 }
                 entArr.push( e );                   // Add entity to container
-                entityContainer.set( eName, container );  // Set container for entity
+                entityContainer.set( e.id, container );  // Set container for entity
             } else {
-                throw "Invalid container for entity: " + eName + ", aspect: " + aspectName + ", container: " + container;
+                throw "Invalid container for entity: " + e.getComponent( NameIdCmp ).name + ", aspect: " + aspectName + ", container: " + container;
             }
         }
     }
@@ -75,16 +74,16 @@ class ContainerMgr extends Manager
         
         if ( Aspect.matches( containerSig, e.componentBits ) ) {
             var eName = nameMapper.get( e ).name;
-            var entities = containerEntities.get( eName );
+            var entities = containerEntities.get( e.id );
 
             if ( entities != null ) {
                 for ( map in entities ) {
                     for ( item in map.iterator() ) {
-                        entityContainer.remove( nameMapper.get( item ).name );
+                        entityContainer.remove( item.id );
                         world.deleteEntity( item );
                     }
                 }
-                containerEntities.remove( eName );
+                containerEntities.remove( e.id );
             } else {
                 throw "Container not registered but deleted... " + eName;
             }
@@ -98,8 +97,7 @@ class ContainerMgr extends Manager
             var eName = nameMapper.get( e ).name;
 
             if ( container != null ) {
-                var cName = nameMapper.get( container ).name;
-                var containerEnts = containerEntities.get( cName );
+                var containerEnts = containerEntities.get( container.id );
                 if ( containerEnts != null ) {
                     var entArr = containerEnts.get( aspectName );
                 
@@ -108,7 +106,7 @@ class ContainerMgr extends Manager
                     }
                 }
 
-                entityContainer.remove( nameMapper.get( e ).name );
+                entityContainer.remove( e.id );
             } else {
                 throw "Containable not registered but deleted: " + eName + ", aspect: " + aspectName + ", container: " + container;
             }
@@ -171,7 +169,7 @@ class ContainerMgr extends Manager
     
     public function getAllEntitiesOfContainer( container : Entity ) : Array<Entity> {
         var res = new Array<Entity>();
-        var maps = containerEntities.get( nameMapper.get( container ).name );
+        var maps = containerEntities.get( container.id );
         
         for ( el in maps.iterator() ) {
             res = res.concat( el );
@@ -181,7 +179,7 @@ class ContainerMgr extends Manager
     
     public function getEntitiesOfContainer( container : Entity, aspect : Aspect ) : Array<Entity> {
         for ( a in aspectMap ) {
-            var cont = containerEntities.get( nameMapper.get( container ).name );
+            var cont = containerEntities.get( container.id );
             if ( cont != null && Aspect.fufills( a.aspect, aspect ) ) {
                 return cont.get( a.name );
             }
@@ -190,11 +188,11 @@ class ContainerMgr extends Manager
     }
     
     public function getContainerOfEntity( e : Entity ) : Entity {
-        return entityContainer.get( nameMapper.get( e ).name );
+        return entityContainer.get( e.id );
     }
     
-    var containerEntities : StringMap<StringMap<Array<Entity>>>;
-    var entityContainer : StringMap<Entity>;
+    var containerEntities : IntMap<StringMap<Array<Entity>>>;
+    var entityContainer : IntMap<Entity>;
     
     var nameMapper : ComponentMapper<NameIdCmp>;
     var containableMapper : ComponentMapper<ContainableCmp>;

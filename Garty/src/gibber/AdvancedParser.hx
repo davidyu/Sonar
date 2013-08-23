@@ -51,7 +51,7 @@ class AdvancedParser
                         case "through", "thru":
                             var portals = god.entityResolver.globalResolve( words[2] );
                             if ( portals != null ) {
-                                var destSector = portalMapper.get( portals[0] ).edges[0].getDestSector();
+                                var destSector = portalMapper.get( portals[0] ).edges[0].pDest;
                                 god.commander.goToSector( god.player, destSector );
                             }
                         default:
@@ -119,7 +119,7 @@ class AdvancedParser
 					var synonym : String = words[1];
 					var synonymMgr : SynonymMgr = god.world.getManager( SynonymMgr );
 					for ( n in synonymMgr.resolveSynonym( synonym ) ) {
-						god.debugPrintln( n );
+						god.debugPrintln( n.listComponents() );
 					}
 				} else {
 					god.debugPrintln( "usage: resolve <synonym> " );

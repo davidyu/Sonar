@@ -15,11 +15,11 @@ class PortalEdge
         this.transitScript = transitScript;
     }
     
-    public function getSrcSector() : Entity {
-        return pSrc.getComponent( PosCmp ).sector;
-    }
-    
-    public function getDestSector() : Entity {
-        return pDest.getComponent( PosCmp ).sector;
-    }
+    //public function getSrcSector() : Entity {
+        //return pSrc.getComponent( PosCmp ).sector;
+    //}
+    //
+    //public function getDestSector() : Entity {
+        //return pDest.getComponent( PosCmp ).sector;
+    //}
 }

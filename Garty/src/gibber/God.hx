@@ -13,6 +13,7 @@ import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
 import gibber.components.TakeCmp;
 import gibber.gabby.PortalEdge;
+import gibber.gabby.SynTag;
 import gibber.managers.ContainerMgr;
 import gibber.managers.NameRegistry;
 import gibber.managers.SectorGraphMgr;
@@ -137,8 +138,8 @@ class God
         portals.push( entityBuilder.createPortal( "door13", new Vec2( 65 + 80, 30 + 170 ) ) );
         portals.push( entityBuilder.createPortal( "door34", new Vec2( 125 + 150, 5 +190 ) ) );
 
-        player = entityBuilder.createPlayer( "Bob", sectors[0] );
-        var rob = entityBuilder.createPlayer( "robot", sectors[3] );
+        player = entityBuilder.createPlayer( "Bob", sectors[0], new SynTag( "Bob", ["bob", "player"] ) );
+        var rob = entityBuilder.createPlayer( "robot", sectors[3], new SynTag( "Bob", ["rob", "robby"] ) );
         var cmdq = rob.getComponent( CmdQueue );
         for ( i in 0...100 ) {
             cmdq.enqueue( cf.createCmd( "move", [ rob, new Vec2( 120, 10 ), sectors[3]] ) );
@@ -146,9 +147,9 @@ class God
         }
         
      
-        var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ), "" );
+        //var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ), "" );
 
-        entityDeserializer.fromFile( "item_jar.json" );
+        //entityDeserializer.fromFile( "item_jar.json" );
 //
         entityBuilder.doubleEdge( portals[0], sectors[0], sectors[1] );
         entityBuilder.doubleEdge( portals[1], sectors[1], sectors[2] );
@@ -163,7 +164,9 @@ class God
     public function tick(_) : Void {
         input();
         world.process();
-        //testBed.tick();        
+        //testBed.tick();
+        //trace( world.getManager( SectorGraphMgr ).getAdjacentPortals( sectors[1] ) );
+        //trace( entityResolver.mapResolve( "sector0", sectors ) );
     }
     
     function input() : Void {

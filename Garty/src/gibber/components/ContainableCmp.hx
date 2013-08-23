@@ -8,19 +8,19 @@ import gibber.managers.ContainerMgr;
 class ContainableCmp implements Component
 {
     @:isVar public var container ( default, set_container ) : Entity;
-    @:isVar public var parent( default, default ) : Entity;
+    @:isVar public var owner : Entity;
     
-    public function new( mgr : ContainerMgr, parent : Entity, container : Entity = null ) {
+    public function new( mgr : ContainerMgr, owner : Entity, container : Entity = null ) {
         this.mgr = mgr;
+        this.owner = owner;
         this.container = container;
-        this.parent = parent;
     }
     
     var mgr : ContainerMgr;
     
     function set_container( newContainer : Entity ) : Entity {
         if ( container != null ) {
-            mgr.changeContainerOfEntity( parent, container, newContainer );
+            mgr.changeContainerOfEntity( owner, container, newContainer );
         }
         container = newContainer;
         return newContainer;
