@@ -3,7 +3,7 @@
 preprocess:
 	./preprocess.sh > resource/classpaths.inc
 
-test:
+test: preprocess
 	haxe compile.hxml
 	fdb bin/Engine.swf
 

@@ -20,8 +20,8 @@ PosCmp gibber.components.PosCmp
 RegionCmp gibber.components.RegionCmp
 RenderCmp gibber.components.RenderCmp
 StaticPosCmp gibber.components.StaticPosCmp
-SynListCmp gibber.components.SynListCmp
 TakeCmp gibber.components.TakeCmp
+TeractNodeCmp gibber.components.TeractNodeCmp
 TransitRequestCmp gibber.components.TransitRequestCmp
 UsageCmp gibber.components.UsageCmp
 EntityBuilder gibber.EntityBuilder
@@ -36,6 +36,7 @@ SectorGraphMgr gibber.managers.SectorGraphMgr
 SynonymMgr gibber.managers.SynonymMgr
 ScriptFactory gibber.ScriptFactory
 GenericScript gibber.scripts.GenericScript
+Script gibber.scripts.Script
 TransitScript gibber.scripts.TransitScript
 VoidExecuteScript gibber.scripts.VoidExecuteScript
 CmdProcessSys gibber.systems.CmdProcessSys
@@ -43,6 +44,8 @@ PhysicsSys gibber.systems.PhysicsSys
 RenderSectorSys gibber.systems.RenderSectorSys
 RenderSys gibber.systems.RenderSys
 TransitRequestSys gibber.systems.TransitRequestSys
+LookTeract gibber.teracts.LookTeract
+Teract gibber.teracts.Teract
 TestBed gibber.TestBed
 Util gibber.Util
 Main Main
@@ -51,3 +54,4 @@ Key utils.Key
 Math2 utils.Math2
 Polygon utils.Polygon
 Vec2 utils.Vec2
+Words utils.Words

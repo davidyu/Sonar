@@ -47,6 +47,7 @@ TODO write simple parser to handle resolving player entities
 {
     DONE(-ish) resolve the player input into a list of potential entities
     DONE make sure every entity in the game has some synonyms so you can get the base up and running
+    TODO work out LookTeract
     TODO discuss potential ways to resolve a list of entities into the most likely entity
     TODO implement MVP of entity-resolver
     TODO design some real-life potential synonyms

@@ -120,6 +120,41 @@ class SectorGraphMgr extends Manager
         }
     }
     
+    public function getAdjacentPortals( sector : Entity ) : Array<Entity> {
+        var res = new Array<Entity>();
+        
+        for ( pes in adjMat[indexOf( sector )] ) {
+            if ( pes != null ) {
+                res = res.concat( pes ); 
+            }
+        }
+        
+        return res;
+    }
+    
+    public function getAdjacentSectors( sector : Entity ) : Array<Entity> {
+        var res = new Array<Entity>();
+        var index = indexOf( sector );
+        
+        for ( pes in adjMat[index] ) {
+            if ( pes == null) {
+                continue;
+            }
+            for ( p in pes ) {
+                var portalCmp = portalMapper.get( p );
+                for ( edge in portalCmp.edges ) {
+                    if ( edge.pDest != sector ) {
+                        res.push( edge.pDest );
+                    }
+                }
+            }
+        }
+        
+        return res;
+    }
+    
+    
+    
     public function getEdges( srcSector : Entity, destSector : Entity ) : Array<Entity> {
         return adjMat[indexOf( srcSector )][indexOf( destSector )];
     }
