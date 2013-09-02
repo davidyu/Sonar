@@ -2,6 +2,7 @@ package gibber;
 import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import gibber.components.NameIdCmp;
+import gibber.components.PosCmp;
 import gibber.God;
 import gibber.managers.ContainerMgr;
 import gibber.managers.SectorGraphMgr;
@@ -21,7 +22,9 @@ class EntityResolver
         cm = god.world.getManager( ContainerMgr );
         sm = god.world.getManager( SynonymMgr );
         sgm = god.world.getManager( SectorGraphMgr );
+        
         nameMapper = god.world.getMapper( NameIdCmp );
+        posMapper = god.world.getMapper( PosCmp );
 
     }
     
@@ -47,9 +50,10 @@ class EntityResolver
         return res;
     }
     
-    // Matches against sectors and portals adjacent to the src sector entities provided
-    public function mapResolve( word : String, sectors : Array<Entity> ) : Array<Entity> {
+    
+    public function portalResolve( word : String, portalsInSectors : Array<Entity> ) : Array<Entity> {
         var res = new Array<Entity>();
+        
         for ( s in sectors ) {
             var adjP = sgm.getAdjacentPortals( s );
             if ( adjP != null ) {
@@ -60,7 +64,16 @@ class EntityResolver
                     }
                 }
             }
-            
+        }
+        
+        return res;
+    }
+    
+    // Matches against sectors adjacent to the src sector entities provided
+    public function sectorResolve( word : String, sectors : Array<Entity> ) : Array<Entity> {
+        var res = new Array<Entity>();
+        
+        for ( s in sectors ) {
             var adjS = sgm.getAdjacentSectors( s );
             if ( adjS != null ) {
                 for ( s in adjS ) {
@@ -75,19 +88,51 @@ class EntityResolver
         return res;
     }
     
-    public function globalResolve( name : String ) : Array<Entity> {
-        var e = sm.getEntity( name );
-        var res = null;
+    public function tehResolve( word : String, player : Entity ) : Entity {
+        var res : Entity = null;
+        var playerSector = posMapper.get( player ).sector;
         
-        if ( e != null ) {
-            res = [e];
+        var ents = containerResolve( word, [playerSector] );
+        if ( ents.length > 0 ) {
+            if ( ents.length == 1 ) {
+                return ents[0];
+            } else {
+                trace( "Ambiguous" );
+            }
         }
+        
+        ents = sectorResolve( word, [playerSector] );
+        if ( ents.length > 0 ) {
+            if ( ents.length == 1 ) {
+                return ents[0];
+            } else {
+                trace( "Ambiguous" );
+            }
+        }        
+        
+        ents = portalResolve( word, [playerSector] );
+        if ( ents.length > 0 ) {
+            if ( ents.length == 1 ) {
+                return ents[0];
+            } else {
+                trace( "Ambiguous" );
+            }
+        }
+       
         return res;
+        
     }
     
-    
-    public function resolve( name : String ) : Array<Entity> {
-        return null;
+    inline function returnIfOne( ents : Array<Entity> ) : Entity {
+        var res = null;
+        if ( ents.length > 0 ) {
+            if ( ents.length == 1 ) {
+                res = ents[0];
+            } else {
+                trace( "Ambiguous" );
+            }
+        }
+        return res;
     }
     
     var god : God;
@@ -96,5 +141,6 @@ class EntityResolver
     var sm : SynonymMgr;
     
     var nameMapper : ComponentMapper<NameIdCmp>;
+    var posMapper : ComponentMapper<PosCmp>;
     
 }
