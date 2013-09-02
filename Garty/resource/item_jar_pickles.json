@@ -3,12 +3,15 @@
     {
         "components":
         [
-            { "NameIdCmp" : { "name" : "PickleJar2" } },
             { "LookCmp": { "lookText" : "An unopened jar of pickles. You can't tell if they've been around for a while." } },
+            { "NameIdCmp" : { 
+                "name" : "PickleJar",
+                "syns" : { "SynTag" : { "name" : "pickle jar tag", "entityNameId" : "PickleJar", "synonyms" : { "Array<String>": [ "jar", "bottle", "pickles" ] } } }
+            } },
             { "PosCmp" : { "sec" : "$sector0", "pos" : { "Vec2" : { "x" : 10, "y" : 10 } } } },
             { "StaticPosCmp" : { } },
             { "RenderCmp" : { } },
-            { "ContainableCmp" : { "mgr" : "@containerMgr", "parent" : "$sector0", "container" : "$sector0" } }
+            { "ContainableCmp" : { "mgr" : "@containerMgr", "owner" : "$sector0", "container" : "$sector0" } }
         ]
     }
 }

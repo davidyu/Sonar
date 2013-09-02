@@ -125,7 +125,7 @@ class God
         var s2 = Vec2.getVecArray( [0, 0, 70, 0, 70, 70, 0, 70, 0, 70] );
         var s3 = Vec2.getVecArray( [40, 0, 60, 0, 60, 60, 0, 60, 0, 40, 40, 40] );
         var s4 = Vec2.getVecArray( [0, 0, 130, 0, 130, 30, 0, 30, ] );
-        
+
         sectors.push( entityBuilder.createSector( "sector0", new Vec2( 50, 200 ), [new Polygon( s1 )] ) );
         sectors.push( entityBuilder.createSector( "sector1", new Vec2( 80, 170 ), [new Polygon( s2 )] ) );
         sectors.push( entityBuilder.createSector( "sector2", new Vec2( 90, 240 ), [new Polygon( s3 )] ) );
@@ -145,12 +145,13 @@ class God
             cmdq.enqueue( cf.createCmd( "move", [ rob, new Vec2( 120, 10 ), sectors[3]] ) );
             cmdq.enqueue( cf.createCmd( "move", [ rob, new Vec2( 10, 10 ), sectors[3]] ) );
         }
-        
-     
-        //var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ), "" );
 
-        //entityDeserializer.fromFile( "item_jar.json" );
-//
+        var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ), "" );
+     
+        entityDeserializer.fromFile( "item_jar_pickles.json" );
+        entityDeserializer.fromFile( "item_jar_honey.json" );
+        entityDeserializer.fromFile( "item_jar_prunes.json" );
+
         entityBuilder.doubleEdge( portals[0], sectors[0], sectors[1] );
         entityBuilder.doubleEdge( portals[1], sectors[1], sectors[2] );
         entityBuilder.doubleEdge( portals[2], sectors[1], sectors[3] );
@@ -158,20 +159,19 @@ class God
         //entityBuilder.addPortalEdges( portals[1], [new PortalEdge( portals[1], portals[2], sf.createScript( "transit" ) )] );
 
         var cmdCmp = player.getComponent( CmdQueue );
-                
     }
-        
+
     public function tick(_) : Void {
         input();
         world.process();
-        //testBed.tick();
+        //testBed.tick();        
         //trace( world.getManager( SectorGraphMgr ).getAdjacentPortals( sectors[1] ) );
         //trace( entityResolver.mapResolve( "sector0", sectors ) );
     }
-    
+
     function input() : Void {
         var speed = 1.0;
-        
+
         if ( Key.isDown( Keyboard.RIGHT ) ) {
             player.getComponent( PosCmp ).dp.x = speed;
         } if ( Key.isDown( Keyboard.LEFT ) ){
@@ -184,7 +184,7 @@ class God
             commander.goToSector( player, sectors[1] );
         }
     }
-    
+
     function onEnterKey( e : flash.events.KeyboardEvent ) : Void {
         switch ( e.keyCode ) {
             case Keyboard.ENTER:

@@ -10,7 +10,6 @@
 -swf-header 700:500:30:256CB8
 -swf-version 11.7
 
--xml allclasses.xml
 -resource resource/classpaths.inc@classpaths
 
 -swf bin/Engine.swf

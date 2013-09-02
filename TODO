@@ -34,19 +34,30 @@ DOIN serialize json object into entity with respective components
     ???? do we need a robust debugger for dynamic object creation via scripts?
 }
 TODO write Makefiles and buildscripts for faster iteration
-TODO design architecture for Teracts
 {
-    NOTE needs to be able to respond to match and not match and match but incorrect
-    NOTE before we even get to Teracts we need to resolve player input into in-game entities
-}
-TODO write simple parser to handle resolving player entities
-{
-    TODO resolve the player input into a list of potential entities
+    DONE write commands to quickly iterate on debug/test builds
+    TODO make it so that fdb continues upon startup
 }
 TODO think about the hard stuffs
 {
     TODO how to resolve player input? (Parser)
     TODO how to handle player input on the backend? (Parser/Model interaction)
+}
+TODO write simple parser to handle resolving player entities
+{
+    DONE(-ish) resolve the player input into a list of potential entities
+    DONE make sure every entity in the game has some synonyms so you can get the base up and running
+    TODO work out LookTeract
+    TODO discuss potential ways to resolve a list of entities into the most likely entity
+    TODO implement MVP of entity-resolver
+    TODO design some real-life potential synonyms
+    TODO why is the SynListCmp basically a shell for SynTag (which is essentially another cmp)?
+}
+TODO design architecture for Teracts
+{
+    TODO 
+    NOTE needs to be able to respond to match and not match and match but incorrect
+    NOTE before we even get to Teracts we need to resolve player input into in-game entities
 }
 TODO implment proof-of-concept (MVP) of Teracts
 TODO design architecture for printing to stdout

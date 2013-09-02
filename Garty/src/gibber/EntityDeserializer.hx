@@ -1,5 +1,4 @@
 // Deserializes select JSON objects into their classes.
-// Currently tested on Vec2, and item_jar.json
 
 package gibber;
 
@@ -54,8 +53,17 @@ class EntityDeserializer
         }
     }
 
-    private function defaultDeserializeFromFile( data : String ) {
-        return fromJson( data );
+    private function defaultDeserializeFromFile( data : String, filename : String ) {
+        try {
+            var deserialized = fromJson( data );
+#if debug
+            trace( 'finished deserializing $filename.' );
+#end
+            return deserialized;
+        } catch ( errorMsg : String ) {
+            trace( 'error deserializing $filename: $errorMsg' );
+            return null;
+        }
     }
 
     public function fromFile( file:String, ?processFile = null ) {
@@ -68,7 +76,7 @@ class EntityDeserializer
         var loader:URLLoader = new URLLoader();
         loader.load( new URLRequest( '$RESOURCE_PATH/$file' ) );
         loader.addEventListener( Event.COMPLETE, function( e : Event) {
-            var entity = processFile( e.target.data );
+            var entity = processFile( e.target.data, '$RESOURCE_PATH/$file' );
         } );
 #end
     }
@@ -137,7 +145,7 @@ class EntityDeserializer
             } else {
                 return resolve( obj );
             }
-        } else { // recursive case ( key->data store in obj )
+        } else if ( Reflect.fields( obj ).length == 1 ) { // recursive case ( key->data store in obj )
             var key = Reflect.fields( obj )[0];
             // if we've got an entry for the class name, optimistically assume we can deserialize it
             if ( classpathTable.exists( key ) ) {
@@ -167,11 +175,12 @@ class EntityDeserializer
                                             var packedParamData = Reflect.field( packedData, p.name );
 
                                             // if we hit an optional parameter that's not defined in packedData, skip it
-                                            if ( packedParamData == null ) {
+                                            if ( !Reflect.hasField( packedData, p.name ) ) {
                                                 if ( p.opt ) {
                                                     continue;
                                                 } else {
-                                                    throw "[recursiveCompile] data for $classname missing field ${p.name}";
+                                                    var errorMsg = '[recursiveCompile] data for $classname missing field ${p.name}';
+                                                    throw errorMsg;
                                                 }
                                             }
 
@@ -210,14 +219,77 @@ class EntityDeserializer
 
                 return instance;
 
-            } else { //this field can't be deserialized into an instance of a class, so abort: just keep it anon
-                var out : Dynamic = {};
-                var compiledObj = recursiveCompile( Reflect.field( obj, key ) );
-                Reflect.setField( out, key, compiledObj );
-                return out;
+            } else { // there are no known classpaths for this class
+
+                // first, try a series of hardcoded classe allocations
+                // these classes DO NOT have rtti defs so we could not dynamically construct them in the first place
+                // if there is a solution (EG: a compiler flag to add rtti to every class - which may be bad for performance), let David know, or write it.
+
+                var arrayDeclaration : EReg = ~/Array<(.+)>|Array$/;
+                var listDeclaration  : EReg = ~/List<(.+)>|List$/;
+
+                if ( arrayDeclaration.match( key ) ) {
+                    // it's an array!
+                    var array = null;
+                    var type = arrayDeclaration.matched( 1 );
+
+                    if ( type != null ) { // extract the type, if possible
+                        switch ( type ) {
+                            case "String":
+                                array = new Array<String>();
+                            default:
+                                array = new Array();
+                        }
+                    } else {
+                        array = new Array();
+                    }
+
+                    var arrayPackedData = Reflect.field( obj, key );
+                    for ( index in Reflect.fields( arrayPackedData ) ) {
+                        array.push( Reflect.field( arrayPackedData, index ) );
+                    }
+
+                    return array;
+
+                } else if ( listDeclaration.match( key ) ) {
+                    var list = null;
+                    var type = listDeclaration.matched( 1 );
+
+                    if ( type != null ) {
+                        switch ( type ) {
+                            case "String":
+                                list = new List<String>();
+                            default:
+                                list = new List();
+                        }
+                    } else {
+                        list = new List();
+                    }
+
+                    var listPackedData = Reflect.field( obj, key );
+                    for ( index in Reflect.fields( listPackedData ) ) {
+                        list.push( Reflect.field( listPackedData, index ) );
+                    }
+
+                    return list;
+
+                } else { //can't do anything, just return a dynamic object
+                    var out : Dynamic = {};
+                    var compiledObj = recursiveCompile( Reflect.field( obj, key ) );
+                    Reflect.setField( out, key, compiledObj );
+                    return out;
+                }
             }
+        } else { //an undeclared array! Deserialize it to a (generic) list. This could cause problems
+            trace( 'Warning: uncaught array with contents " + obj + ". Deserializing to a list...' );
+            var list = new List();
+            for ( index in Reflect.fields( obj ) ) {
+                list.add( Reflect.field( obj, index ) );
+            }
+
+            return list;
         }
 
-        throw "We should never be here!";
+        throw "We should never be here! You need to return in the new code path you just added";
     }
 }
