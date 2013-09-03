@@ -3,12 +3,22 @@ import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import gibber.components.NameIdCmp;
 import gibber.components.PosCmp;
+import gibber.components.TeractNodeCmp;
+import gibber.gabby.SynTag;
 import gibber.God;
 import gibber.managers.ContainerMgr;
 import gibber.managers.SectorGraphMgr;
 import gibber.managers.SynonymMgr;
+import gibber.teracts.Teract;
 
 using Lambda;
+
+enum ResScope
+{
+    LOCAL;  // Resolve to current sector only
+    NEAR;   // Current & adjacent
+    GLOBAL; // Everything
+}
 
 class EntityResolver
 {
@@ -25,6 +35,7 @@ class EntityResolver
         
         nameMapper = god.world.getMapper( NameIdCmp );
         posMapper = god.world.getMapper( PosCmp );
+        terMapper = god.world.getMapper( TeractNodeCmp );
 
     }
     
@@ -54,7 +65,7 @@ class EntityResolver
     public function portalResolve( word : String, portalsInSectors : Array<Entity> ) : Array<Entity> {
         var res = new Array<Entity>();
         
-        for ( s in sectors ) {
+        for ( s in portalsInSectors ) {
             var adjP = sgm.getAdjacentPortals( s );
             if ( adjP != null ) {
                 for ( p in adjP ) {
@@ -123,15 +134,65 @@ class EntityResolver
         
     }
     
-    inline function returnIfOne( ents : Array<Entity> ) : Entity {
+    //public function wordsToTags( words : Array<String> ) : Array<SynTag> {
+        //var res = new Array<SynTag>();
+        //
+        //for ( w in words ) {
+            //if ( 
+        //}
+    //}
+    
+    public function resolveTeract( input : Array<SynTag>, invoker : Entity, nounEntities : Array<Entity>, scope : ResScope ) : { teractOwner : Entity, teract : Teract, matchInfo : MatchInfo } {
+        var currentSector = posMapper.get( invoker ).sector;
+        if ( invoker == null || currentSector == null ) {
+            return null;
+        }
+        
         var res = null;
-        if ( ents.length > 0 ) {
-            if ( ents.length == 1 ) {
-                res = ents[0];
-            } else {
-                trace( "Ambiguous" );
+        var sectors = sgm.getAllSectors();
+        
+        // Look at everything inside each sector
+        for ( s in sectors ) {
+            var contained = cm.getAllEntitiesOfContainer( s );
+            for ( e in contained ) {
+                var teractCmp = terMapper.get( e );
+                if ( teractCmp == null || e == invoker ) { continue; }
+                
+                for ( t in teractCmp.attached ) {
+                    var match = t.matchParams( invoker, nounEntities, input );
+                    if ( match.match == TMatch.MATCH ) {
+                        return { teractOwner : e, teract : t, matchInfo : match };
+                    }
+                }
             }
         }
+        
+        // Look at sectors themselves
+        for ( s in sectors ) {
+            var teractCmp = terMapper.get( s );
+            if ( teractCmp == null ) { continue; }
+            
+            for ( t in teractCmp.attached ) {
+                var match = t.matchParams( invoker, nounEntities, input );
+                if ( match.match == TMatch.MATCH ) {
+                    return { teractOwner : s, teract : t, matchInfo : match };
+                }
+            }
+        }
+        
+        // Look at invoker inventory
+        // TODO
+        
+        var teractCmp = terMapper.get( invoker );
+        if ( teractCmp != null ) {
+            for ( t in teractCmp.attached ) {
+                var match = t.matchParams( invoker, nounEntities, input );
+                if ( match.match == TMatch.MATCH ) {
+                    return { teractOwner : invoker, teract : t, matchInfo : match };
+                }
+            }
+        }
+        
         return res;
     }
     
@@ -142,5 +203,6 @@ class EntityResolver
     
     var nameMapper : ComponentMapper<NameIdCmp>;
     var posMapper : ComponentMapper<PosCmp>;
+    var terMapper : ComponentMapper<TeractNodeCmp>;
     
 }

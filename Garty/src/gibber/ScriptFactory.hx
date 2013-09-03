@@ -1,4 +1,5 @@
 package gibber;
+import gibber.scripts.Script;
 import gibber.scripts.TransitScript;
 import haxe.ds.StringMap;
 import hscript.Parser;
@@ -29,7 +30,7 @@ class ScriptFactory
     }
     
     
-    public function executeScript( script : String, params : StringMap<Dynamic>, outs : StringMap<Dynamic> ) : String {
+    public function executeScript( script : String, params : StringMap<Dynamic>, outs : StringMap<Dynamic> ) : gibber.scripts.Script.ScriptRunInfo {
         var i = interp.interpCopy();
         i.variables.set( "outs", outs );
         
