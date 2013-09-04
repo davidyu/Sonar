@@ -137,7 +137,13 @@ class AdvancedParser
                     god.debugPrintln( "usage: resolve <synonym> " );
                 }
                 return "";
+            case "do":
+                if ( words.length >= 2 ) {
+                    // resolve third word, this is the target
+                    // look through all of its Teracts and try to match
+                }
 
+                return "";
             case "clear":
                 god.debugClear();
                 return "";

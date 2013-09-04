@@ -15,12 +15,19 @@ class LookTeract implements Teract
     @:isVar public var syns : SynTag;
     
     public function new( god : God, syns : SynTag ) {
-        this.syns = syns;
+
+        if ( syns == null ) {
+            // mildly useless for now
+            this.syns = new SynTag( "LookTeract", [ "observe", "examine", "look", "check out", "look at", "see" ])
+        } else {
+            this.syns = syns;
+        }
         this.god = god;
     }
     
     /* INTERFACE gibber.gabby.Teract */
     public function matchParams( invoker : Entity, invokees : Array<Entity>, params : Array<String> ) : { msg : String, match : Teract.TMatch } {
+        // hmm...this seems incomplete
         var invokeeName = invokees[0].getComponent( NameIdCmp ).name;
         if ( invokees[0].getComponent( LookCmp ) != null ) {
             return { msg: null, match : Teract.TMatch.MATCH };
