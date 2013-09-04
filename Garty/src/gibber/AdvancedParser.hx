@@ -28,11 +28,22 @@ class AdvancedParser
         posMapper = god.world.getMapper( PosCmp );
         nameMapper = god.world.getMapper( NameIdCmp );
         portalMapper = god.world.getMapper( PortalCmp );
+        er = god.entityResolver;
     }
     
     public function parse( command : String ) : String {
 
-        var words = command.split( " " );
+        var words = command.toLowerCase().split( " " );
+        
+        var tagged = er.wordsToTags( words );
+        
+        var teractMatch = er.resolveTeract( tagged.tags, god.player, tagged.nouns, EntityResolver.ResScope.GLOBAL );
+        
+        if ( teractMatch != null ) {
+            var msg = teractMatch.teract.executeEffect( god.player, tagged.nouns, null );
+            
+            god.debugPrintln( msg.output );
+        }
         
         switch( words[0] ) {
 //
@@ -71,31 +82,31 @@ class AdvancedParser
                 //god.commander.getPortalDest( god.player, words[1] );
                 // this should work. Make the player go somewhere!
                 //return "";
-
-            case "ls":
-
+//
+            //case "ls":
+//
                 //get sector
-                var sector : Entity = ( posMapper.get( god.player ) ).sector;
-
-                if ( words.length > 1 ) {
-                    switch ( words[1] ) {
-                        case "-inventory", "-i", "-player", "-p":
-                            sector = god.player;
-                        default:
-                            god.debugPrintln( "I don't understand that flag for 'ls.'" );
-                            return "";
-                    }
-                }
-
+                //var sector : Entity = ( posMapper.get( god.player ) ).sector;
+//
+                //if ( words.length > 1 ) {
+                    //switch ( words[1] ) {
+                        //case "-inventory", "-i", "-player", "-p":
+                            //sector = god.player;
+                        //default:
+                            //god.debugPrintln( "I don't understand that flag for 'ls.'" );
+                            //return "";
+                    //}
+                //}
+//
                 //get objects
-                var containerMgr:ContainerMgr = god.world.getManager( ContainerMgr );
-                var containees : Array<Entity> = containerMgr.getAllEntitiesOfContainer( sector );
-
-                for ( obj in containees ) {
-                    god.debugPrintln( nameMapper.get( obj ).name );
-                }
-
-                return "";
+                //var containerMgr:ContainerMgr = god.world.getManager( ContainerMgr );
+                //var containees : Array<Entity> = containerMgr.getAllEntitiesOfContainer( sector );
+//
+                //for ( obj in containees ) {
+                    //god.debugPrintln( nameMapper.get( obj ).name );
+                //}
+//
+                //return "";
 
             //case "take":
 //
@@ -137,14 +148,14 @@ class AdvancedParser
                     //god.debugPrintln( "usage: resolve <synonym> " );
                 //}
                 //return "";
-
+//
             case "clear":
                 god.debugClear();
                 return "";
-
-            default:
-                god.debugPrintln( "I'm sorry Dave, I can't let you do that." );
-
+//
+            //default:
+                //god.debugPrintln( "I'm sorry Dave, I can't let you do that." );
+//
         }
         
         return "";
@@ -154,5 +165,6 @@ class AdvancedParser
     var posMapper : ComponentMapper<PosCmp>;
     var nameMapper : ComponentMapper<NameIdCmp>;
     var portalMapper : ComponentMapper<PortalCmp>;
+    var er : EntityResolver;
     
 }

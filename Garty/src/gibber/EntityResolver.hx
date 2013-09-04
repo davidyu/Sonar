@@ -9,6 +9,7 @@ import gibber.God;
 import gibber.managers.ContainerMgr;
 import gibber.managers.SectorGraphMgr;
 import gibber.managers.SynonymMgr;
+import gibber.managers.WordsMgr;
 import gibber.teracts.Teract;
 
 using Lambda;
@@ -18,6 +19,13 @@ enum ResScope
     LOCAL;  // Resolve to current sector only
     NEAR;   // Current & adjacent
     GLOBAL; // Everything
+}
+
+typedef TeractMatch = 
+{
+    var teractOwner : Entity;
+    var teract : Teract;
+    var matchInfo : MatchInfo;
 }
 
 class EntityResolver
@@ -32,6 +40,7 @@ class EntityResolver
         cm = god.world.getManager( ContainerMgr );
         sm = god.world.getManager( SynonymMgr );
         sgm = god.world.getManager( SectorGraphMgr );
+        wm = god.world.getManager( WordsMgr ); // Man, I feel like a wm ( Words manager )
         
         nameMapper = god.world.getMapper( NameIdCmp );
         posMapper = god.world.getMapper( PosCmp );
@@ -134,22 +143,48 @@ class EntityResolver
         
     }
     
-    //public function wordsToTags( words : Array<String> ) : Array<SynTag> {
-        //var res = new Array<SynTag>();
-        //
-        //for ( w in words ) {
-            //if ( 
-        //}
-    //}
+    // TODO Dave you have knowledge with parsing and language structure. 
+    // This function can be expanded to a separate class if you have any ideas
+    // for improvement.
+    // Parses user input into an array of syntags
+    public function wordsToTags( words : Array<String> ) : { tags : Array<SynTag>, nouns : Array<Entity> } {
+        var res = new Array<SynTag>();
+        var nounsEntities = new Array<Entity>();
+        
+        for ( w in words ) {
+            var synTags = wm.getSynTags( w );
+            if ( synTags == null ) { continue; }
+            // Maybe there is better way to resolve ambiguous synonyms..
+            // example use case "jump the guard (aka rob him of his possessions)" vs. jump the fence 
+            // -> entirely different meanings. We don't want to try to mug a fence
+            for ( t in synTags ) {
+                res.push( t );
+                
+                switch ( t.type ) {
+                    case SynType.NOUN:
+                        nounsEntities.push( sm.getEntity( t.nameId ) );
+                    default:
+                        
+                }
+            }
+        }
+        trace( res );
+        trace( nounsEntities );
+        return { tags : res, nouns : nounsEntities };
+    }
     
-    public function resolveTeract( input : Array<SynTag>, invoker : Entity, nounEntities : Array<Entity>, scope : ResScope ) : { teractOwner : Entity, teract : Teract, matchInfo : MatchInfo } {
+    // invoker is the character entity (NOT where the teract is contained)
+    // nounEntities are potential interactors with the teract. Some may be ignored????
+    // scope describes the asterix thingy we discussed.
+    public function resolveTeract( input : Array<SynTag>, invoker : Entity, nounEntities : Array<Entity>, scope : ResScope ) : TeractMatch {
         var currentSector = posMapper.get( invoker ).sector;
         if ( invoker == null || currentSector == null ) {
             return null;
         }
         
-        var res = null;
+        var res : TeractMatch = null;
         var sectors = sgm.getAllSectors();
+        var matchInvalids = new Array<TeractMatch>();
         
         // Look at everything inside each sector
         for ( s in sectors ) {
@@ -160,8 +195,13 @@ class EntityResolver
                 
                 for ( t in teractCmp.attached ) {
                     var match = t.matchParams( invoker, nounEntities, input );
-                    if ( match.match == TMatch.MATCH ) {
-                        return { teractOwner : e, teract : t, matchInfo : match };
+                    var tres = { teractOwner : e, teract : t, matchInfo : match };
+                    switch ( match.match ) {
+                        case TMatch.MATCH:
+                            return tres;
+                        case TMatch.MATCH_INVALID:
+                            matchInvalids.push( tres );
+                        default:
                     }
                 }
             }
@@ -173,9 +213,14 @@ class EntityResolver
             if ( teractCmp == null ) { continue; }
             
             for ( t in teractCmp.attached ) {
-                var match = t.matchParams( invoker, nounEntities, input );
-                if ( match.match == TMatch.MATCH ) {
-                    return { teractOwner : s, teract : t, matchInfo : match };
+                var match = t.matchParams( s, nounEntities, input );
+                var tres = { teractOwner : invoker, teract : t, matchInfo : match };
+                switch ( match.match ) {
+                    case TMatch.MATCH:
+                        return tres;
+                    case TMatch.MATCH_INVALID:
+                        matchInvalids.push( tres );
+                    default:
                 }
             }
         }
@@ -187,8 +232,13 @@ class EntityResolver
         if ( teractCmp != null ) {
             for ( t in teractCmp.attached ) {
                 var match = t.matchParams( invoker, nounEntities, input );
-                if ( match.match == TMatch.MATCH ) {
-                    return { teractOwner : invoker, teract : t, matchInfo : match };
+                var tres = { teractOwner : invoker, teract : t, matchInfo : match };
+                switch ( match.match ) {
+                    case TMatch.MATCH:
+                        return tres;
+                    case TMatch.MATCH_INVALID:
+                        matchInvalids.push( tres );
+                    default:
                 }
             }
         }
@@ -200,6 +250,7 @@ class EntityResolver
     var cm : ContainerMgr;
     var sgm : SectorGraphMgr;
     var sm : SynonymMgr;
+    var wm : WordsMgr;
     
     var nameMapper : ComponentMapper<NameIdCmp>;
     var posMapper : ComponentMapper<PosCmp>;

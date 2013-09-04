@@ -18,6 +18,7 @@ import gibber.managers.ContainerMgr;
 import gibber.managers.NameRegistry;
 import gibber.managers.SectorGraphMgr;
 import gibber.managers.SynonymMgr;
+import gibber.managers.WordsMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.RenderSectorSys;
@@ -50,17 +51,17 @@ class God
         world = new World();
         initializeSystems();
         
+        SynTag.initialize( this );
         Util.init( this );
 
         cf = new CmdFactory( this );
         entityBuilder = new EntityBuilder( this );
         entityDeserializer = new EntityDeserializer( this );
 
-        parser = new AdvancedParser( this );
         commander = new Commander( this );
         sf = new ScriptFactory( this );
         entityResolver = new EntityResolver( this );
-        
+        parser = new AdvancedParser( this );        
         
         initializeEntities();
         
@@ -104,6 +105,7 @@ class God
         world.setManager( cm );
         world.setManager( new SectorGraphMgr() );
         world.setManager( new SynonymMgr() );
+        world.setManager( new WordsMgr() ); // Needs to be last
         world.setManager( new NameRegistry() ); // Needs to be last
 
         
@@ -138,8 +140,8 @@ class God
         portals.push( entityBuilder.createPortal( "door13", new Vec2( 65 + 80, 30 + 170 ) ) );
         portals.push( entityBuilder.createPortal( "door34", new Vec2( 125 + 150, 5 +190 ) ) );
 
-        player = entityBuilder.createPlayer( "Bob", sectors[0], new SynTag( "Bob", ["bob", "player"], SynType.NOUN ) );
-        var rob = entityBuilder.createPlayer( "robot", sectors[3], new SynTag( "Bob", ["rob", "robby"], SynType.NOUN ) );
+        player = entityBuilder.createPlayer( "bob", sectors[0], new SynTag( "bob", ["bob", "player"], SynType.NOUN ), true );
+        var rob = entityBuilder.createPlayer( "rob", sectors[3], new SynTag( "rob", ["rob", "robby"], SynType.NOUN ) );
         var cmdq = rob.getComponent( CmdQueue );
         for ( i in 0...100 ) {
             cmdq.enqueue( cf.createCmd( "move", [ rob, new Vec2( 120, 10 ), sectors[3]] ) );
@@ -148,9 +150,9 @@ class God
 
         var chest = entityBuilder.createObject( "Old dusty chest", new Vec2( 20, 30 ), "" );
      
-        entityDeserializer.fromFile( "item_jar_pickles.json" );
-        entityDeserializer.fromFile( "item_jar_honey.json" );
-        entityDeserializer.fromFile( "item_jar_prunes.json" );
+        //entityDeserializer.fromFile( "item_jar_pickles.json" );
+        //entityDeserializer.fromFile( "item_jar_honey.json" );
+        //entityDeserializer.fromFile( "item_jar_prunes.json" );
 
         entityBuilder.doubleEdge( portals[0], sectors[0], sectors[1] );
         entityBuilder.doubleEdge( portals[1], sectors[1], sectors[2] );
