@@ -112,7 +112,7 @@ class EntityBuilder
 
     public function createPortal( name : String, pos : Vec2 ) : Entity {
         var e = world.createEntity();
-        var nameCmp = new NameIdCmp( name, new SynTag( name, new Array<String>() ) );
+        var nameCmp = new NameIdCmp( name, new SynTag( name, new Array<String>(), SynType.NOUN ) );
         var lookCmp = new LookCmp();
         var posCmp = new PosCmp( null, pos );
         var staticCmp = new StaticPosCmp();
@@ -140,7 +140,7 @@ class EntityBuilder
 
     public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
         var e = world.createEntity();
-        var nameCmp = new NameIdCmp( name, new SynTag( name, [name] ) );
+        var nameCmp = new NameIdCmp( name, new SynTag( name, [name], SynType.NOUN ) );
         var posCmp = new PosCmp( e, pos );
         var staticCmp = new StaticPosCmp();
         var lookCmp = new LookCmp();
@@ -178,7 +178,7 @@ class EntityBuilder
     {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
-        var nameIdCmp = new NameIdCmp( name, new SynTag( name, new Array<String>() ) );
+        var nameIdCmp = new NameIdCmp( name, new SynTag( name, new Array<String>(), SynType.NOUN ) );
         var posCmp = new PosCmp( god.sectors[0], pos );
         var staticCmp = new StaticPosCmp();
         var renderCmp = new RenderCmp();

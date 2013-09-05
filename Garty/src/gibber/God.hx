@@ -138,8 +138,8 @@ class God
         portals.push( entityBuilder.createPortal( "door13", new Vec2( 65 + 80, 30 + 170 ) ) );
         portals.push( entityBuilder.createPortal( "door34", new Vec2( 125 + 150, 5 +190 ) ) );
 
-        player = entityBuilder.createPlayer( "Bob", sectors[0], new SynTag( "Bob", ["bob", "player"] ) );
-        var rob = entityBuilder.createPlayer( "robot", sectors[3], new SynTag( "Bob", ["rob", "robby"] ) );
+        player = entityBuilder.createPlayer( "Bob", sectors[0], new SynTag( "Bob", ["bob", "player"], SynType.NOUN ) );
+        var rob = entityBuilder.createPlayer( "robot", sectors[3], new SynTag( "Bob", ["rob", "robby"], SynType.NOUN ) );
         var cmdq = rob.getComponent( CmdQueue );
         for ( i in 0...100 ) {
             cmdq.enqueue( cf.createCmd( "move", [ rob, new Vec2( 120, 10 ), sectors[3]] ) );

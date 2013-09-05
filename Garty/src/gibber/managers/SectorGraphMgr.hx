@@ -153,6 +153,9 @@ class SectorGraphMgr extends Manager
         return res;
     }
     
+    public function getAllSectors() : Array<Entity> {
+        return sectorIndex;
+    }
     
     
     public function getEdges( srcSector : Entity, destSector : Entity ) : Array<Entity> {

@@ -12,7 +12,7 @@ class GenericScript implements Script
         this.sb = scriptBase;
     }
     
-    public function execute( params : StringMap<Dynamic>, outs : StringMap<Dynamic> ) : String {
+    public function execute( params : StringMap<Dynamic>, outs : StringMap<Dynamic> ) : Script.ScriptRunInfo {
         return sb.executeScript( script, params, outs );
     }
     

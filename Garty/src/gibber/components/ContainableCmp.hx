@@ -4,6 +4,9 @@ import com.artemisx.Component;
 import com.artemisx.Entity;
 import gibber.managers.ContainerMgr;
 
+
+// TODO Implement pos change relative to container
+// i.e. Player has item. Player moves. Item sector coordinate should match player's.
 @:rtti
 class ContainableCmp implements Component
 {
