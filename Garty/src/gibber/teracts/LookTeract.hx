@@ -20,7 +20,7 @@ class LookTeract implements Teract
 
         if ( syns == null ) {
             // mildly useless for now
-            this.syns = new SynTag( "LookTeract", [ "observe", "examine", "look", "check out", "look at", "see" ])
+            // this.syns = new SynTag( "LookTeract", [ "observe", "examine", "look", "check out", "look at", "see" ], VERB );
         } else {
             this.syns = syns;
         }

@@ -6,8 +6,9 @@ import haxe.ds.StringMap;
 
 enum TMatch
 {
-    MATCH;
-    NOMATCH;
+    MATCH;          // Teract matches and works
+    MATCH_INVALID;  // This teract is probably what user intended but didn't work-> flags for some error message
+    NOMATCH;        // This teract is not what the user intended. 
 }
 
 typedef MatchInfo =

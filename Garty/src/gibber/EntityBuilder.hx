@@ -81,7 +81,7 @@ class EntityBuilder
         //return e;
     //}
     
-    public function createPlayer( name : String, sector : Entity, syns : SynTag ) : Entity {
+    public function createPlayer( name : String, sector : Entity, syns : SynTag, isPlayer : Bool = false ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
         var nameCmp = new NameIdCmp( name, syns );
@@ -91,6 +91,9 @@ class EntityBuilder
         var containerCmp = new ContainerCmp(); //temporary hack solution
         var containableCmp = new ContainableCmp( containerMgr, e, sector ); //temporary hack solution
         var teractCmp = new TeractNodeCmp( [new LookTeract( god, null )]);
+        if ( isPlayer ) {
+            teractCmp.attached.push ( new LookTeract( god, new SynTag( "passiveLook", ["look"], SynType.VERB ) ) );
+        }
         var inventoryCmp = new InventoryCmp();
         
         lookCmp.lookText = "This is the player";

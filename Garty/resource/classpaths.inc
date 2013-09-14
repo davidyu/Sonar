@@ -20,7 +20,9 @@ PosCmp gibber.components.PosCmp
 RegionCmp gibber.components.RegionCmp
 RenderCmp gibber.components.RenderCmp
 StaticPosCmp gibber.components.StaticPosCmp
+StoryNodeCmp gibber.components.StoryNodeCmp
 TakeCmp gibber.components.TakeCmp
+TeractCmp gibber.components.TeractCmp
 TeractNodeCmp gibber.components.TeractNodeCmp
 TransitRequestCmp gibber.components.TransitRequestCmp
 UsageCmp gibber.components.UsageCmp
@@ -34,6 +36,7 @@ ContainerMgr gibber.managers.ContainerMgr
 NameRegistry gibber.managers.NameRegistry
 SectorGraphMgr gibber.managers.SectorGraphMgr
 SynonymMgr gibber.managers.SynonymMgr
+WordsMgr gibber.managers.WordsMgr
 ScriptFactory gibber.ScriptFactory
 GenericScript gibber.scripts.GenericScript
 Script gibber.scripts.Script

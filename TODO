@@ -38,6 +38,10 @@ TODO write Makefiles and buildscripts for faster iteration
     DONE write commands to quickly iterate on debug/test builds
     TODO make it so that fdb continues upon startup
 }
+TODO rewrite parser
+{
+    TODO first-pass rewrite: just take the user's input and translate to in-game command (do nothing smart)
+}
 TODO think about the hard stuffs
 {
     TODO how to resolve player input? (Parser)

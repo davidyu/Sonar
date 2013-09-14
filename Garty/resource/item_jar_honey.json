@@ -6,7 +6,7 @@
             { "LookCmp": { "lookText" : "A jar of honey. Food of the gods." } },
             { "NameIdCmp" : { 
                 "name" : "HoneyJar",
-                "syns" : { "SynTag" : { "name" : "honey jar tag", "entityNameId" : "HoneyJar", "synonyms" : { "Array<String>": [ "jar", "glass", "bottle", "honey" ] } }  }
+                "syns" : { "SynTag" : { "nameId" : "HoneyJar", "type": "#gibber.gabby.SynType:NOUN", "synonyms" : { "Array<String>": [ "jar", "glass", "bottle", "honey" ] } }  }
             } },
             { "PosCmp" : { "sec" : "$sector0", "pos" : { "Vec2" : { "x" : 10, "y" : 15 } } } },
             { "StaticPosCmp" : { } },

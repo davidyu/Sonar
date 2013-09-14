@@ -6,7 +6,7 @@
             { "LookCmp": { "lookText" : "An unopened jar of pickles. You can't tell if they've been around for a while." } },
             { "NameIdCmp" : { 
                 "name" : "PickleJar",
-                "syns" : { "SynTag" : { "name" : "pickle jar tag", "entityNameId" : "PickleJar", "synonyms" : { "Array<String>": [ "jar", "bottle", "pickles" ] } } }
+                "syns" : { "SynTag" : { "nameId" : "PickleJar", "type": "#gibber.gabby.SynType:NOUN", "synonyms" : { "Array<String>": [ "jar", "bottle", "pickles" ] } } }
             } },
             { "PosCmp" : { "sec" : "$sector0", "pos" : { "Vec2" : { "x" : 10, "y" : 10 } } } },
             { "StaticPosCmp" : { } },

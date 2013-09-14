@@ -130,6 +130,16 @@ class EntityDeserializer
                 // any manager from God. Using GetManager doesn't work, because it requires an argument
                 // that's strongly typed and resolveClass returns a Class<Dynamic>
                 return Reflect.getProperty( this, identifier );
+            case "#":
+                // this an enum
+                // syntax: #ENUM_TYPE:Enum_Value
+                var enumVal  = identifier.substr( identifier.indexOf( ":" ) + 1 );
+                var enumTypeStr = identifier.substr( 0, identifier.indexOf( ":" ) );
+
+                var enumType = Type.resolveEnum( "gibber.gabby.SynType" );
+
+                // create the enum, not the string
+                return Type.createEnum( enumType, enumVal );
             default:
         }
 
@@ -207,7 +217,8 @@ class EntityDeserializer
                                 case CClass( fieldType, _ ):
                                     var packedFieldData = Reflect.field( packedData, f.name );
                                     // only fill in the field if our json object has the data
-                                    if ( packedFieldData != null ) {
+                                    // and if it hasn't been filled in by the constructor
+                                    if ( packedFieldData != null && Reflect.getProperty( instance, f.name ) == null ) {
                                         var compiledField = recursiveCompile( packedFieldData );
                                         Reflect.setProperty( instance, f.name, compiledField );
                                     }
