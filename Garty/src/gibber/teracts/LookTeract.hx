@@ -11,6 +11,7 @@ import haxe.ds.StringMap;
 import haxe.ds.StringMap;
 import utils.Words;
 
+@:rtti
 class LookTeract implements Teract
 {
     @:isVar public var syns : SynTag;

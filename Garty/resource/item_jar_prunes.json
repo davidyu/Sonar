@@ -8,6 +8,7 @@
                 "name" : "PruneJar",
                 "syns" : { "SynTag" : { "nameId" : "PruneJar", "type": "#gibber.gabby.SynType:NOUN", "synonyms" : { "Array<String>" : [ "jar", "glass", "bottle", "prunes" ] } } }
             } },
+            { "TeractNodeCmp" : { "Array<Teract>" : [ { "LookTeract" : { "god" : "@god", "syns" : null } } ] } },
             { "PosCmp" : { "sec" : "$sector0", "pos" : { "Vec2" : { "x" : 10, "y" : 20 } } } },
             { "StaticPosCmp" : { } },
             { "RenderCmp" : { } },

@@ -8,6 +8,7 @@
                 "name" : "PickleJar",
                 "syns" : { "SynTag" : { "nameId" : "PickleJar", "type": "#gibber.gabby.SynType:NOUN", "synonyms" : { "Array<String>": [ "jar", "bottle", "pickles" ] } } }
             } },
+            { "TeractNodeCmp" : { "Array<Teract>" : [ { "LookTeract" : { "god" : "@god", "syns" : null } } ] } },
             { "PosCmp" : { "sec" : "$sector0", "pos" : { "Vec2" : { "x" : 10, "y" : 10 } } } },
             { "StaticPosCmp" : { } },
             { "RenderCmp" : { } },

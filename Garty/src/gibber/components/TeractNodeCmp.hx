@@ -4,6 +4,7 @@ import com.artemisx.Component;
 import com.artemisx.Entity;
 import gibber.teracts.Teract;
 
+@:rtti
 class TeractNodeCmp implements Component
 {
     @:isVar public var attached : Array<Teract>;
