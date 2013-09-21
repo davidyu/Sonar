@@ -5,6 +5,7 @@ import gibber.components.NameIdCmp;
 import gibber.components.PosCmp;
 import gibber.components.TeractNodeCmp;
 import gibber.gabby.SynTag;
+import gibber.AdvancedParser;
 import gibber.God;
 import gibber.managers.ContainerMgr;
 import gibber.managers.SectorGraphMgr;
@@ -17,7 +18,6 @@ using Lambda;
 enum ResScope
 {
     LOCAL;  // Resolve to current sector only
-    NEAR;   // Current & adjacent
     GLOBAL; // Everything
 }
 
@@ -150,7 +150,7 @@ class EntityResolver
     public function wordsToTags( words : Array<String> ) : { tags : Array<SynTag>, nouns : Array<Entity> } {
         var res = new Array<SynTag>();
         var nounsEntities = new Array<Entity>();
-        
+
         for ( w in words ) {
             var synTags = wm.getSynTags( w );
             if ( synTags == null ) { continue; }
@@ -159,7 +159,7 @@ class EntityResolver
             // -> entirely different meanings. We don't want to try to mug a fence
             for ( t in synTags ) {
                 res.push( t );
-                
+
                 switch ( t.type ) {
                     case SynType.NOUN:
                         nounsEntities.push( sm.getEntity( t.nameId ) );
@@ -172,29 +172,30 @@ class EntityResolver
         trace( nounsEntities );
         return { tags : res, nouns : nounsEntities };
     }
-    
-    // invoker is the character entity (NOT where the teract is contained)
-    // nounEntities are potential interactors with the teract. Some may be ignored????
-    // scope describes the asterix thingy we discussed.
-    public function resolveTeract( input : Array<SynTag>, invoker : Entity, nounEntities : Array<Entity>, scope : ResScope ) : TeractMatch {
+
+    public function resolveTeract( input : InputCommand, invoker : Entity, scope : ResScope ) : TeractMatch {
         var currentSector = posMapper.get( invoker ).sector;
         if ( invoker == null || currentSector == null ) {
             return null;
         }
-        
+
         var res : TeractMatch = null;
         var sectors = sgm.getAllSectors();
         var matchInvalids = new Array<TeractMatch>();
-        
-        // Look at everything inside each sector
+
         for ( s in sectors ) {
             var contained = cm.getAllEntitiesOfContainer( s );
             for ( e in contained ) {
                 var teractCmp = terMapper.get( e );
                 if ( teractCmp == null || e == invoker ) { continue; }
-                
+
                 for ( t in teractCmp.attached ) {
-                    var match = t.matchParams( invoker, nounEntities, input );
+                    var synsLst : Array<SynTag> = wm.getSynTags( input.action );
+                    if ( !synsLst.exists( function( syns ) { return syns == t.syns; } ) ) {
+                        continue;
+                    }
+
+                    var match = t.matchParams( invoker, input.targets );
                     var tres = { teractOwner : e, teract : t, matchInfo : match };
                     switch ( match.match ) {
                         case TMatch.MATCH:
@@ -206,14 +207,19 @@ class EntityResolver
                 }
             }
         }
-        
+
         // Look at sectors themselves
         for ( s in sectors ) {
             var teractCmp = terMapper.get( s );
             if ( teractCmp == null ) { continue; }
-            
+
             for ( t in teractCmp.attached ) {
-                var match = t.matchParams( s, nounEntities, input );
+                var synsLst : Array<SynTag> = wm.getSynTags( input.action );
+                if ( !synsLst.exists( function( syns ) { return syns == t.syns; } ) ) {
+                    continue;
+                }
+
+                var match = t.matchParams( s, input.targets );
                 var tres = { teractOwner : invoker, teract : t, matchInfo : match };
                 switch ( match.match ) {
                     case TMatch.MATCH:
@@ -224,14 +230,18 @@ class EntityResolver
                 }
             }
         }
-        
+
         // Look at invoker inventory
         // TODO
-        
         var teractCmp = terMapper.get( invoker );
         if ( teractCmp != null ) {
             for ( t in teractCmp.attached ) {
-                var match = t.matchParams( invoker, nounEntities, input );
+                var synsLst : Array<SynTag> = wm.getSynTags( input.action );
+                if ( !synsLst.exists( function( syns ) { return syns == t.syns; } ) ) {
+                    continue;
+                }
+
+                var match = t.matchParams( invoker, input.targets );
                 var tres = { teractOwner : invoker, teract : t, matchInfo : match };
                 switch ( match.match ) {
                     case TMatch.MATCH:
@@ -242,18 +252,16 @@ class EntityResolver
                 }
             }
         }
-        
         return res;
     }
-    
+
     var god : God;
     var cm : ContainerMgr;
     var sgm : SectorGraphMgr;
     var sm : SynonymMgr;
     var wm : WordsMgr;
-    
+
     var nameMapper : ComponentMapper<NameIdCmp>;
     var posMapper : ComponentMapper<PosCmp>;
     var terMapper : ComponentMapper<TeractNodeCmp>;
-    
 }

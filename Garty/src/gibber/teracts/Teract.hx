@@ -23,6 +23,6 @@ interface Teract
     var e : Entity;
     
     // Array of dynamic/string params seems like bad practice to me...maybe 
-    function matchParams( invoker : Entity, nounEntities : Array<Entity>, input : Array<SynTag> ) : MatchInfo;
+    function matchParams( invoker : Entity, nounEntities : Array<Entity> ) : MatchInfo;
     function executeEffect( invoker : Entity, invokees : Array<Entity>, params : StringMap<Dynamic> ) : gibber.scripts.Script.ScriptRunInfo;
 }

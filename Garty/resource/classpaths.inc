@@ -48,6 +48,7 @@ RenderSectorSys gibber.systems.RenderSectorSys
 RenderSys gibber.systems.RenderSys
 TransitRequestSys gibber.systems.TransitRequestSys
 LookTeract gibber.teracts.LookTeract
+MoveTeract gibber.teracts.MoveTeract
 Teract gibber.teracts.Teract
 TestBed gibber.TestBed
 Util gibber.Util

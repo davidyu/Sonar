@@ -174,8 +174,8 @@ class EntityDeserializer
                     case TClassdecl( cl ):  // get class decl info in rtti
 
                         // pass 1: create an instance of the class
-                        for ( f in cl.fields ) {
-                            if ( f.name == "new" ) {  // get constructor info
+                        for ( f in cl.fields ) {      // iterate over fields, but only extract...
+                            if ( f.name == "new" ) {  // constructor function
                                 switch ( f.type ) {
                                     case CFunction( params, _ ): // get constructor parameters
                                         for ( p in params ) {
@@ -211,7 +211,7 @@ class EntityDeserializer
                             return null;
                         }
 
-                        // pass 2: fill in fields in the instance
+                        // pass 2: fill in the rest of the fields in the instance
                         for ( f in cl.fields ) {
                             switch ( f.type ) {
                                 case CClass( fieldType, _ ):
@@ -249,6 +249,7 @@ class EntityDeserializer
                             case "String":
                                 array = new Array<String>();
                             default:
+                                trace( "new strongly typed Array not implemented: " + type );
                                 array = new Array();
                         }
                     } else {
@@ -271,6 +272,7 @@ class EntityDeserializer
                             case "String":
                                 list = new List<String>();
                             default:
+                                trace( "new strongly typed List not implemented: " + type );
                                 list = new List();
                         }
                     } else {

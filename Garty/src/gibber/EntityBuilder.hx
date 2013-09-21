@@ -24,6 +24,7 @@ import gibber.components.TransitRequestCmp;
 import gibber.managers.ContainerMgr;
 import gibber.scripts.TransitScript;
 import gibber.teracts.LookTeract;
+import gibber.teracts.MoveTeract;
 import utils.Polygon;
 import utils.Vec2;
 
@@ -93,6 +94,7 @@ class EntityBuilder
         var teractCmp = new TeractNodeCmp( [new LookTeract( god, null )]);
         if ( isPlayer ) {
             teractCmp.attached.push ( new LookTeract( god, new SynTag( "passiveLook", ["look"], SynType.VERB ) ) );
+            teractCmp.attached.push ( new MoveTeract( god, new SynTag( "walk", [ "walk", "goto", "move" ], SynType.VERB ) ) );
         }
         var inventoryCmp = new InventoryCmp();
         
@@ -148,6 +150,7 @@ class EntityBuilder
         var staticCmp = new StaticPosCmp();
         var lookCmp = new LookCmp();
         var regionCmp = new RegionCmp( polygonAreas );
+        var teractNodeCmp = new TeractNodeCmp( [ new MoveTeract( god, null ) ] );
         var renderCmp = new RenderCmp( 0x00ffff );
         var containerCmp = new ContainerCmp();
         
@@ -158,6 +161,7 @@ class EntityBuilder
         e.addComponent( staticCmp );
         e.addComponent( lookCmp );
         e.addComponent( regionCmp );
+        e.addComponent( teractNodeCmp );
         e.addComponent( renderCmp );
         e.addComponent( containerCmp );
         
