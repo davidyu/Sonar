@@ -183,7 +183,7 @@ class God
         } if ( Key.isDown( Keyboard.DOWN ) ) {
             player.getComponent( PosCmp ).dp.y = speed;
         } if ( Key.isDown( Keyboard.A ) ) {
-            commander.goToSector( player, sectors[1] );
+            //commander.goToSector( player, sectors[1] );
         }
     }
 

@@ -45,7 +45,7 @@ class Commander
             var dest = posMapper.get( portalCmp.edges[0].pDest ).pos;
             var cq  = mover.getComponent( CmdQueue );
             
-            cq.enqueue( god.cf.createCmd( "move", [ mover, dest, destSector] ) );
+            cq.enqueue( god.cf.createCmd( "move", [ mover, dest, destSector ] ) );
         } else {
             
         }

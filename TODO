@@ -1,85 +1,42 @@
 Features
 ========
 
-TODO for parser
-DOIN discuss architecture for gcc
-TODO design interface for loading game vocabulary/lang specs
-TODO design output structure of parser
-TODO compile: 
-              user input            > Gibbs intermediate language
-              grab glass of water
-              take glass of water   > PLAYER TAKE GLASS
-              ----
-              unlock door
-              use key on door
-              unlock door with key
-              open door
-              open door with key    > KEY USE DOOR
-DONE controller architecture:
-{
-    first-effort: ControllerSys manages all actions (entities)
-    refine-if-necessary: Logic is distributed across different ControllerSys, with one MasterControllerSys
-}
-DONE inventory test
+TODO cleanup (minimize and cut whenever possible)
+    TODO simple clean up Controller-Model interaction
+    TODO simple clean up Portal/Sector system ( verify syntax and logic consistency )
+    TODO clean up Teract system
+        take out dyn script for now
+    TODO clean up debug input/output vs user input/output
+        lay groundwork for user controller
+
 DOIN serialize json object into entity with respective components
-{
-    DONE create default object with a script for Look (prints "a jar of pickles")
-    DONE implement automatic serialization of Vec2
-    DONE implement automatic serialization of any object via constructor
-    DONE implement automatic serialization of any object via field-filling
-    DONE integrate NameRegistry so can get Entity from name
-    DONE refactor deserialize class
     TODO find a way to acquire managers at runtime from a string of text, or don't do it at all
-    ???? do we want to dynamically build components at runtime and be able to reference them?
-    ???? do we need a robust debugger for dynamic object creation via scripts?
-}
+    FUTR do we want to dynamically build components at runtime and be able to reference them?
+    FUTR do we need a robust debugger for dynamic object creation via scripts?
+
 TODO write Makefiles and buildscripts for faster iteration
-{
-    DONE write commands to quickly iterate on debug/test builds
     TODO make it so that fdb continues upon startup
-}
+
 TODO rewrite parser
-{
     TODO first-pass rewrite: just take the user's input and translate to in-game command (do nothing smart)
-}
+
 TODO think about the hard stuffs
-{
     TODO how to resolve player input? (Parser)
     TODO how to handle player input on the backend? (Parser/Model interaction)
-}
+
 TODO write simple parser to handle resolving player entities
-{
-    DONE(-ish) resolve the player input into a list of potential entities
-    DONE make sure every entity in the game has some synonyms so you can get the base up and running
-    TODO work out LookTeract
-    TODO discuss potential ways to resolve a list of entities into the most likely entity
     TODO implement MVP of entity-resolver
     TODO design some real-life potential synonyms
     TODO why is the SynListCmp basically a shell for SynTag (which is essentially another cmp)?
-}
+
 TODO design architecture for Teracts
-{
-    TODO 
     NOTE needs to be able to respond to match and not match and match but incorrect
     NOTE before we even get to Teracts we need to resolve player input into in-game entities
-}
-TODO implment proof-of-concept (MVP) of Teracts
-TODO design architecture for printing to stdout
+
 TODO design story-flow and state architecture
-{
     Main plot flow -> Tree/DAG/Linked List
     Sub plot flow -> Separate tree/DAG/Linked List
     How to query plot flow? Query main module or use components
     OR decentralized story flow (components never share data)
-}
+
 TODO design game save mechanics and architecture
-
-Wishlists
-=========
-
-+ if have time, architect better portal/sector architecture
-
-Bugfixes
-========
-
-TODO fix AdvancedParser ls command - maybe to do with bad getAllEntitiesOfContainer

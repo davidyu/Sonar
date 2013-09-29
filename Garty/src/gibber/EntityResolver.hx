@@ -191,6 +191,9 @@ class EntityResolver
 
                 for ( t in teractCmp.attached ) {
                     var synsLst : Array<SynTag> = wm.getSynTags( input.action );
+                    trace( synsLst );
+                    trace( t );
+                    trace( t.syns );
                     if ( !synsLst.exists( function( syns ) { return syns == t.syns; } ) ) {
                         continue;
                     }
@@ -202,7 +205,7 @@ class EntityResolver
                             return tres;
                         case TMatch.MATCH_INVALID:
                             matchInvalids.push( tres );
-                        default:
+                    default:
                     }
                 }
             }
