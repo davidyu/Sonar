@@ -36,7 +36,7 @@ class Geo
         var minLen = Math.POSITIVE_INFINITY;
         
         while ( i < edges.length ) {
-            ext = Math2.getCloseIntersectPoint( point, edges[i], edges[j] );
+            ext = Math2.getCloseIntersectPoint( point, { a: edges[i], b: edges[j] } );
             len = ext.sub( point ).lengthsq();
             if ( len < minLen ) {
                 closest = ext;
@@ -81,7 +81,7 @@ class Geo
         while ( --iter > 0 && center.sub( centerp ).lengthsq() > 0.0001 ) {
             center.set( centerp );
             while ( i < length ) {
-                var d = Math2.getCloseIntersectPoint( center, edges[i], edges[j] ).sub( center );
+                var d = Math2.getCloseIntersectPoint( center, { a: edges[i], b: edges[j] } ).sub( center );
                 if ( d.lengthsq() < radsq ) {
                     delta = delta.add( d.normalize().mul( -circle.radius + d.length() ) );
                 }

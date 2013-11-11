@@ -26,23 +26,26 @@ class Math2 {
         return null;
     }    
     
-    // Finds the intersection between a line segment and the shortest line from a point to that line segment
-    public static function getCloseIntersectPoint( p : Vec2, a : Vec2, b : Vec2 ) : Vec2 { 
-        var ac : Vec2 = p.sub( a );  // Vector from point to edge1
-        var ab : Vec2 = b.sub( a );  // Edge
-        var r : Float = ac.dot( ab ) / ( ab.lengthsq() );   // ratio between length of ac / ae (where ae is ||ab||cos@
-        var l = ab.lengthsq();
-        var ext : Vec2; // r * unit vector in direction of ab
-        
+    // returns the point on a line segment (a,b) that is closest to some other point p
+    public static function getCloseIntersectPoint( p : Vec2, line: { a: Vec2, b : Vec2 }  ) : Vec2 { 
+        var pa : Vec2 = p.sub( line.a );
+        var ba : Vec2 = line.b.sub( line.a );
+
+        // r is the ratio between lengths ea / ba (where ea is ||ba||cos@
+        // ea can also be thought of as the projection of pa onto ba.
+        var l = ba.lengthsq();
+        var r : Float = pa.dot( ba ) / l;
+        var closest : Vec2;
+
         if ( r < 0 ) {
-            ext = a;
+            closest = line.a;
         } else if ( r > 1 ) {
-            ext = b;
+            closest = line.b;
         } else {
-            ext = a.add( ab.mul( r ) );
+            closest = line.a.add( ba.mul( r ) );
         }
-        
-        return ext;
+
+        return closest;
     }
 
     // http://en.literateprograms.org/Box-Muller_transform_(C)

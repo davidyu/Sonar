@@ -11,7 +11,6 @@ CmdQueue gibber.components.CmdQueue
 CommandCmp gibber.components.CommandCmp
 ContainableCmp gibber.components.ContainableCmp
 ContainerCmp gibber.components.ContainerCmp
-EntityRefCmp gibber.components.EntityRefCmp
 InventoryCmp gibber.components.InventoryCmp
 LookCmp gibber.components.LookCmp
 NameIdCmp gibber.components.NameIdCmp
@@ -20,9 +19,7 @@ PosCmp gibber.components.PosCmp
 RegionCmp gibber.components.RegionCmp
 RenderCmp gibber.components.RenderCmp
 StaticPosCmp gibber.components.StaticPosCmp
-StoryNodeCmp gibber.components.StoryNodeCmp
 TakeCmp gibber.components.TakeCmp
-TeractCmp gibber.components.TeractCmp
 TeractNodeCmp gibber.components.TeractNodeCmp
 TransitRequestCmp gibber.components.TransitRequestCmp
 UsageCmp gibber.components.UsageCmp
