@@ -4,6 +4,14 @@ package utils;
  * ...
  * @author ...
  */
+
+// this is a general representation of an intersection test.
+enum IntersectResult {
+    None;
+    Point(point: Vec2);
+    Line(a:Vec2, b:Vec2);
+}
+
 class Geo
 {
     
@@ -25,7 +33,7 @@ class Geo
         
         return c;
     }
-    
+
     public static function getClosestPoint( poly : Polygon, point : Vec2 ) : Vec2 {
         var edges = poly.edges;
         var i = 0;
@@ -64,6 +72,39 @@ class Geo
         }
         
         return null;
+    }
+
+    // if applicable, returns the point/line of intersection between a line segment and a circle
+    public static function lineCircleIntersect( circle : { center : Vec2, radius : Float }, line : { a : Vec2, b : Vec2 } ) : IntersectResult {
+        var p : Vec2 = Math2.getCloseIntersectPoint( circle.center, line );
+        // distance (from line to center of circle) squared
+        var dsq = Math2.getCloseIntersectPoint( circle.center, line ).sub( circle.center ).lengthsq();
+        var rsq = circle.radius * circle.radius;
+        var res: IntersectResult;
+
+        if ( dsq < rsq ) { // line lies secant to circle
+            // to construct the secant points, notice that if we extend a line from the
+            // center to both secant points, two identical right triangles are formed, where the
+            // hypotenuse is r and the shared side has length d
+
+            // we can acquire the secant points by applying the Pythagorean theorem and
+            // finding the length of the third side, which can be used to construct a vector
+            // from p to either secant points.
+
+            // dsec is the magnitude of vectors from p to either secant points
+            var dsec = Math.sqrt( rsq - dsq );
+
+            var pa : Vec2 = line.a.sub( p );
+            var pb : Vec2 = line.b.sub( p );
+
+            res = Line( p.add( pa.normalize().mul( dsec ) ), p.add( pb.normalize().mul( dsec ) ) );
+        } else if ( dsq == rsq ) { // line lies tangent to circle
+            res = Point(p);
+        } else {
+            res = None;
+        }
+
+        return res;
     }
     
     public static function minTransCirclePolygon( poly : Polygon, circle : { pos : Vec2, radius : Float } ) : Vec2 {
