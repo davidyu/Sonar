@@ -41,7 +41,12 @@ class AdvancedParser
         er = god.entityResolver;
     }
 
-    public function parse( command : String ) : String {
+    public function parse( command : String ) {
+
+        if ( command == "" ) {
+            throw "You should never pass an empty string into parse! It is caller's job to ensure a well-formed string is passed into parse.";
+            return; //sanity check
+        }
 
         // tokenize
         var words = command.toLowerCase().split( " " );
@@ -84,7 +89,7 @@ class AdvancedParser
             // check for ambiguity
             if ( targets.length == 0 && isNoun ) {
                 god.debugPrintln( "Can't resolve " + word );
-                return "";
+                return;
             }
         }
 
@@ -100,10 +105,10 @@ class AdvancedParser
         switch( words[0] ) {
             case "clear":
                 god.debugClear();
-                return "";
+                return;
         }
 
-        return "";
+        return;
     }
 
     var wordsMgr : WordsMgr;

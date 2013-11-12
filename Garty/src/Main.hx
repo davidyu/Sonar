@@ -43,28 +43,13 @@ class Best
 
 class Main 
 {
-
     static function main()
     {
         var stage = Lib.current.stage;
         stage.scaleMode = StageScaleMode.NO_SCALE;
         stage.align = StageAlign.TOP_LEFT;
         // entry point
-        
         trace( "Starting up God" );
-        
         var g = new God( Lib.current );
-        
-                
-        
-        //var t = new NameIdCmp( "hello" );
-//
-        //var h = haxe.Serializer.run( w );
-        //trace( h );
-        //
-        //var l : NameIdCmp = Unserializer.run( h );
-        //trace( l.name );
     }
-    
-
 }

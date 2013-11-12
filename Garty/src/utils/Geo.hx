@@ -85,7 +85,7 @@ class Geo
         if ( dsq < rsq ) { // line lies secant to circle
             // to construct the secant points, notice that if we extend a line from the
             // center to both secant points, two identical right triangles are formed, where the
-            // hypotenuse is r and the shared side has length d
+            // hypotenuse is r and the shared side has length d (sqrt(dsq))
 
             // we can acquire the secant points by applying the Pythagorean theorem and
             // finding the length of the third side, which can be used to construct a vector
@@ -98,9 +98,9 @@ class Geo
             var pb : Vec2 = line.b.sub( p );
 
             res = Line( p.add( pa.normalize().mul( dsec ) ), p.add( pb.normalize().mul( dsec ) ) );
-        } else if ( dsq == rsq ) { // line lies tangent to circle
+        } else if ( dsq == rsq ) { // line lies tangent to circle -- this is BAD becauses it's a floating point equality comparison! Does the haxe compiler do something smart here?
             res = Point(p);
-        } else {
+        } else { // line is outside the circle
             res = None;
         }
 
