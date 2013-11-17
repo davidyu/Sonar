@@ -3,6 +3,7 @@ package utils;
 class Math2 {
     public static var PI : Float = 3.141592653589793238462643383279;
     public static var SMALL : Float = 0.00001;
+    public static var EPSILON : Float = SMALL;
     public static inline function randomFloat( min : Float, max : Float ) : Float {
         return Math.random() * (max - min) + min;
     }

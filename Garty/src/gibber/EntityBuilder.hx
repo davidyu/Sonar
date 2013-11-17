@@ -35,24 +35,24 @@ class EntityBuilder
     public function new( g : God ) {
        god = g;
        world = god.world;
-       
+
        init();
     }
-    
+
     public function init() : Void {
         containerMgr = god.world.getManager( ContainerMgr );
         regionMapper = world.getMapper( RegionCmp );
         posMapper = world.getMapper( PosCmp );
     }
-    
+
     public function addPortalEdges( portal : Entity, edges : Array<PortalEdge> ) : Void {
         var portalCmp = portal.getComponent( PortalCmp );
         var portalRegionCmp = regionMapper.get( portal );
         var portalPosCmp = posMapper.get( portal );
-        
+
         portalCmp.edges = portalCmp.edges.concat( edges );
         portal.addComponent( portalCmp );
-           
+
         //portalRegionCmp.parent = portalPosCmp.sector;
         //portalRegionCmp.adj.push( portalPosCmp.sector );
         for ( e in edges ) {
@@ -65,12 +65,13 @@ class EntityBuilder
             regionMapper.get( e.pSrc ).adj.push( portal );
         }
     }
-    
+
     public function doubleEdge( portal : Entity, s1 : Entity, s2 : Entity ) : Void {
         addPortalEdges( portal, [new PortalEdge( s1, s2, god.sf.createScript( "transit" ) )] );
         addPortalEdges( portal, [new PortalEdge( s2, s1, god.sf.createScript( "transit" ) )] );
     }
-    
+
+    // what is this attempting to do?
     //public function createWordRef( tag : SynTag ) {
         //var e = world.createEntity();
         //var tagCmp = new SynListCmp( tag );
@@ -81,7 +82,7 @@ class EntityBuilder
         //
         //return e;
     //}
-    
+
     public function createPlayer( name : String, sector : Entity, syns : SynTag, isPlayer : Bool = false ) : Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
@@ -97,9 +98,9 @@ class EntityBuilder
             teractCmp.attached.push ( new MoveTeract( god, new SynTag( "walk", [ "walk", "goto", "move" ], SynType.VERB ) ) );
         }
         var inventoryCmp = new InventoryCmp();
-        
+
         lookCmp.lookText = "This is the player";
-        
+
         e.addComponent( lookCmp );
         e.addComponent( nameCmp );
         e.addComponent( posCmp );
@@ -111,7 +112,7 @@ class EntityBuilder
         e.addComponent( inventoryCmp );
 
         world.addEntity( e );
-        
+
         return e;
     }
 
@@ -125,9 +126,9 @@ class EntityBuilder
         var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )] );
         //var contCmp = new ContainableCmp( containerMgr, e, null );
         var renderCmp = new RenderCmp( 0x00ff00 );
-        
+
         lookCmp.lookText = "This is the player";
-        
+
         e.addComponent( posCmp );
         e.addComponent( lookCmp );
         e.addComponent( portalCmp );
@@ -138,10 +139,15 @@ class EntityBuilder
         e.addComponent( nameCmp );
 
         world.addEntity( e );
-        
+
         return e;
-    }    
-    
+    }
+
+    // returns a sector without the RenderCmp
+    public function createVirtualSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
+        var e = createSector( name, pos, polygonAreas ).removeComponent( RenderCmp );
+        return e;
+    }
 
     public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
         var e = world.createEntity();
@@ -153,9 +159,9 @@ class EntityBuilder
         var teractNodeCmp = new TeractNodeCmp( [ new MoveTeract( god, null ) ] );
         var renderCmp = new RenderCmp( 0x00ffff );
         var containerCmp = new ContainerCmp();
-        
+
         lookCmp.lookText = "This is some room #" + Std.random(1000);
-        
+
         e.addComponent( nameCmp );
         e.addComponent( posCmp );
         e.addComponent( staticCmp );
@@ -164,23 +170,23 @@ class EntityBuilder
         e.addComponent( teractNodeCmp );
         e.addComponent( renderCmp );
         e.addComponent( containerCmp );
-        
+
         world.addEntity( e );
-        
+
         return e;
     }
-    
+
         public function createTransitRequest( mover : Entity, destSector : Entity, transitScript : TransitScript ) : Entity {
         var e : Entity = world.createEntity();
         var tr = new TransitRequestCmp( mover, destSector, transitScript );
-        
+
         e.addComponent( tr );
-        
+
         world.addEntity( e );
-        
+
         return e;
     }
-    
+
     public function createObject( name : String, pos : Vec2, ?lookText : String ) : Entity
     {
         var e = world.createEntity();
@@ -234,7 +240,7 @@ class EntityBuilder
     var god : God;
     var world : World;
     var containerMgr : ContainerMgr;
-    
+
     var regionMapper : ComponentMapper<RegionCmp>;
     var posMapper : ComponentMapper<PosCmp>;
 }

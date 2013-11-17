@@ -5,7 +5,7 @@ package utils;
  * @author ...
  */
 
-// this is a general representation of an intersection test.
+// this is a general representation of a 2D intersection test.
 enum IntersectResult {
     None;
     Point(point: Vec2);
@@ -74,7 +74,7 @@ class Geo
         return null;
     }
 
-    // if applicable, returns the point/line of intersection between a line segment and a circle
+    // if applicable, returns the point or line of intersection between a line segment and a circle
     public static function lineCircleIntersect( circle : { center : Vec2, radius : Float }, line : { a : Vec2, b : Vec2 } ) : IntersectResult {
         var p : Vec2 = Math2.getCloseIntersectPoint( circle.center, line );
         // distance (from line to center of circle) squared

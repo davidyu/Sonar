@@ -114,7 +114,7 @@ class God
                                     /* p14 */ 660, 576, 620, 576, 620, 279, /* p17 */ 426, 279,
                                     /* p18 */ 256, 360, 144, 360 ] );
 
-        sectors.push( entityBuilder.createSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
+        sectors.push( entityBuilder.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
         player = entityBuilder.createPlayer( "ship", sectors[0], new SynTag( "bob", ["bob", "player"], SynType.NOUN ), true );
 
@@ -135,17 +135,26 @@ class God
 
         if ( Key.isDown( Keyboard.RIGHT ) ) {
             player.getComponent( PosCmp ).dp.x = speed;
-        } if ( Key.isDown( Keyboard.LEFT ) ){
+        }
+
+        if ( Key.isDown( Keyboard.LEFT ) ){
             player.getComponent( PosCmp ).dp.x = -speed;
-        } if ( Key.isDown( Keyboard.UP ) ) {
+        }
+
+        if ( Key.isDown( Keyboard.UP ) ) {
             player.getComponent( PosCmp ).dp.y = -speed;
-        } if ( Key.isDown( Keyboard.DOWN ) ) {
+        }
+
+        if ( Key.isDown( Keyboard.DOWN ) ) {
             player.getComponent( PosCmp ).dp.y = speed;
         }
     }
 
     function onEnterKey( e : flash.events.KeyboardEvent ) : Void {
         switch ( e.keyCode ) {
+            case Keyboard.SPACE:
+                // ripple
+
             case Keyboard.ENTER:
                 var line = inputTextfield.text;
                 inputTextfield.text = "";
