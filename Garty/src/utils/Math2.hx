@@ -29,13 +29,13 @@ class Math2 {
     
     // returns the point on a line segment (a,b) that is closest to some other point p
     public static function getCloseIntersectPoint( p : Vec2, line: { a: Vec2, b : Vec2 }  ) : Vec2 { 
-        var pa : Vec2 = p.sub( line.a );
-        var ba : Vec2 = line.b.sub( line.a );
+        var ap : Vec2 = p.sub( line.a );
+        var ab : Vec2 = line.b.sub( line.a );
 
-        // r is the ratio between lengths ea / ba (where ea is ||ba||cos@
-        // ea can also be thought of as the projection of pa onto ba.
-        var l = ba.lengthsq();
-        var r : Float = pa.dot( ba ) / l;
+        // r is the ratio between lengths ae / ab, where ae is ||ap||cos@
+        // ae can also be thought of as the vector projection of ap onto ab.
+        // r can also be thought of as the scalar projection of ap onto ab
+        var r : Float = ap.dot( ab.normalize() );
         var closest : Vec2;
 
         if ( r < 0 ) {
@@ -43,7 +43,7 @@ class Math2 {
         } else if ( r > 1 ) {
             closest = line.b;
         } else {
-            closest = line.a.add( ba.mul( r ) );
+            closest = line.a.add( ab.mul( r ) );
         }
 
         return closest;
