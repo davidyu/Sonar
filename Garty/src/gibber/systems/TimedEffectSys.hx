@@ -44,7 +44,7 @@ class TimedEffectSys extends EntitySystem
             time = timedEffectMapper.get( e );
 
             time.internalAcc += worldDelta;
-            if ( time.internalAcc >= time.duration ) {
+            if ( time.duration > 0 && time.internalAcc >= time.duration ) {
                 world.deleteEntity( e );
                 return;
             }
