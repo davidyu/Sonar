@@ -21,7 +21,11 @@ import gibber.systems.CmdProcessSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
+import gibber.systems.RenderTraceSys;
+import gibber.systems.TraceSys;
 import gibber.systems.TransitRequestSys;
+import gibber.systems.TimedEffectSys;
+import gibber.systems.SonarSys;
 import utils.Key;
 import utils.Math2;
 import utils.Polygon;
@@ -80,7 +84,12 @@ class God
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new RenderSectorSys( root ) );
         world.setSystem( new RenderSys( root ) );
+        world.setSystem( new RenderTraceSys( root ) );
+        world.setSystem( new TimedEffectSys() );
+        world.setSystem( new SonarSys() );
+        world.setSystem( new TraceSys() );
 
+        world.delta = 1000 / ( root.stage.frameRate ); //this is gross!
         world.initialize();
     }
 
@@ -153,7 +162,7 @@ class God
     function onEnterKey( e : flash.events.KeyboardEvent ) : Void {
         switch ( e.keyCode ) {
             case Keyboard.SPACE:
-                // ripple
+                entityBuilder.createSonar( player.getComponent( PosCmp ).sector, player.getComponent( PosCmp ).pos );
 
             case Keyboard.ENTER:
                 var line = inputTextfield.text;
@@ -182,7 +191,7 @@ class God
         inputTextfield.y = root.stage.stageHeight - inputTextfield.height;
         inputTextfield.defaultTextFormat = baseTextFormat;
         inputTextfield.background = true;
-        inputTextfield.backgroundColor = 0xB0EFF7;
+        inputTextfield.backgroundColor = 0x000000;
         inputTextfield.textColor = 0x000000;
 
         root.addChild( inputTextfield );

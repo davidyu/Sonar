@@ -18,9 +18,12 @@ PortalCmp gibber.components.PortalCmp
 PosCmp gibber.components.PosCmp
 RegionCmp gibber.components.RegionCmp
 RenderCmp gibber.components.RenderCmp
+SonarCmp gibber.components.SonarCmp
 StaticPosCmp gibber.components.StaticPosCmp
 TakeCmp gibber.components.TakeCmp
 TeractNodeCmp gibber.components.TeractNodeCmp
+TimedEffectCmp gibber.components.TimedEffectCmp
+TraceCmp gibber.components.TraceCmp
 TransitRequestCmp gibber.components.TransitRequestCmp
 UsageCmp gibber.components.UsageCmp
 EntityBuilder gibber.EntityBuilder
@@ -43,6 +46,10 @@ CmdProcessSys gibber.systems.CmdProcessSys
 PhysicsSys gibber.systems.PhysicsSys
 RenderSectorSys gibber.systems.RenderSectorSys
 RenderSys gibber.systems.RenderSys
+RenderTraceSys gibber.systems.RenderTraceSys
+SonarSys gibber.systems.SonarSys
+TimedEffectSys gibber.systems.TimedEffectSys
+TraceSys gibber.systems.TraceSys
 TransitRequestSys gibber.systems.TransitRequestSys
 LookTeract gibber.teracts.LookTeract
 MoveTeract gibber.teracts.MoveTeract

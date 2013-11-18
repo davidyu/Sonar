@@ -12,7 +12,7 @@ class PosCmp implements Component
     @:isVar public var regionsIn : List<Entity>;
     @:isVar public var sector ( default, default ) : Entity;
     @:isVar public var pos :  Vec2;
-    @:isVar public var dp :  Vec2;
+    @:isVar public var dp :  Vec2; //aka velocity
 
     public function new( sec : Entity, pos : Vec2 ) {
         this.regionsIn = new List<Entity>();

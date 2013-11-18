@@ -20,6 +20,8 @@ import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
+import gibber.components.SonarCmp;
+import gibber.components.TimedEffectCmp;
 import gibber.components.TransitRequestCmp;
 import gibber.managers.ContainerMgr;
 import gibber.scripts.TransitScript;
@@ -143,6 +145,25 @@ class EntityBuilder
         return e;
     }
 
+    // this is bullshit! I shouldn't HAVE to pass in the sector to create a sonar wave!
+    public function createSonar( sector : Entity, pos : Vec2 ) : Entity {
+        var e = world.createEntity();
+        // I need to get the current time!
+        var sonarCmp = new SonarCmp( 200.0, 200 );
+        var posCmp = new PosCmp( sector, pos );
+        var timedEffectCmp = new TimedEffectCmp( 2000, GlobalTickInterval );
+        var debugRenderCmp = new RenderCmp( 0xffffff );
+
+        e.addComponent( timedEffectCmp );
+        e.addComponent( sonarCmp );
+        e.addComponent( posCmp );
+
+        e.addComponent( debugRenderCmp );
+        world.addEntity( e );
+
+        return e;
+    }
+
     // returns a sector without the RenderCmp
     public function createVirtualSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
         var e = createSector( name, pos, polygonAreas ).removeComponent( RenderCmp );
@@ -176,7 +197,7 @@ class EntityBuilder
         return e;
     }
 
-        public function createTransitRequest( mover : Entity, destSector : Entity, transitScript : TransitScript ) : Entity {
+    public function createTransitRequest( mover : Entity, destSector : Entity, transitScript : TransitScript ) : Entity {
         var e : Entity = world.createEntity();
         var tr = new TransitRequestCmp( mover, destSector, transitScript );
 

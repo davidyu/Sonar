@@ -76,33 +76,79 @@ class Geo
 
     // if applicable, returns the point or line of intersection between a line segment and a circle
     public static function lineCircleIntersect( circle : { center : Vec2, radius : Float }, line : { a : Vec2, b : Vec2 } ) : IntersectResult {
-        var p : Vec2 = Math2.getCloseIntersectPoint( circle.center, line );
         // distance (from line to center of circle) squared
-        var dsq = Math2.getCloseIntersectPoint( circle.center, line ).sub( circle.center ).lengthsq();
         var rsq = circle.radius * circle.radius;
         var res: IntersectResult;
 
-        if ( dsq < rsq ) { // line lies secant to circle
-            // to construct the secant points, notice that if we extend a line from the
-            // center to both secant points, two identical right triangles are formed, where the
-            // hypotenuse is r and the shared side has length d (sqrt(dsq))
+        // There are three general cases: (A) both endpoints of line are inside circle
+        //                                (B) both endpoints of line are outside circle
+        //                                (C) one endpoint is inside circle; one endpoint is outside circle
 
-            // we can acquire the secant points by applying the Pythagorean theorem and
-            // finding the length of the third side, which can be used to construct a vector
-            // from p to either secant points.
+        // (A) clean case: line segment is completely inside the circle
+        if ( line.a.sub( circle.center ).lengthsq() < rsq && line.b.sub( circle.center ).lengthsq() < rsq ) {
+            res = Line( line.a, line.b );
+        } else if ( line.a.sub( circle.center ).lengthsq() > rsq && line.b.sub( circle.center ).lengthsq() > rsq ) {
+            // (B) also relatively clean: endpoints of line segment completely outside the circle. Treat it like an infinite line.
+            var p : Vec2 = Math2.getCloseIntersectPoint( circle.center, line ); // cp (c = circle.center) must be perpendicular to line ab
+            var dsq = p.sub( circle.center ).lengthsq();
 
-            // dsec is the magnitude of vectors from p to either secant points
-            var dsec = Math.sqrt( rsq - dsq );
+            // There are three cases:
+            if ( Math.abs( dsq - rsq ) < Math2.EPSILON ) { // 1. (very rare) line lies tangent to circle
+                res = Point(p);
+            } else if ( dsq < rsq ) { // 2. line lies secant to circle
+                // this means that point p bisects the line formed by connecting the two secant points
+                // to obtain the secant points, notice that if we extend a line from the center of the
+                // circle to both secant points, two identical right triangles are formed, where the
+                // hypotenuse is r and the shared side has length d (sqrt(dsq))
 
-            var pa : Vec2 = line.a.sub( p );
-            var pb : Vec2 = line.b.sub( p );
+                // we can acquire the secant points by applying the Pythagorean theorem and
+                // finding the length of the third side, which can be used to construct a vector
+                // from p to either secant points.
 
-            res = Line( p.add( pa.normalize().mul( dsec ) ), p.add( pb.normalize().mul( dsec ) ) );
-        } else if ( dsq == rsq ) { // line lies tangent to circle -- this is BAD becauses it's a floating point equality comparison! Does the haxe compiler do something smart here?
-            res = Point(p);
-        } else { // line is outside the circle
-            res = None;
+                // dsec is the magnitude of vectors from p to either secant points
+                var dsec = Math.sqrt( rsq - dsq );
+
+                var pa : Vec2 = line.a.sub( p );
+                var pb : Vec2 = line.b.sub( p );
+
+                res = Line( p.add( pa.normalize().mul( dsec ) ), p.add( pb.normalize().mul( dsec ) ) );
+            } else { // 3. line is completely outside the circle
+                res = None;
+            }
+        } else {
+            // (C) this is the dirtiest case: the line segment is partially inside the circle.
+
+            // generic function to find point s, which lines on line pIn -> pOut and on the circumference of the circle
+            function getIntersectPointBetween( pIn : Vec2, pOut : Vec2 ) {
+                var p = pIn, q = pOut; // simpler names
+
+                var pc = circle.center.sub( p );
+                var pq = q.sub( p );
+
+                // construct point t; ct is perpendicular to the infinite line described by points p, q
+                var r : Float = pc.dot( pq.normalize() );
+                var t : Vec2 = p.add( pq.normalize().mul( r ) );
+
+                trace( "p: " + p + ", q: " + q + ", t: " + t );
+
+                // now use Pythagorean theorem to get the magnitude of vector from t to point s, which is the point on the circle and the line segment pq
+                var ct : Vec2 = t.sub( circle.center );
+                var mag : Float = Math.sqrt( rsq - ct.lengthsq() );
+
+                // finally, construct fabled point s
+                var s : Vec2 = p.add( pq.normalize().mul( mag ) );
+
+                return s;
+            }
+
+            if ( line.a.sub( circle.center ).lengthsq() < rsq ) {
+                res = Line( line.a, getIntersectPointBetween( line.a, line.b ) );
+            } else { // line.b.sub( circle.center ).lengthsq() < rsq
+                res = Line( line.b, getIntersectPointBetween( line.b, line.a ) );
+            }
+
         }
+
 
         return res;
     }
