@@ -149,16 +149,17 @@ class EntityBuilder
     public function createSonar( sector : Entity, pos : Vec2 ) : Entity {
         var e = world.createEntity();
         // I need to get the current time!
-        var sonarCmp = new SonarCmp( 200.0, 200 );
+        var sonarCmp = new SonarCmp( 100.0, 100 );
         var posCmp = new PosCmp( sector, pos );
-        var timedEffectCmp = new TimedEffectCmp( 2000, GlobalTickInterval );
-        var debugRenderCmp = new RenderCmp( 0xffffff );
+        var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
+        var renderCmp = new RenderCmp( 0xffffff );
 
         e.addComponent( timedEffectCmp );
         e.addComponent( sonarCmp );
         e.addComponent( posCmp );
+        e.addComponent( renderCmp );
 
-        e.addComponent( debugRenderCmp );
+        e.addComponent( renderCmp );
         world.addEntity( e );
 
         return e;

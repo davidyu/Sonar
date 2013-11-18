@@ -19,6 +19,7 @@ import gibber.managers.SynonymMgr;
 import gibber.managers.WordsMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.PhysicsSys;
+import gibber.systems.RenderSonarSys;
 import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
 import gibber.systems.RenderTraceSys;
@@ -83,6 +84,7 @@ class God
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new RenderSectorSys( root ) );
+        world.setSystem( new RenderSonarSys( root ) );
         world.setSystem( new RenderSys( root ) );
         world.setSystem( new RenderTraceSys( root ) );
         world.setSystem( new TimedEffectSys() );
@@ -126,10 +128,6 @@ class God
         sectors.push( entityBuilder.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
         player = entityBuilder.createPlayer( "ship", sectors[0], new SynTag( "bob", ["bob", "player"], SynType.NOUN ), true );
-
-        entityDeserializer.fromFile( "item_jar_pickles.json" );
-        entityDeserializer.fromFile( "item_jar_honey.json" );
-        entityDeserializer.fromFile( "item_jar_prunes.json" );
 
         var cmdCmp = player.getComponent( CmdQueue );
     }

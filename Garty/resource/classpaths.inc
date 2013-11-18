@@ -45,6 +45,7 @@ VoidExecuteScript gibber.scripts.VoidExecuteScript
 CmdProcessSys gibber.systems.CmdProcessSys
 PhysicsSys gibber.systems.PhysicsSys
 RenderSectorSys gibber.systems.RenderSectorSys
+RenderSonarSys gibber.systems.RenderSonarSys
 RenderSys gibber.systems.RenderSys
 RenderTraceSys gibber.systems.RenderTraceSys
 SonarSys gibber.systems.SonarSys
