@@ -2,10 +2,10 @@ package utils;
 
 class Polygon
 {
-    @:isVar public var edges ( default, default ) : Array<Vec2>;
+    @:isVar public var verts ( default, default ) : Array<Vec2>;
 
-    public function new( edgesList : Array<Vec2> ) {
-        this.edges = edgesList;
-    } 
+    public function new( verts : Array<Vec2> ) {
+        this.verts = verts;
+    }
 
 }

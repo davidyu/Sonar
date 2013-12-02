@@ -54,17 +54,16 @@ class SonarSys extends EntitySystem
                 var sector = posMapper.get( e ).sector;
                 var sectorPolys = regionMapper.get( sector ).polys;
                 for ( p in sectorPolys ) {
-                    for ( k in 0...p.edges.length - 1 ) {
+                    for ( k in 0...p.verts.length - 1 ) {
                         // do an intersection test against each edge of the polygon; create a trace for each intersection occurrence
-                        var intersect = Geo.lineCircleIntersect( { center: center, radius: radius }, { a: p.edges[k], b: p.edges[k + 1] } );
-                        //trace( 'performing intersection test with { c : $center, r : $radius } and { a : ${p.edges[k]}, b : ${p.edges[k + 1]} }' );
+                        var intersect = Geo.lineCircleIntersect( { center: center, radius: radius }, { a: p.verts[k], b: p.verts[k + 1] } );
+                        //trace( 'performing intersection test with { c : $center, r : $radius } and { a : ${p.verts[k]}, b : ${p.verts[k + 1]} }' );
                         if ( intersect != None ) {
                             createTrace( posMapper.get( sector ).pos, intersect );
                         }
                     }
                 }
 
-                // create new traces
                 time.processState = Processed;
             }
         }

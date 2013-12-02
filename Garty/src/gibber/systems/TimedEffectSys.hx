@@ -67,6 +67,8 @@ class TimedEffectSys extends EntitySystem
 
                 case Process:
 #if debug
+                    trace( e.listComponents() );
+                    var list = e.dumpComponents();
                     throw "an entity with TimedEffect component did not get processed!";
 #end
             }
