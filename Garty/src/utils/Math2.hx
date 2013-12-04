@@ -10,32 +10,32 @@ class Math2 {
     public static inline function randomInt( min : Int, max : Int ) : Int {
         return Std.random( max - min ) + min;
     }
-    
+
     // http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-    public static function getLineLineIntersection( ap1 : Vec2, ap2 : Vec2, bp1 : Vec2, bp2 : Vec2 ) : Vec2 { 
+    public static function getLineLineIntersection( ap1 : Vec2, ap2 : Vec2, bp1 : Vec2, bp2 : Vec2 ) : Vec2 {
         var r = ap2.sub( ap1 );
         var s = bp2.sub( bp1 );
         var d = bp1.sub( ap1 );
         var rxs = 1 / r.cross( s );
         var t = d.cross( s.scale( rxs ) );
         var u = d.cross( r.scale( rxs ) );
-        
+
         if ( 0 <= t && t <= 1 && 0 <= u && u <= 1 ) {
             return ap1.add( r.scale( t ) );
         }
-        
+
         return null;
-    }    
-    
+    }
+
     // returns the point on a line segment (a,b) that is closest to some other point p
-    public static function getCloseIntersectPoint( p : Vec2, line: { a: Vec2, b : Vec2 }  ) : Vec2 { 
+    public static function getCloseIntersectPoint( p : Vec2, line: { a: Vec2, b : Vec2 }  ) : Vec2 {
         var ap : Vec2 = p.sub( line.a );
         var ab : Vec2 = line.b.sub( line.a );
 
         // r is the ratio between lengths ae / ab, where ae is ||ap||cos@
         // ae can also be thought of as the vector projection of ap onto ab.
         // r can also be thought of as the scalar projection of ap onto ab
-        var r : Float = ap.dot( ab.normalize() );
+        var r : Float = ap.dot( ab ) / ab.lengthsq(); // why must we use lengthsq?
         var closest : Vec2;
 
         if ( r < 0 ) {
@@ -52,7 +52,7 @@ class Math2 {
     // http://en.literateprograms.org/Box-Muller_transform_(C)
     public static function randomNorm( mean : Float, stddev : Float ) : Float {
         var result;
-        
+
         if ( !useRandCache2 ) {
             useRandCache2 = true;
             result = boxMuller() * stddev + mean;
@@ -60,7 +60,7 @@ class Math2 {
             useRandCache2 = false;
             result = randCache2 * stddev + mean;
         }
-        
+
         return result;
     }
 
@@ -84,7 +84,7 @@ class Math2 {
         var r : Float = 0.0;
         var x : Float = 0;
         var y : Float = 0;
-        
+
         while ( r == 0.0 || r > 1.0 ) {
             x = randomFloat( -1 , 1 );
             y = randomFloat( -1 , 1 );
