@@ -9,7 +9,7 @@ game: preprocess
 
 check:
 	haxe unit.hxml
-	neko check.n
+	neko testbin/check.n
 
 clean:
-	rm resource/*.inc test.n
+	rm resource/*.inc testbin/* bin/*

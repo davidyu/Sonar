@@ -1,5 +1,5 @@
 -cp src
 -cp ../../artemis-haxelib/src
 
--neko check.n
+-neko testbin/check.n
 -main utils.test.CheckUtils
