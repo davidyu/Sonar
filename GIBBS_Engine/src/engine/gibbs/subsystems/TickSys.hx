@@ -12,8 +12,7 @@ class TickSys extends Subsystem
     }
 
     public override function onAdded( e : Entity ) : Void {
-        //Dave: you seem to want to do something here...
-        //if ( entities.map
+
     }
 
     public override function onDeleted( e : Entity ) : Void {
