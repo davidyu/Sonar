@@ -3,9 +3,13 @@
 preprocess:
 	./preprocess.sh > resource/classpaths.inc
 
-test: preprocess
+game: preprocess
 	haxe compile.hxml
 	fdb bin/Engine.swf
 
+check:
+	haxe unit.hxml
+	neko check.n
+
 clean:
-	rm resource/*.inc
+	rm resource/*.inc test.n
