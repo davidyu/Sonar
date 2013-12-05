@@ -135,7 +135,7 @@ class Geo
                 var mag : Float = Math.sqrt( rsq - ct.lengthsq() );
 
                 // finally, construct fabled point s
-                var s : Vec2 = p.add( pq.normalize().mul( mag ) );
+                var s : Vec2 = t.add( pq.normalize().mul( mag ) );
 
                 return s;
             }
