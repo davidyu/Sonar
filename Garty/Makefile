@@ -1,4 +1,4 @@
-.PHONY: preprocess test clean
+.PHONY: preprocess game check clean
 
 preprocess:
 	./preprocess.sh > resource/classpaths.inc

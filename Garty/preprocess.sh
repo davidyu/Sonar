@@ -1,6 +1,8 @@
+#!/bin/sh
+
 #############################################################################
 #
-# Gibbs JSON deserializing preprocessor
+# Gibbs JSON deserializing preprocessor shell script
 #
 #   Goes through the src directory and outputs for all files, the following:
 #
@@ -11,7 +13,6 @@
 #
 #############################################################################
 
-#!/bin/sh
 SRC_PATH=./src
 
 # get into source path
@@ -44,6 +45,7 @@ do
     # replace all instances of '/' with '.'
     cp=$(echo $cp | sed -e "s/\//\./g")
 
+    # finally, output classname classpath
     echo $classname $cp
 done
 
