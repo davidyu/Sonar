@@ -117,7 +117,7 @@ class Geo
         } else {
             // (C) this is the dirtiest case: the line segment is partially inside the circle.
 
-            // generic function to find point s, which lines on line pIn -> pOut and on the circumference of the circle
+            // generic function to find point s, which lies on line pIn -> pOut AND on the circumference of the circle
             function getIntersectPointBetween( pIn : Vec2, pOut : Vec2 ) {
                 var p = pIn, q = pOut; // simpler names
 
@@ -127,8 +127,6 @@ class Geo
                 // construct point t; ct is perpendicular to the infinite line described by points p, q
                 var r : Float = pc.dot( pq.normalize() );
                 var t : Vec2 = p.add( pq.normalize().mul( r ) );
-
-                trace( "p: " + p + ", q: " + q + ", t: " + t );
 
                 // now use Pythagorean theorem to get the magnitude of vector from t to point s, which is the point on the circle and the line segment pq
                 var ct : Vec2 = t.sub( circle.center );

@@ -53,8 +53,12 @@ class SonarSys extends EntitySystem
 
                 var sector = posMapper.get( e ).sector;
                 var sectorPolys = regionMapper.get( sector ).polys;
+
+                // reveal portions of the sector walls that are "hit" by sonar
                 for ( p in sectorPolys ) {
                     for ( k in 0...p.verts.length - 1 ) {
+                        // if this edge is "hidden," do not attempt to reveal
+
                         // do an intersection test against each edge of the polygon; create a trace for each intersection occurrence
                         var intersect = Geo.lineCircleIntersect( { center: center, radius: radius }, { a: p.verts[k], b: p.verts[k + 1] } );
                         //trace( 'performing intersection test with { c : $center, r : $radius } and { a : ${p.verts[k]}, b : ${p.verts[k + 1]} }' );

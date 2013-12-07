@@ -26,7 +26,7 @@ class PhysicsSys extends EntitySystem
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
-        var e : Entity;         
+        var e : Entity;
         var posCmp : PosCmp;    // Position component of entity
         var pos;                // Position of entity
         var newPos : Vec2;      // Projected osition of entity after update
@@ -34,32 +34,28 @@ class PhysicsSys extends EntitySystem
         var sectorPolys : Array<Polygon>; // Walls
         var sectorPos : Vec2;       // Origin of sector
         var isColl = true;
-        
+
         for ( i in 0...actives.size ) {
             e = actives.get( i );
-            
             posCmp = posMapper.get( e );
             posCmp.dp = posCmp.dp.scale( 0.8 );
             newPos = posCmp.pos.add( posCmp.dp );
-                        
+
             // If entity is in an adjacent and nested region to the sector, add this region to player pos
             var sectorRegionCmp = regionMapper.get( posCmp.sector );
-            
             for ( re in sectorRegionCmp.adj ) {
                 var adjRegionCmp = regionMapper.get( re );
                 var polys = adjRegionCmp.polys;
-                
                 for ( p in polys ) {
                     if ( !posCmp.regionsIn.exists( function( v ) { return re.id == v.id; } ) && p.isPointinPolygon( Util.sectorCoords( posCmp.pos, posCmp.sector, re ) ) ) {
                         posCmp.regionsIn.push( re );
                         adjRegionCmp.onEnter( e, posCmp.sector );
-                        
                     }
                 }
             }
-            
+
             // Must reset for each entity
-            var minDist = Math.POSITIVE_INFINITY; 
+            var minDist = Math.POSITIVE_INFINITY;
             var dist = 0.0;
             var minVec = newPos.clone();
             var minSector = posCmp.sector;
@@ -69,23 +65,23 @@ class PhysicsSys extends EntitySystem
             for ( re in posCmp.regionsIn ) {
                 var reRegionCmp = regionMapper.get( re );
                 var regions = reRegionCmp.adj;
-                
+
                 if ( !reRegionCmp.isOpen ) {
                     continue;
                 }
-                
+
                 // This is actual loop that grabs adjacent sectors to current portal
                 for ( adj in regions ) {
                     var adjRegionCmp = regionMapper.get( adj );
                     var polys = adjRegionCmp.polys;
-                    
+
                     for ( p in polys ) {
                         minVec = Util.sectorCoords( newPos, posCmp.sector, adj );
                         if ( p.isPointinPolygon( minVec ) ) {
                             isColl = false;
-                            minSector = adj;                            
+                            minSector = adj;
                             posCmp.regionsIn.clear(); // todo Add exit first
-                            break;  
+                            break;
                         } else {
                             // Get distance between newPos and closest polygon for determining closest sector
                             var np = Util.sectorCoords( newPos, posCmp.sector, adj );
@@ -103,7 +99,7 @@ class PhysicsSys extends EntitySystem
                 }
                 if ( !isColl ) { break; }
             }
-            
+
             // Check for collisions within local sector
             if ( isColl ) {
                 sectorPolys = sectorRegionCmp.polys;
@@ -114,7 +110,7 @@ class PhysicsSys extends EntitySystem
                         break;
                     }
                 }
-                
+
                 // If the position is out of bounds, move it to closest valid location
                 if ( isColl ) {
                     for ( p in sectorPolys ) {
@@ -128,7 +124,7 @@ class PhysicsSys extends EntitySystem
                     }
                 }
             }
-            
+
             // Handle new sector transition
             if ( minSector != posCmp.sector ) {
                 minVec = Util.sectorCoords( newPos, posCmp.sector, minSector );
@@ -137,27 +133,26 @@ class PhysicsSys extends EntitySystem
                     regionMapper.get( posCmp.regionsIn.pop() ).onExit( e, posCmp.sector );
                 }
             }
-            
+
             newPos = minVec;
             posCmp.pos = newPos;
-            
+
             // Check if entity is no  an adjacent region to its nested region (i.e. new sector)
             for ( re in posCmp.regionsIn ) {
                 var regionCmp = regionMapper.get( re );
                 var polys = regionCmp.polys;
-                
+
                 for ( p in polys ) {
                     if ( !p.isPointinPolygon( Util.localCoords( posCmp.pos, re ) ) ) {
                         regionCmp.onExit( e, posCmp.sector );
                         posCmp.regionsIn.remove( re );
                     }
                 }
-            }   
+            }
         }
     }
     var once = true;
 
     var posMapper : ComponentMapper<PosCmp>;
     var regionMapper : ComponentMapper<RegionCmp>;
-
 }
