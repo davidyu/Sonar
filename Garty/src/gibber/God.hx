@@ -45,6 +45,7 @@ class God
         root = r;
 
         root.stage.addEventListener( flash.events.KeyboardEvent.KEY_DOWN, onEnterKey );
+        root.stage.addEventListener( flash.events.MouseEvent.CLICK, onMouseClick );
         Key.init();
         root.addEventListener( flash.events.Event.ENTER_FRAME, tick );
 
@@ -174,6 +175,11 @@ class God
             case Keyboard.DELETE:
                 debugClear();
         }
+    }
+
+    function onMouseClick( e : flash.events.MouseEvent ) : Void {
+        //shoot a sonar particle in the direction of the mouse cursor
+        trace( e.localX + "," + e.localY );
     }
 
     //debugger console methods
