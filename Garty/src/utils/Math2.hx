@@ -18,14 +18,14 @@ class Math2 {
     }
 
     public static function getRayLineIntersection( ray: { origin: Vec2, direction: Vec2 }, line: { a: Vec2, b: Vec2 } ) : LineLineIntersectResult {
-        // approach: let t and u be scalars, find t s.t. ( origin + u ( direction ) ) = ( a + t ( b - a ) )
+        // approach: let t and u be scalars, find t such that. ( origin + u ( direction ) ) = ( a + t ( b - a ) )
 
         // edge cases: if ( b - a ) x direction = 0, then the line and ray are parallel
         // if ( a - origin ) x direction = 0 also, then the line and ray are collinear
         var b_a = line.b.sub( line.a );
 
-        if ( b_a.cross( ray.direction ) < Math2.EPSILON ) {
-            if ( line.a.sub( ray.origin ).cross( ray.direction ) < Math2.EPSILON ) {
+        if ( Math.abs( b_a.cross( ray.direction ) ) < Math2.EPSILON ) {
+            if ( Math.abs( line.a.sub( ray.origin ).cross( ray.direction ) ) < Math2.EPSILON ) {
                 return Collinear;
             } else {
                 return None;

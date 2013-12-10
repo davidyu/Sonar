@@ -29,13 +29,15 @@ class TraceSys extends EntitySystem
             e = actives.get( i );
             time = timedEffectMapper.get( e );
             traceCmp = traceMapper.get( e );
-            if ( time.processState == Process ) {
-                traceCmp.fadeAcc *= traceCmp.fadeMultiplier;
-                if ( traceCmp.fadeAcc <= TraceCmp.VESTIGIAL_THRESHOLD ) {
-                    world.deleteEntity( e );
-                }
+            switch ( time.processState ) {
+                case Process( _ ):
+                    traceCmp.fadeAcc *= traceCmp.fadeMultiplier;
+                    if ( traceCmp.fadeAcc <= TraceCmp.VESTIGIAL_THRESHOLD ) {
+                        world.deleteEntity( e );
+                    }
 
-                time.processState = Processed;
+                    time.processState = Processed;
+                default:
             }
         }
     }

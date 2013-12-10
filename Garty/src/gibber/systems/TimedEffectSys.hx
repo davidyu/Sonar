@@ -44,13 +44,13 @@ class TimedEffectSys extends EntitySystem
             time = timedEffectMapper.get( e );
 
             time.internalAcc += worldDelta;
-            if ( time.duration > 0 && time.internalAcc >= time.duration ) {
-                world.deleteEntity( e );
-                return;
-            }
 
             switch ( time.processState ) {
                 case Processed:
+                    if ( time.duration > 0 && time.internalAcc >= time.duration ) {
+                        world.deleteEntity( e );
+                        return;
+                    }
                     time.processState = Wait( acc - worldDelta ); //compensate; probably processed exactly one frame ago; or...not...this is tricky and we have to make sure that TimedEffectsSys is either the FIRST or LAST system to call process
 
                 case Wait( lastProcessed ):
@@ -62,10 +62,14 @@ class TimedEffectSys extends EntitySystem
                     };
 
                     if ( acc - lastProcessed >= interval ) {
-                        time.processState = Process;
+                        if ( time.duration > 0 && time.internalAcc >= time.duration ) {
+                            time.processState = Process( true );
+                        } else {
+                            time.processState = Process( false );
+                        }
                     }
 
-                case Process:
+                case Process( _ ):
 #if debug
                     trace( e.listComponents() );
                     var list = e.dumpComponents();

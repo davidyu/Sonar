@@ -11,7 +11,7 @@ enum TickInterval {
 
 enum ProcessState {
     Wait( lastProcessed : UInt );
-    Process;
+    Process( expiring : Bool );
     Processed;
 }
 
