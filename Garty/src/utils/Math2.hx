@@ -1,5 +1,11 @@
 package utils;
 
+enum LineLineIntersectResult {
+    None; //parallel, not collinear
+    Collinear;
+    Point(point: Vec2);
+}
+
 class Math2 {
     public static var PI : Float = 3.141592653589793238462643383279;
     public static var SMALL : Float = 0.00001;
@@ -9,6 +15,35 @@ class Math2 {
     }
     public static inline function randomInt( min : Int, max : Int ) : Int {
         return Std.random( max - min ) + min;
+    }
+
+    public static function getRayLineIntersection( ray: { origin: Vec2, direction: Vec2 }, line: { a: Vec2, b: Vec2 } ) : LineLineIntersectResult {
+        // approach: let t and u be scalars, find t s.t. ( origin + u ( direction ) ) = ( a + t ( b - a ) )
+
+        // edge cases: if ( b - a ) x direction = 0, then the line and ray are parallel
+        // if ( a - origin ) x direction = 0 also, then the line and ray are collinear
+        var b_a = line.b.sub( line.a );
+
+        if ( b_a.cross( ray.direction ) < Math2.EPSILON ) {
+            if ( line.a.sub( ray.origin ).cross( ray.direction ) < Math2.EPSILON ) {
+                return Collinear;
+            } else {
+                return None;
+            }
+        }
+
+        // with ( origin + u ( direction ) ) = ( a + t ( b - a ) ), cross both sides with direction to cancel out u in the process:
+        // origin x direction = a x direction + t ( b - a ) x direction
+        // t = ( a - origin ) x direction / ( b - a ) x direction
+
+        var t = ( line.a.sub( ray.origin ).cross( ray.direction ) ) / ( b_a.cross( ray.direction ) );
+
+        // 0 <= t <= 1, otherwise the point is on the line defined by a and b rather than the line segment itself
+        if ( t >= 0 && t <= 1 ) {
+            return Point( line.a.add( b_a.mul( t ) ) );
+        }
+
+        return None;
     }
 
     // http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
@@ -35,7 +70,7 @@ class Math2 {
         // r is the ratio between lengths ae / ab, where ae is ||ap||cos@
         // ae can also be thought of as the vector projection of ap onto ab.
         // r can also be thought of as the scalar projection of ap onto ab
-        var r : Float = ap.dot( ab ) / ab.lengthsq(); // why must we use lengthsq?
+        var r : Float = ap.dot( ab ) / ab.lengthsq();
         var closest : Vec2;
 
         if ( r < 0 ) {
