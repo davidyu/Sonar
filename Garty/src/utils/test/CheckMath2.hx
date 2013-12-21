@@ -4,7 +4,7 @@ import utils.Math2;
 import utils.Vec2;
 
 class CheckMath2 extends haxe.unit.TestCase {
-    public function checkCloseIntersectPoint() {
+    public function testCloseIntersectPoint() {
         // 1. dead-simple sanity checks
         var p, a, b, expected, result;
         p = new Vec2( 0, 0 );
