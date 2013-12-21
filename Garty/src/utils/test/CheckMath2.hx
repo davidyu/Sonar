@@ -76,4 +76,29 @@ class CheckMath2 extends haxe.unit.TestCase {
             assertTrue( scalarProj >= 0.0 && scalarProj <= 1.0 );
         }
     }
+
+    public function testRayLineIntersection() {
+        var expected : Vec2;
+        var result : Vec2;
+        // simple collinear case
+        assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( 0, 0 ), direction: new Vec2( 1, 0 ) },
+                                                  { a: new Vec2( 4, 0 ), b : new Vec2( 5, 0 ) } ) == Collinear );
+
+        // simple parallel case
+        assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( 0, 1 ), direction: new Vec2( 1, 0 ) },
+                                                  { a: new Vec2( 4, 0 ), b : new Vec2( 5, 0 ) } ) == None );
+
+        // simple one point case
+        expected = new Vec2( 0, 0 );
+        var res = Math2.getRayLineIntersection( { origin: new Vec2( 0, -100 ), direction: new Vec2( 0, 1 ) },
+                                                { a: new Vec2( -100, 0 ), b: new Vec2( 100, 0 ) } );
+
+        // extract resulting vector from IntersectionResult; the more I look at this, the uglier I feel this is
+        switch( res ) {
+            case Point( point ): result = point;
+            default:             result = new Vec2( 500, 500 ); // random
+        }
+
+        assertTrue( result.sub( expected ).lengthsq() <= Math2.EPSILON );
+    }
 }
