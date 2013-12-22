@@ -3,9 +3,11 @@
 preprocess:
 	./preprocess.sh > resource/classpaths.inc
 
+fdb: game
+	fdb bin/Engine.swf
+
 game: preprocess
 	haxe compile.hxml
-	fdb bin/Engine.swf
 
 check:
 	haxe unit.hxml
