@@ -18,7 +18,7 @@ class Math2 {
     }
 
     public static function getRayLineIntersection( ray: { origin: Vec2, direction: Vec2 }, line: { a: Vec2, b: Vec2 } ) : LineLineIntersectResult {
-        // approach: let t and u be scalars, find t such that. ( origin + u ( direction ) ) = ( a + t ( b - a ) )
+        // approach: let t and u be scalars, find t such that. ( origin + u ( direction ) ) = ( a + t ( b - a ) ). Insight: find t, not u
 
         // edge cases: if ( b - a ) x direction = 0, then the line and ray are parallel
         // if ( a - origin ) x direction = 0 also, then the line and ray are collinear: there are two more umbrella cases. See below:
@@ -26,10 +26,12 @@ class Math2 {
 
         if ( Math.abs( b_a.cross( ray.direction ) ) < Math2.EPSILON ) { // parallel, but don't know if collinear or not
             if ( Math.abs( ray.origin.sub( line.a ).cross( ray.direction ) ) < Math2.EPSILON ) { //collinear, but don't know if overlapping or disjoint
-                var ao: Vec2 = line.a.sub( ray.origin );
-                var bo: Vec2 = line.b.sub( ray.origin );
-                if ( ao.dot( bo ) / ao.lengthsq() >= 0 &&  ao.dot( bo ) / ao.lengthsq() <= 1 &&       // b is between a and o
-                     Math.abs( bo.normalize().add( ray.direction.normalize() ).length() ) <= Math2.EPSILON ) { // ob is pointing away from ray.direction; so disjoint
+                var oa: Vec2 = line.a.sub( ray.origin );
+                var ob: Vec2 = line.b.sub( ray.origin );
+
+                // I have a feeling this can be optimized more...
+                if ( oa.dot( ob ) / oa.lengthsq() >= 0 && oa.dot( ob ) / oa.lengthsq() <= 1 &&                // b is between a and o
+                     Math.abs( oa.normalize().add( ray.direction.normalize() ).length() ) <= Math2.EPSILON ) { // bo is pointing away from ray.direction; so disjoint
                     return None;
                 } else { // ray overlaps line segment ab
                     return Overlapping;
