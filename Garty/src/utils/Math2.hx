@@ -31,7 +31,7 @@ class Math2 {
 
                 // I have a feeling this can be optimized more...
                 if ( oa.dot( ob ) / oa.lengthsq() >= 0 && oa.dot( ob ) / oa.lengthsq() <= 1 &&                // b is between a and o
-                     Math.abs( oa.normalize().add( ray.direction.normalize() ).length() ) <= Math2.EPSILON ) { // bo is pointing away from ray.direction; so disjoint
+                     Math.abs( oa.normalize().add( ray.direction.normalize() ).length() ) <= Math2.EPSILON ) { // ob is pointing away from ray.direction; so disjoint
                     return None;
                 } else { // ray overlaps line segment ab
                     return Overlapping;
