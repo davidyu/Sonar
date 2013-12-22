@@ -28,7 +28,8 @@ class Math2 {
             if ( Math.abs( ray.origin.sub( line.a ).cross( ray.direction ) ) < Math2.EPSILON ) { //collinear, but don't know if overlapping or disjoint
                 var ao: Vec2 = line.a.sub( ray.origin );
                 var bo: Vec2 = line.b.sub( ray.origin );
-                if ( ao.dot( bo ) / ao.lengthsq() > 0 &&  ao.dot( bo ) / ao.lengthsq() < 1 ) { // disjoint; b is between a and o. Think about it
+                if ( ao.dot( bo ) / ao.lengthsq() >= 0 &&  ao.dot( bo ) / ao.lengthsq() <= 1 &&       // b is between a and o
+                     Math.abs( bo.normalize().add( ray.direction.normalize() ).length() ) <= Math2.EPSILON ) { // ob is pointing away from ray.direction; so disjoint
                     return None;
                 } else { // ray overlaps line segment ab
                     return Overlapping;
