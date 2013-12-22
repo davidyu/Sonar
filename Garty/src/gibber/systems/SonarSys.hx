@@ -112,19 +112,17 @@ class SonarSys extends EntitySystem
                                     } );
 
                                     for ( rng in ranges ) {
-                                        function rangeToPoint( theta ) : Vec2 {
+                                        function radianToPoint( theta ) : Vec2 {
                                             var direction = new Vec2( Math.sin( theta ), Math.cos( theta ) );
 
                                             switch ( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: p, b: q } ) ) {
                                                 case Point( point ): return point;
-                                                default:             return null;
+                                                default:             trace( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: p, b: q } ) ); return null;
                                             }
-
-                                            return null;
                                         }
 
-                                        var a = rangeToPoint( rng.start );
-                                        var b = rangeToPoint( rng.end );
+                                        var a = radianToPoint( rng.start );
+                                        var b = radianToPoint( rng.end );
 
                                         if ( a != null && b != null ) {
                                             createTrace( posMapper.get( sector ).pos, Line( a, b ) );
