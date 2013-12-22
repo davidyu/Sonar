@@ -2,7 +2,7 @@ package utils;
 
 enum LineLineIntersectResult {
     None; //parallel, not collinear
-    Collinear;
+    Overlapping;
     Point(point: Vec2);
 }
 
@@ -24,19 +24,21 @@ class Math2 {
         // if ( a - origin ) x direction = 0 also, then the line and ray are collinear
         var b_a = line.b.sub( line.a );
 
-        if ( Math.abs( b_a.cross( ray.direction ) ) < Math2.EPSILON ) {
-            if ( Math.abs( line.a.sub( ray.origin ).cross( ray.direction ) ) < Math2.EPSILON ) {
-                return Collinear;
-            } else {
+        if ( Math.abs( b_a.cross( ray.direction ) ) < Math2.EPSILON ) { //parallel, but don't know if collinear or not
+            if ( Math.abs( line.a.sub( ray.origin ).cross( ray.direction ) ) < Math2.EPSILON ) { //collinear, but don't know if overlapping or disjoint
+                // overlapping
+                // disjoint
+                return Overlapping;
+            } else { // not collinear, no intersection
                 return None;
             }
         }
 
         // with ( origin + u ( direction ) ) = ( a + t ( b - a ) ), cross both sides with direction to cancel out u in the process:
         // origin x direction = a x direction + t ( b - a ) x direction
-        // t = ( a - origin ) x direction / ( b - a ) x direction
+        // t = ( origin - a ) x direction / ( b - a ) x direction
 
-        var t = ( line.a.sub( ray.origin ).cross( ray.direction ) ) / ( b_a.cross( ray.direction ) );
+        var t = ( ray.origin.sub( line.a ).cross( ray.direction ) ) / ( b_a.cross( ray.direction ) );
 
         // 0 <= t <= 1, otherwise the point is on the line defined by a and b rather than the line segment itself
         if ( t >= 0 && t <= 1 ) {

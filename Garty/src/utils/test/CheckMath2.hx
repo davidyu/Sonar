@@ -82,7 +82,7 @@ class CheckMath2 extends haxe.unit.TestCase {
         var result : Vec2;
         // simple collinear case
         assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( 0, 0 ), direction: new Vec2( 1, 0 ) },
-                                                  { a: new Vec2( 4, 0 ), b : new Vec2( 5, 0 ) } ) == Collinear );
+                                                  { a: new Vec2( 4, 0 ), b : new Vec2( 5, 0 ) } ) == Overlapping );
 
         // simple parallel case
         assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( 0, 1 ), direction: new Vec2( 1, 0 ) },
