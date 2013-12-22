@@ -21,15 +21,19 @@ class Math2 {
         // approach: let t and u be scalars, find t such that. ( origin + u ( direction ) ) = ( a + t ( b - a ) )
 
         // edge cases: if ( b - a ) x direction = 0, then the line and ray are parallel
-        // if ( a - origin ) x direction = 0 also, then the line and ray are collinear
+        // if ( a - origin ) x direction = 0 also, then the line and ray are collinear: there are two more umbrella cases. See below:
         var b_a = line.b.sub( line.a );
 
-        if ( Math.abs( b_a.cross( ray.direction ) ) < Math2.EPSILON ) { //parallel, but don't know if collinear or not
-            if ( Math.abs( line.a.sub( ray.origin ).cross( ray.direction ) ) < Math2.EPSILON ) { //collinear, but don't know if overlapping or disjoint
-                // overlapping
-                // disjoint
-                return Overlapping;
-            } else { // not collinear, no intersection
+        if ( Math.abs( b_a.cross( ray.direction ) ) < Math2.EPSILON ) { // parallel, but don't know if collinear or not
+            if ( Math.abs( ray.origin.sub( line.a ).cross( ray.direction ) ) < Math2.EPSILON ) { //collinear, but don't know if overlapping or disjoint
+                var ao: Vec2 = line.a.sub( ray.origin );
+                var bo: Vec2 = line.b.sub( ray.origin );
+                if ( ao.dot( bo ) / ao.lengthsq() > 0 &&  ao.dot( bo ) / ao.lengthsq() < 1 ) { // disjoint; b is between a and o. Think about it
+                    return None;
+                } else { // ray overlaps line segment ab
+                    return Overlapping;
+                }
+            } else { // parallel but not collinear; no intersection
                 return None;
             }
         }
