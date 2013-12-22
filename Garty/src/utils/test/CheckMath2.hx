@@ -120,5 +120,13 @@ class CheckMath2 extends haxe.unit.TestCase {
         assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( -4, 0 ), direction: new Vec2( -1, 0 ) },
                                                   { a: new Vec2( -1, 0 ), b : new Vec2( -2, 0 ) } ) == None );
 
+        // test 8: degenerate line segment (point), overlapping ray
+        assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( 0, 0 ), direction: new Vec2( -1, 0 ) },
+                                                  { a: new Vec2( -4, 0 ), b : new Vec2( -4, 0 ) } ) == Overlapping );
+
+        // test 9: degenerate line segment (point), disjoint ray
+        assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( -4, 0 ), direction: new Vec2( -1, 0 ) },
+                                                  { a: new Vec2( -1, 0 ), b : new Vec2( -1, 0 ) } ) == None );
+
     }
 }
