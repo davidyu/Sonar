@@ -80,15 +80,16 @@ class CheckMath2 extends haxe.unit.TestCase {
     public function testRayLineIntersection() {
         var expected : Vec2;
         var result : Vec2;
-        // simple collinear case
+
+        // test 1: simple overlapping case
         assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( 0, 0 ), direction: new Vec2( 1, 0 ) },
                                                   { a: new Vec2( 4, 0 ), b : new Vec2( 5, 0 ) } ) == Overlapping );
 
-        // simple parallel case
+        // test 2: simple parallel but noncollinear case
         assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( 0, 1 ), direction: new Vec2( 1, 0 ) },
                                                   { a: new Vec2( 4, 0 ), b : new Vec2( 5, 0 ) } ) == None );
 
-        // simple one point case
+        // test 3: simple intersection result
         expected = new Vec2( 0, 0 );
         var res = Math2.getRayLineIntersection( { origin: new Vec2( 0, -100 ), direction: new Vec2( 0, 1 ) },
                                                 { a: new Vec2( -100, 0 ), b: new Vec2( 100, 0 ) } );
@@ -100,5 +101,24 @@ class CheckMath2 extends haxe.unit.TestCase {
         }
 
         assertTrue( result.sub( expected ).lengthsq() <= Math2.EPSILON );
+
+        // test 4: simple disjoint case
+        assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( 4, 0 ), direction: new Vec2( 1, 0 ) },
+                                                  { a: new Vec2( 1, 0 ), b : new Vec2( 2, 0 ) } ) == None );
+
+        // test 5-7 are mirror images of cases 1, 2, and 4 (IE: the ray points in the negative x half of the plane)
+
+        // test 5
+        assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( 0, 0 ), direction: new Vec2( -1, 0 ) },
+                                                  { a: new Vec2( -4, 0 ), b : new Vec2( -5, 0 ) } ) == Overlapping );
+
+        // test 6
+        assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( 0, 1 ), direction: new Vec2( -1, 0 ) },
+                                                  { a: new Vec2( -4, 0 ), b : new Vec2( -5, 0 ) } ) == None );
+
+        // test 7
+        assertTrue( Math2.getRayLineIntersection( { origin: new Vec2( -4, 0 ), direction: new Vec2( -1, 0 ) },
+                                                  { a: new Vec2( -1, 0 ), b : new Vec2( -2, 0 ) } ) == None );
+
     }
 }
