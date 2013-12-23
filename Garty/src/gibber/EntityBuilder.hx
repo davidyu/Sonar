@@ -21,6 +21,7 @@ import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
 import gibber.components.SonarCmp;
+import gibber.components.TrailCmp;
 import gibber.components.TimedEffectCmp;
 import gibber.components.TransitRequestCmp;
 import gibber.managers.ContainerMgr;
@@ -72,18 +73,6 @@ class EntityBuilder
         addPortalEdges( portal, [new PortalEdge( s1, s2, god.sf.createScript( "transit" ) )] );
         addPortalEdges( portal, [new PortalEdge( s2, s1, god.sf.createScript( "transit" ) )] );
     }
-
-    // what is this attempting to do?
-    //public function createWordRef( tag : SynTag ) {
-        //var e = world.createEntity();
-        //var tagCmp = new SynListCmp( tag );
-        //
-        //e.addComponent( tagCmp );
-        //
-        //world.addEntity( e );
-        //
-        //return e;
-    //}
 
     public function createPlayer( name : String, sector : Entity, syns : SynTag, isPlayer : Bool = false ) : Entity {
         var e = world.createEntity();
@@ -145,10 +134,10 @@ class EntityBuilder
         return e;
     }
 
-    // this is bullshit! I shouldn't HAVE to pass in the sector to create a sonar wave!
+    // Look into this: I don't care about which sector I'm in when I'm creating a Sonar wave. It should ideally be inferred.
     public function createSonar( sector : Entity, pos : Vec2 ) : Entity {
         var e = world.createEntity();
-        // I need to get the current time!
+
         var sonarCmp = new SonarCmp( 100.0, 100 );
         var posCmp = new PosCmp( sector, pos );
         var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
@@ -159,7 +148,25 @@ class EntityBuilder
         e.addComponent( posCmp );
         e.addComponent( renderCmp );
 
+        world.addEntity( e );
+
+        return e;
+    }
+
+    // ugh: bad parameters again; see above.
+    public function createSonarBeam( sector : Entity, pos: Vec2, direction : Vec2 ) : Entity {
+        var e = world.createEntity();
+
+        var posCmp = new PosCmp( sector, pos );
+        var trailCmp = new TrailCmp( direction, 5.0 );
+        var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
+        var renderCmp = new RenderCmp( 0xffffff );
+
+        e.addComponent( timedEffectCmp );
+        e.addComponent( trailCmp );
+        e.addComponent( posCmp );
         e.addComponent( renderCmp );
+
         world.addEntity( e );
 
         return e;
@@ -254,7 +261,7 @@ class EntityBuilder
         return e;
     }
 
-    // DONT EVEN THINK ABOUT CALLING THIS OR I WILL CHOP YOUR HANDS OFF
+    // this is pretty bad
     public function pipeDebug( str ) {
         god.debugPrintln( str );
     }

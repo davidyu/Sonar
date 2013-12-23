@@ -15,15 +15,15 @@ import flash.display.Bitmap;
 
 import gibber.components.PosCmp;
 import gibber.components.RenderCmp;
-import gibber.components.SonarCmp;
+import gibber.components.TrailCmp;
 import gibber.components.TimedEffectCmp;
 
 class RenderTrailSys extends EntitySystem
 {
     public function new( root : MovieClip ) {
-        super( Aspect.getAspectForAll( [RenderCmp] ) );
+        super( Aspect.getAspectForAll( [TrailCmp, RenderCmp] ) );
 
-        bmd       = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, false, 0xcccccc );
+        bmd = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0xff000000 );
         bitbuf    = new Bitmap( bmd );
         this.root = root;
 
@@ -32,6 +32,9 @@ class RenderTrailSys extends EntitySystem
 
     override public function initialize() : Void {
         posMapper         = world.getMapper( PosCmp );
+        timedEffectMapper = world.getMapper( TimedEffectCmp );
+        trailMapper       = world.getMapper( TrailCmp );
+        fade              = new ColorTransform( 1.0, 1.0, 1.0, 0.9 );
     }
 
     override public function onInserted( e : Entity ) : Void {
@@ -41,15 +44,31 @@ class RenderTrailSys extends EntitySystem
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
-      var ct: ColorTransform = new ColorTransform( 1.0, 1.0, 1.0, 1.0, Math.random() * 255, Math.random() * 255, Math.random() * 255 );
-      bmd.fillRect( bmd.rect, ct.color );
+        var e : Entity;
+        var time : TimedEffectCmp;
+        var trail : TrailCmp;
+        var pos : PosCmp;
+
+        bmd.colorTransform( bmd.rect, fade ); // fade out every frame
+
+        for ( i in 0...actives.size ) {
+            e   = actives.get( i );
+            time = timedEffectMapper.get( e );
+            trail = trailMapper.get( e );
+            pos = posMapper.get( e );
+
+            // implement brensenham to draw line from prev pos to current?
+            bmd.setPixel32( Std.int( pos.pos.x ), Std.int( pos.pos.y ), 0xffffffff ); // won't work until we have localToGloba, etc
+        }
     }
 
     var renderMapper      : ComponentMapper<RenderCmp>;
+    var trailMapper       : ComponentMapper<TrailCmp>;
     var posMapper         : ComponentMapper<PosCmp>;
     var timedEffectMapper : ComponentMapper<TimedEffectCmp>;
 
     private var root   : MovieClip;
     private var bitbuf : Bitmap;
     private var bmd    : BitmapData;
+    private var fade   : ColorTransform;
 }

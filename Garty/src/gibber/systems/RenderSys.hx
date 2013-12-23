@@ -12,6 +12,7 @@ import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
 import gibber.components.SonarCmp;
 import gibber.components.StaticPosCmp;
+import gibber.components.TrailCmp;
 import gibber.Util;
 import utils.Vec2;
 
@@ -20,7 +21,7 @@ using Lambda;
 class RenderSys extends EntitySystem
 {
     public function new( root : MovieClip ) {
-        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp] ) );
+        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp] ) );
         
         buffer = new Sprite();
         this.root = root;

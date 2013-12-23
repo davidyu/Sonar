@@ -24,10 +24,11 @@ import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
 import gibber.systems.RenderTrailSys;
 import gibber.systems.RenderTraceSys;
-import gibber.systems.TraceSys;
-import gibber.systems.TransitRequestSys;
-import gibber.systems.TimedEffectSys;
 import gibber.systems.SonarSys;
+import gibber.systems.TimedEffectSys;
+import gibber.systems.TraceSys;
+import gibber.systems.TrailSys;
+import gibber.systems.TransitRequestSys;
 import utils.Key;
 import utils.Math2;
 import utils.Polygon;
@@ -38,7 +39,7 @@ class God
     @:isVar public var world ( default, null ) : World;
     @:isVar public var cf ( default, null ) : CmdFactory;
     @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
-    @:isvar public var entityDeserializer ( default, null ) : EntityDeserializer;
+    @:isVar public var entityDeserializer ( default, null ) : EntityDeserializer;
     @:isVar public var sf ( default, null ) : ScriptFactory;
     @:isVar public var entityResolver ( default, null ) : EntityResolver;
 
@@ -90,9 +91,10 @@ class God
         world.setSystem( new RenderTrailSys( root ) );
         world.setSystem( new RenderSys( root ) );
         world.setSystem( new RenderTraceSys( root ) );
-        world.setSystem( new TimedEffectSys() );
         world.setSystem( new SonarSys() );
+        world.setSystem( new TimedEffectSys() );
         world.setSystem( new TraceSys() );
+        world.setSystem( new TrailSys() );
 
         world.delta = 1000 / ( root.stage.frameRate ); //this is gross!
         world.initialize();
@@ -181,7 +183,9 @@ class God
 
     function onMouseClick( e : flash.events.MouseEvent ) : Void {
         //shoot a sonar particle in the direction of the mouse cursor
-        trace( e.localX + "," + e.localY );
+        var origin = player.getComponent( PosCmp ).pos;
+        var direction = new Vec2( e.localX, e.localY ).sub( origin );
+        entityBuilder.createSonarBeam( player.getComponent( PosCmp ).sector, origin, direction );
     }
 
     //debugger console methods
