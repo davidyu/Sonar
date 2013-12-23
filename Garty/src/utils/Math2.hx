@@ -30,8 +30,8 @@ class Math2 {
                 var ob: Vec2 = line.b.sub( ray.origin );
 
                 // I have a feeling this can be optimized more...
-                if ( oa.dot( ob ) / oa.lengthsq() >= 0 && oa.dot( ob ) / oa.lengthsq() <= 1 &&                // b is between a and o
-                     Math.abs( oa.normalize().add( ray.direction.normalize() ).length() ) <= Math2.EPSILON ) { // ob is pointing away from ray.direction; so disjoint
+                if ( oa.dot( ob ) / oa.lengthsq() >= 0 && oa.dot( ob ) / oa.lengthsq() <= 1 &&                 // b is between a and o AND
+                     Math.abs( oa.normalize().add( ray.direction.normalize() ).length() ) <= Math2.EPSILON ) { // ob is pointing away from ray.direction; so line and ray are disjoint
                     return None;
                 } else { // ray overlaps line segment ab
                     return Overlapping;

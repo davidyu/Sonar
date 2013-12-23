@@ -1,5 +1,9 @@
 -cp src
 -cp ../../artemis-haxelib/src
+-lib hscript
 
--neko testbin/check.n
--main utils.test.CheckUtils
+-swf-header 800:600:30:ffffff
+-swf-version 11.7
+
+-swf testbin/Check.swf
+-main Check

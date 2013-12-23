@@ -8,10 +8,11 @@ fdb: game
 
 game: preprocess
 	haxe compile.hxml
+	open bin/Engine.swf
 
 check:
 	haxe unit.hxml
-	neko testbin/check.n
+	open testbin/Check.swf
 
 clean:
 	rm resource/*.inc testbin/* bin/*
