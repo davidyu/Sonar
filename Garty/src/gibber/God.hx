@@ -22,6 +22,7 @@ import gibber.systems.PhysicsSys;
 import gibber.systems.RenderSonarSys;
 import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
+import gibber.systems.RenderTrailSys;
 import gibber.systems.RenderTraceSys;
 import gibber.systems.TraceSys;
 import gibber.systems.TransitRequestSys;
@@ -86,6 +87,7 @@ class God
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new RenderSectorSys( root ) );
         world.setSystem( new RenderSonarSys( root ) );
+        world.setSystem( new RenderTrailSys( root ) );
         world.setSystem( new RenderSys( root ) );
         world.setSystem( new RenderTraceSys( root ) );
         world.setSystem( new TimedEffectSys() );
