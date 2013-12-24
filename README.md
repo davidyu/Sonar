@@ -1,18 +1,22 @@
-Go to TODO to see what's left.
+Gibbs
+=====
 
-Toolchain terminology
-=====================
+This is the repo for an Entity-System framework that leans on Artemis a bit (Garty). There are two games,
+Gibbs (text-based adventure with a top-down map visualizer) and Sonar (2D underwater discovery SHMUP). Both
+use Garty.
 
-gcc = Gibbs Code Compiler
+## State of the repo
 
-General Developer Resources
-===========================
+The master branch has the Gibbs game code, and the sonar branch has the Sonar game code. Sonar (the game) is branched
+from Gibbs, so there are a lot of legacy code and logic specific to Gibbs that should not be in there. See issue 12 for some notes on
+the future of these two branches. Right now, they are separate and divergent, and should probably remain that
+way. We'll have to git cherry-pick individual commits to the underlying engine that we want to share between
+these two.
 
-[From AS3 to Haxe](http://www.grantmathews.com/43): 
-Has a good example of algebraic datatypes
+It may make sense to create a separate branch for Gibbs called gibbs, and cleanup master so it only contains
+Garty and generic or useful components and systems.
 
-VIM Developer tips
-==================
+## VIM Developer tips
 
 * Install vaxe plugin:
 ** Bundle 'jdonaldson/vaxe'
@@ -29,9 +33,4 @@ VIM Developer tips
     --regex-haxe=/^[ \t]*enum[ \t]+([A-Za-z0-9_]+)/\1/t,typedef/
     --regex-haxe=/^[ \t]*+([A-Za-z0-9_]+)(;|\([^]))*:[^]]*\))/\1/t,enum_field/
 </code></pre>
-* Crazy how it's just a bunch of complex regex expressions.
-* Find a good debugger.
-
-TODO
-====
-- Optimize to avoid using strings in artemis, Vec2 object pooling
+** run ctags often: `ctags -R *`
