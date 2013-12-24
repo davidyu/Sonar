@@ -1,0 +1,44 @@
+\title{An Intuitive Approach to 2-Dimensional Line-Circle Intersection Tests}
+\author{
+    David ``Desktop" Yu
+}
+
+\documentclass[12pt]{article}
+
+\begin{document}
+\maketitle
+
+\paragraph{Introduction}
+For \emph{Sonar}, I wanted to clip the world against a growing circle.
+\emph{Sonar} is a game about two player-controlled submarines that are trying to find and destroy each other in the deep sea.
+For each player, visibility is limited, but pings and sonars can be sent out to slowly uncover the world.
+The sonar is a time-restricted expanding circular area that reveals all that lie within it.
+At the time of writing, the entire world is constructed by a set of points which connect to form a large polygon.
+To implement the sonar, I needed to be able to find all line segments that lie within a circle.
+The problem isn't very difficult, but there were few intuitive solutions online, so I decided to share my approach.
+
+This document is as much for any one who is curious as to my approach as it is for myself.
+I very quickly forget what I have written and all the ugly cases that I have to cover, so it is good to have a document I can go back to.
+Also, I find that when I have to rigorously explain my approach, I find a lot of holes in my reasoning and potential optimizations to my code.
+
+\end{document}
+This is never printed
+
+\paragraph{Outline}
+The remainder of this article is organized as follows.
+Section~\ref{previous work} gives account of previous work.
+Our new and exciting results are described in Section~\ref{results}.
+Finally, Section~\ref{conclusions} gives the conclusions.
+
+\section{Previous work}\label{previous work}
+A much longer \LaTeXe{} example was written by Gil~\cite{Gil:02}.
+
+\section{Results}\label{results}
+In this section we describe the results.
+
+\section{Conclusions}\label{conclusions}
+We worked hard, and achieved very little.
+
+\bibliographystyle{abbrv}
+\bibliography{main}
+
