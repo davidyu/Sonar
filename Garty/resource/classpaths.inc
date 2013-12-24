@@ -1,3 +1,4 @@
+Check Check
 AdvancedParser gibber.AdvancedParser
 Cfg gibber.Cfg
 CmdFactory gibber.CmdFactory
@@ -18,12 +19,15 @@ PortalCmp gibber.components.PortalCmp
 PosCmp gibber.components.PosCmp
 RegionCmp gibber.components.RegionCmp
 RenderCmp gibber.components.RenderCmp
+RicochetCmp gibber.components.RicochetCmp
 SonarCmp gibber.components.SonarCmp
+SonarParticleGroupCmp gibber.components.SonarParticleGroupCmp
 StaticPosCmp gibber.components.StaticPosCmp
 TakeCmp gibber.components.TakeCmp
 TeractNodeCmp gibber.components.TeractNodeCmp
 TimedEffectCmp gibber.components.TimedEffectCmp
 TraceCmp gibber.components.TraceCmp
+TrailCmp gibber.components.TrailCmp
 TransitRequestCmp gibber.components.TransitRequestCmp
 UsageCmp gibber.components.UsageCmp
 EntityBuilder gibber.EntityBuilder
@@ -48,9 +52,12 @@ RenderSectorSys gibber.systems.RenderSectorSys
 RenderSonarSys gibber.systems.RenderSonarSys
 RenderSys gibber.systems.RenderSys
 RenderTraceSys gibber.systems.RenderTraceSys
+RenderTrailSys gibber.systems.RenderTrailSys
 SonarSys gibber.systems.SonarSys
+CheckSonarSys gibber.systems.test.CheckSonarSys
 TimedEffectSys gibber.systems.TimedEffectSys
 TraceSys gibber.systems.TraceSys
+TrailSys gibber.systems.TrailSys
 TransitRequestSys gibber.systems.TransitRequestSys
 LookTeract gibber.teracts.LookTeract
 MoveTeract gibber.teracts.MoveTeract
@@ -62,5 +69,6 @@ Geo utils.Geo
 Key utils.Key
 Math2 utils.Math2
 Polygon utils.Polygon
+CheckMath2 utils.test.CheckMath2
 Vec2 utils.Vec2
 Words utils.Words
