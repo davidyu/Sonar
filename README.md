@@ -21,8 +21,7 @@ Garty and generic or useful components and systems.
 * Install vaxe plugin:
   * Bundle 'jdonaldson/vaxe'
 * Add haxe ctags syntax regex:
-<pre><code>
---langdef=haxe
+<pre><code>--langdef=haxe
 --langmap=haxe:.hx
 --regex-haxe=/^package[ \t]+([A-Za-z0-9_.]+)/\1/p,package/
 --regex-haxe=/^[ \t]*[(@:macro|private|public|static|override|inline|dynamic)( \t)]*function[ \t]+([A-Za-z0-9_]+)/\1/f,function/
@@ -34,4 +33,4 @@ Garty and generic or useful components and systems.
 --regex-haxe=/^[ \t]*enum[ \t]+([A-Za-z0-9_]+)/\1/t,typedef/
 --regex-haxe=/^[ \t]*+([A-Za-z0-9_]+)(;|\([^]))*:[^]]*\))/\1/t,enum_field/
 </code></pre>
-  * run ctags often: `ctags -R *`
+* run ctags often: `ctags -R *`
