@@ -183,8 +183,8 @@ class God
 
     function onMouseClick( e : flash.events.MouseEvent ) : Void {
         //shoot a sonar particle in the direction of the mouse cursor
-        var origin = player.getComponent( PosCmp ).pos.add( player.getComponent( PosCmp ).sector.getComponent( PosCmp ).pos ); // wow.gif
-        var direction = new Vec2( e.localX, e.localY ).sub( origin );
+        var origin = player.getComponent( PosCmp ).pos;
+        var direction = new Vec2( e.localX, e.localY ).sub( player.getComponent( PosCmp ).sector.getComponent( PosCmp ).pos ).sub( origin ); // wow
         entityBuilder.createSonarBeam( player.getComponent( PosCmp ).sector, origin, direction );
     }
 

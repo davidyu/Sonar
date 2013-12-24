@@ -18,6 +18,8 @@ import gibber.components.RenderCmp;
 import gibber.components.TrailCmp;
 import gibber.components.TimedEffectCmp;
 
+import utils.Vec2;
+
 class RenderTrailSys extends EntitySystem
 {
     public function new( root : MovieClip ) {
@@ -48,6 +50,7 @@ class RenderTrailSys extends EntitySystem
         var time : TimedEffectCmp;
         var trail : TrailCmp;
         var pos : PosCmp;
+        var screenPos : Vec2;
 
         bmd.colorTransform( bmd.rect, fade ); // fade out every frame
 
@@ -58,7 +61,9 @@ class RenderTrailSys extends EntitySystem
             pos = posMapper.get( e );
 
             // implement brensenham to draw line from prev pos to current?
-            bmd.setPixel32( Std.int( pos.pos.x ), Std.int( pos.pos.y ), 0xffffffff ); // won't work until we have localToGloba, etc
+            // there should be a helper function (maybe it exists already) to get abs coords of a posCmp
+            screenPos = pos.pos.add( posMapper.get( pos.sector ).pos ); // wow.gif
+            bmd.setPixel32( Std.int( screenPos.x ), Std.int( screenPos.y ), 0xffffffff ); // won't work until we have localToGloba, etc
         }
     }
 
