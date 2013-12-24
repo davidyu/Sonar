@@ -7,11 +7,8 @@ use Garty.
 
 ## State of the repo
 
-The master branch has the Gibbs game code, and the sonar branch has the Sonar game code. Sonar (the game) is branched
-from Gibbs, so there are a lot of legacy code and logic specific to Gibbs that should not be in there. See issue 12 for some notes on
-the future of these two branches. Right now, they are separate and divergent, and should probably remain that
-way. We'll have to git cherry-pick individual commits to the underlying engine that we want to share between
-these two.
+The [master branch](https://github.com/desktop/Gibbs/) has the Gibbs game code, and the [sonar branch](https://github.com/desktop/Gibbs/tree/sonar) has the Sonar game code. Sonar (the game) is branched
+from Gibbs, so there are a lot of legacy code and logic specific to Gibbs that should not be in there. See issue 12 for some notes on the future of these two branches. Right now, they are separate and divergent, and should probably remain that way. We'll have to [git cherry-pick](http://wiki.koha-community.org/wiki/Using_Git_Cherry_Pick) individual commits to the underlying engine that we want to share between these two.
 
 It may make sense to create a separate branch for Gibbs called gibbs, and cleanup master so it only contains
 Garty and generic or useful components and systems.
