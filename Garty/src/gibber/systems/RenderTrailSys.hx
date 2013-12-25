@@ -25,7 +25,7 @@ class RenderTrailSys extends EntitySystem
     public function new( root : MovieClip ) {
         super( Aspect.getAspectForAll( [TrailCmp, RenderCmp] ) );
 
-        bmd = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0xff000000 );
+        bmd       = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0xff000000 );
         bitbuf    = new Bitmap( bmd );
         this.root = root;
 
@@ -52,7 +52,7 @@ class RenderTrailSys extends EntitySystem
         var pos : PosCmp;
         var screenPos : Vec2;
 
-        bmd.colorTransform( bmd.rect, fade ); // fade out every frame
+        bmd.colorTransform( bmd.rect, fade ); // fade out every update
 
         for ( i in 0...actives.size ) {
             e   = actives.get( i );
@@ -63,7 +63,7 @@ class RenderTrailSys extends EntitySystem
             // implement brensenham to draw line from prev pos to current?
             // there should be a helper function (maybe it exists already) to get abs coords of a posCmp
             screenPos = pos.pos.add( posMapper.get( pos.sector ).pos ); // wow.gif
-            bmd.setPixel32( Std.int( screenPos.x ), Std.int( screenPos.y ), 0xffffffff ); // won't work until we have localToGloba, etc
+            bmd.setPixel32( Std.int( screenPos.x ), Std.int( screenPos.y ), 0xffffffff );
         }
     }
 
