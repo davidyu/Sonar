@@ -45,8 +45,6 @@ class TrailSys extends EntitySystem
             switch( time.processState ) {
                 case Process( _ ):
                     // get velocity and set poscmp to that velocity
-                    var dp : Vec2 = trail.getVelocity();
-                    pos.dp = dp;
                     time.processState = Processed;
                 default:
             }

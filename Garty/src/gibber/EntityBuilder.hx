@@ -11,6 +11,7 @@ import gibber.components.TeractNodeCmp;
 import gibber.gabby.PortalEdge;
 import gibber.gabby.SynTag;
 import gibber.commands.MoveCmd;
+import gibber.components.BounceCmp;
 import gibber.components.CmdQueue;
 import gibber.components.ContainerCmp;
 import gibber.components.InventoryCmp;
@@ -157,15 +158,18 @@ class EntityBuilder
     public function createSonarBeam( sector : Entity, pos: Vec2, direction : Vec2 ) : Entity {
         var e = world.createEntity();
 
-        var posCmp = new PosCmp( sector, pos );
-        var trailCmp = new TrailCmp( direction, 5.0 );
+        var posCmp = new PosCmp( sector, pos, true );
+        posCmp.dp = direction.normalize().mul( 5.0 );
+        var trailCmp = new TrailCmp( direction );
         var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
         var renderCmp = new RenderCmp( 0xffffff );
+        var bounceCmp = new BounceCmp( 1.0 );
 
         e.addComponent( timedEffectCmp );
         e.addComponent( trailCmp );
         e.addComponent( posCmp );
         e.addComponent( renderCmp );
+        e.addComponent( bounceCmp );
 
         world.addEntity( e );
 

@@ -34,10 +34,15 @@ class Geo
     }
 
     public static function getClosestPoint( poly : Polygon, point : Vec2 ) : Vec2 {
+        return getClosestPointAndEdge( poly, point ).point;
+    }
+
+    public static function getClosestPointAndEdge( poly : Polygon, point : Vec2 ) : { point: Vec2, edge: { a: Vec2, b: Vec2 } } {
         var verts = poly.verts;
         var i = 0;
         var j = verts.length - 1;
         var closest : Vec2 = new Vec2( Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY );
+        var edge : { a: Vec2, b: Vec2 } = { a: new Vec2( 0, 0 ), b: new Vec2( 0, 0 ) };
         var ext : Vec2;
         var len : Float;
         var minLen = Math.POSITIVE_INFINITY;
@@ -47,13 +52,14 @@ class Geo
             len = ext.sub( point ).lengthsq();
             if ( len < minLen ) {
                 closest = ext;
+                edge = { a: verts[i], b: verts[j] };
                 minLen = len;
             }
 
             j = i++;
         }
 
-        return closest;
+        return { point: closest, edge: edge };
     }
 
     public static function getLineIntersection( polys : Polygon, p1 : Vec2, p2 : Vec2 ) : Vec2 {
@@ -85,7 +91,7 @@ class Geo
 
         // (A) clean case: line segment is completely inside the circle
         if ( line.a.sub( circle.center ).lengthsq() < rsq && line.b.sub( circle.center ).lengthsq() < rsq ) {
-            res = Line( line.a, line.b );
+            res = Line( line.a, line.b ); // this actually is counterintuitive to the name of the function, any sane person using this function would expect None
         } else if ( line.a.sub( circle.center ).lengthsq() > rsq && line.b.sub( circle.center ).lengthsq() > rsq ) {
             // (B) also relatively clean: endpoints of line segment completely outside the circle. Treat it like an infinite line.
             var p : Vec2 = Math2.getCloseIntersectPoint( circle.center, line ); // cp (c = circle.center) must be perpendicular to line ab

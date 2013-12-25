@@ -4,6 +4,7 @@ import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
+import gibber.components.BounceCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.StaticPosCmp;
@@ -38,7 +39,8 @@ class PhysicsSys extends EntitySystem
         for ( i in 0...actives.size ) {
             e = actives.get( i );
             posCmp = posMapper.get( e );
-            posCmp.dp = posCmp.dp.scale( 0.8 );
+            if ( !posCmp.noDamping )
+                posCmp.dp = posCmp.dp.scale( 0.8 );
             newPos = posCmp.pos.add( posCmp.dp );
 
             // If entity is in an adjacent and nested region to the sector, add this region to player pos
@@ -61,7 +63,7 @@ class PhysicsSys extends EntitySystem
             var minSector = posCmp.sector;
             isColl = true;
 
-            // Check if entity is in an adjacent region to its nested region (i.e. new sector)
+                // Check if entity is in an adjacent region to its nested region (i.e. new sector)
             for ( re in posCmp.regionsIn ) {
                 var reRegionCmp = regionMapper.get( re );
                 var regions = reRegionCmp.adj;
@@ -114,12 +116,22 @@ class PhysicsSys extends EntitySystem
                 // If the position is out of bounds, move it to closest valid location
                 if ( isColl ) {
                     for ( p in sectorPolys ) {
-                        collPoint = p.getClosestPoint( newPos );
+                        var res = p.getClosestPointAndEdge( newPos );
+                        collPoint = res.point;
                         dist = collPoint.sub( newPos ).lengthsq();
                         if ( dist < minDist ) {
                             minDist = dist;
                             minVec = collPoint.clone();
                             minSector = posCmp.sector;
+                            // reflect velocity if entity is a bouncer.
+                            if ( e.getComponent( BounceCmp ) != null ) {
+                                var edge = res.edge;
+                                var dir = edge.a.sub( edge.b );
+                                var normal = new Vec2( dir.y, -dir.x ).normalize();
+                                var v = posCmp.dp;
+                                var refl = v.sub( normal.mul( 2 * v.dot( normal ) ) );
+                                posCmp.dp = refl;
+                            }
                         }
                     }
                 }
@@ -155,4 +167,5 @@ class PhysicsSys extends EntitySystem
 
     var posMapper : ComponentMapper<PosCmp>;
     var regionMapper : ComponentMapper<RegionCmp>;
+    var bounceMapper : ComponentMapper<BounceCmp>;
 }
