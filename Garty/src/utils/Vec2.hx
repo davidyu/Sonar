@@ -44,6 +44,10 @@ class Vec2
         return this.div( length() );
     }
 
+    public inline function reflect( normal: Vec2 ): Vec2 {
+        return this.sub( normal.mul( 2 * this.dot( normal ) ) );
+    }
+
     public inline function length() : Float {
         return Math.sqrt( lengthsq() ); 
     }
@@ -59,6 +63,7 @@ class Vec2
     public inline function cross ( v : Vec2 ) : Float {
         return x * v.y - y * v.x;  
     }
+
     
     public inline function toString() : String {
         return "x: " + x + " y: " + y;
