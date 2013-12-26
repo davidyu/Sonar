@@ -2,6 +2,8 @@
 -cp ../../artemis-haxelib/src
 -lib hscript
 
+-D unit
+
 -swf-header 800:600:30:ffffff
 -swf-version 11.7
 
