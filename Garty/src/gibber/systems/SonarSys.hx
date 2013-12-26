@@ -75,13 +75,13 @@ class SonarSys extends EntitySystem
                                         for ( rng in ranges ) { // any new ranges pushed in this loop body will be checked again
                                             //rng     -----
                                             //orng  ---------
-                                            if ( orng.start < rng.start && orng.end > rng.end ) {
+                                            if ( orng.start < rng.start && orng.end < rng.end ) {
                                                 ranges.remove( rng );
                                             //rng    -----
                                             //orng  ----
                                             } else if ( orng.start < rng.start && orng.end < rng.end ) {
                                                 ranges.remove( rng );
-                                                ranges.push( { start: orng.start, end: rng.end } );
+                                                ranges.push( { start: orng.end, end: rng.end } );
                                             //rng  ----
                                             //orng   -----
                                             } else if ( orng.start > rng.start && orng.end > rng.end ) {
@@ -105,6 +105,7 @@ class SonarSys extends EntitySystem
                                              ( a.start < b.start && a.end < b.end ) ||
                                              ( a.start > b.start && a.end > b.end ) ||
                                              ( a.start > b.start && a.end < b.end ) ) {
+                                            trace( Math2.radToDeg( a.start )+ " " + Math2.radToDeg( a.end ) );
                                             throw "range a should have been vetted!";
                                         }
 #end
@@ -112,22 +113,22 @@ class SonarSys extends EntitySystem
                                     } );
 
                                     for ( rng in ranges ) {
-                                        function radianToPoint( theta ) : Vec2 {
+                                        function radianToPoint( origin, theta ) : Vec2 {
                                             var direction = new Vec2( Math.sin( theta ), Math.cos( theta ) );
 
-                                            switch ( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: p, b: q } ) ) {
+                                            switch ( Math2.getRayLineIntersection( { origin: origin, direction: direction }, { a: p, b: q } ) ) {
                                                 case Point( point ): return point;
                                                 default:             trace( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: p, b: q } ) ); return null;
                                             }
                                         }
 
-                                        var a = radianToPoint( rng.start );
-                                        var b = radianToPoint( rng.end );
+                                        var a = radianToPoint( center, rng.start );
+                                        var b = radianToPoint( center, rng.end );
 
                                         if ( a != null && b != null ) {
                                             createTrace( posMapper.get( sector ).pos, Line( a, b ) );
                                         } else {
-                                            trace( rng );
+                                            trace( Math2.radToDeg( rng.start )+ " " + Math2.radToDeg( rng.end ) );
                                             throw "a trace could not be created";
                                         }
                                     }
@@ -147,7 +148,25 @@ class SonarSys extends EntitySystem
     }
 
     private function pointToRadian( center: Vec2, point: Vec2 ) {
-        return Math.atan( ( point.x - center.x ) / ( point.y - center.y ) );
+        var ratio : Float = ( point.x - center.x ) / ( point.y - center.y );
+        var radian = Math.atan( ratio );
+
+        // error correction
+        if ( ( point.x - center.x < 0 ) && ( point.y - center.y < 0 ) ) radian += Math.PI; // point in third quadrant, not the first
+        if ( ( point.x - center.x > 0 ) && ( point.y - center.y < 0 ) ) radian -= Math.PI; // point in second quadrant, not the fourth
+
+#if unit
+        // enforce 0 <= radian <= 2PI
+        while ( radian > Math.PI * 2 ) {
+            radian -= Math.PI * 2;
+        }
+
+        while ( radian < 0 ) {
+            radian += Math.PI * 2;
+        }
+#end
+
+        return radian;
     }
 
     // creates a beautiful trace entity

@@ -21,24 +21,39 @@ class CheckSonarSys extends haxe.unit.TestCase {
         assertTrue( sonarSys.pointToRadian( center, point ) <= Math2.EPSILON );
 
         point = new Vec2( Math.sqrt( 2 ) / 2, Math.sqrt( 2 ) / 2 );
-        assertTrue( sonarSys.pointToRadian( center, point ) - 0.785398163 <= Math2.EPSILON );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 0.785398163 <= Math2.EPSILON );
 
         point = new Vec2( 1, 0 );
-        assertTrue( sonarSys.pointToRadian( center, point ) - 1.57079633 <= Math2.EPSILON );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 1.57079633 <= Math2.EPSILON );
 
         point = new Vec2( Math.sqrt( 2 ) / 2, -Math.sqrt( 2 ) / 2 );
-        assertTrue( sonarSys.pointToRadian( center, point ) - 2.35619449 <= Math2.EPSILON );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 2.35619449 <= Math2.EPSILON );
 
         point = new Vec2( 0, -1 );
-        assertTrue( sonarSys.pointToRadian( center, point ) - Math.PI <= Math2.EPSILON );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - Math.PI <= Math2.EPSILON );
 
         point = new Vec2( -Math.sqrt( 2 ) / 2, -Math.sqrt( 2 ) / 2 );
-        assertTrue( sonarSys.pointToRadian( center, point ) - 3.92699082 <= Math2.EPSILON );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 3.92699082 <= Math2.EPSILON );
 
         point = new Vec2( -1, 0 );
-        assertTrue( sonarSys.pointToRadian( center, point ) - 4.71238898 <= Math2.EPSILON );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 4.71238898 <= Math2.EPSILON );
 
-        point = new Vec2( -Math.sqrt( 2 ) / 2, Math.sqrt( 2 ) / 2 );
-        assertTrue( sonarSys.pointToRadian( center, point ) - 5.49778714 <= Math2.EPSILON );
+        point = new Vec2( 0.5, Math.sqrt( 3 ) / 2 );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 0.523598776 <= Math2.EPSILON );
+
+        point = new Vec2( Math.sqrt( 3 ) / 2,  0.5 );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 1.04719755 <= Math2.EPSILON );
+
+        point = new Vec2( Math.sqrt( 3 ) / 2,  -0.5 );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 2.0943951 <= Math2.EPSILON );
+
+        point = new Vec2( 0.5, -Math.sqrt( 3 ) / 2  );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 2.61799388 <= Math2.EPSILON );
+
+        point = new Vec2( -0.5, -Math.sqrt( 3 ) / 2  );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 3.66519143 <= Math2.EPSILON );
+
+        point = new Vec2( -Math.sqrt( 3 ) / 2, -0.5 );
+        assertTrue( Math.abs( sonarSys.pointToRadian( center, point ) ) - 4.1887902 <= Math2.EPSILON );
     }
 }
