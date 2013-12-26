@@ -63,12 +63,16 @@ class SonarSys extends EntitySystem
                             //trace( 'performing intersection test with { c : $center, r : $radius } and { a : ${p.verts[k]}, b : ${p.verts[k + 1]} }' );
                             switch ( intersect ) {
                                 case Line( p, q ):
+                                    trace( "-----------new intersect------------" );
+                                    trace( "line:" + p + ", " + q );
+                                    trace( "center:" + center );
                                     var ranges : Array<Range> = new Array<Range>(); // this will be the new set of culled ranges we add to sonar.cullRanges
 
                                     var rangeStart = pointToRadian( center, p );
                                     var rangeEnd   = pointToRadian( center, q );
 
                                     ranges.push( { start: rangeStart, end: rangeEnd } );
+                                    trace( "range:" + Math2.radToDeg( rangeStart ) + ", " + Math2.radToDeg( rangeEnd ) );
 
                                     // compute culling for ranges
                                     for ( orng in sonar.cullRanges ) {
@@ -147,13 +151,14 @@ class SonarSys extends EntitySystem
         }
     }
 
-    private function pointToRadian( center: Vec2, point: Vec2 ) {
-        var ratio : Float = ( point.x - center.x ) / ( point.y - center.y );
+    private function pointToRadian( center: Vec2, point: Vec2, invertedY : Bool = true ) {
+        // note that Y is inverted by default because for regular usage in screen space, it grows from 0 downwards
+        var ratio : Float = ( point.x - center.x ) / ( invertedY ? ( center.y - point.y ) : ( point.y - center.y ) );
         var radian = Math.atan( ratio );
 
         // error correction
-        if ( ( point.x - center.x < 0 ) && ( point.y - center.y < 0 ) ) radian += Math.PI; // point in third quadrant, not the first
-        if ( ( point.x - center.x > 0 ) && ( point.y - center.y < 0 ) ) radian -= Math.PI; // point in second quadrant, not the fourth
+        if ( ( point.x - center.x < 0 ) && ( invertedY ? ( center.y - point.y < 0 ) : ( point.y - center.y < 0 ) ) ) radian += Math.PI; // point in third quadrant, not the first
+        if ( ( point.x - center.x > 0 ) && ( invertedY ? ( center.y - point.y < 0 ) : ( point.y - center.y < 0 ) ) ) radian -= Math.PI; // point in second quadrant, not the fourth
 
 #if unit
         // enforce 0 <= radian <= 2PI
