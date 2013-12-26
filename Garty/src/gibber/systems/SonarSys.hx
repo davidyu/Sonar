@@ -65,8 +65,8 @@ class SonarSys extends EntitySystem
                                 case Line( p, q ):
                                     var ranges : Array<Range> = new Array<Range>(); // this will be the new set of culled ranges we add to sonar.cullRanges
 
-                                    var rangeStart = Math.atan( ( p.x - center.x ) / ( p.y - center.y ) );
-                                    var rangeEnd = Math.atan( ( q.x - center.x ) / ( q.y - center.y ) );
+                                    var rangeStart = pointToRadian( center, p );
+                                    var rangeEnd   = pointToRadian( center, q );
 
                                     ranges.push( { start: rangeStart, end: rangeEnd } );
 
@@ -127,6 +127,7 @@ class SonarSys extends EntitySystem
                                         if ( a != null && b != null ) {
                                             createTrace( posMapper.get( sector ).pos, Line( a, b ) );
                                         } else {
+                                            trace( rng );
                                             throw "a trace could not be created";
                                         }
                                     }
@@ -143,6 +144,10 @@ class SonarSys extends EntitySystem
                 default:
             }
         }
+    }
+
+    private function pointToRadian( center: Vec2, point: Vec2 ) {
+        return Math.atan( ( point.x - center.x ) / ( point.y - center.y ) );
     }
 
     // creates a beautiful trace entity
