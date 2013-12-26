@@ -49,11 +49,13 @@ class TrailSys extends EntitySystem
 
             switch( time.processState ) {
                 case Process( _ ):
-                    switch ( bounce.bounced ) {
-                        case JustBounced( a, b ):
-                            //create trace
-                            bounce.bounced = NoBounce;
+                    switch ( bounce.lastTouched ) {
+                        case Edge( a, b ):
+                            // create trace
                             createTrace( posMapper.get( pos.sector ).pos, Line( a, b ) );
+
+                            // reset last touched so we don't create it again
+                            bounce.lastTouched = Nothing;
                         default:
                     }
                     time.processState = Processed;
@@ -68,7 +70,7 @@ class TrailSys extends EntitySystem
             var e = world.createEntity();
 
             var renderCmp = new RenderCmp( 0xffffff );
-            var traceCmp = new TraceCmp( 0.5, displayType, pos );
+            var traceCmp = new TraceCmp( 0.8, displayType, pos );
             var timedEffectCmp = new TimedEffectCmp( 0, GlobalTickInterval );
 
             e.addComponent( renderCmp );

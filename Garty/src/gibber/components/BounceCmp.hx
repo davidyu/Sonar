@@ -7,19 +7,19 @@ import utils.Vec2;
 
 // this is for message passing: the PhysicsSys will calculate bounces and save results in a buffer using
 // this data type; which may be processed by some other system.
-enum BounceMessage {
-    JustBounced( edgeV1: Vec2, edgeV2: Vec2 );
-    NoBounce;
+enum LastTouched {
+    Edge( a: Vec2, b: Vec2 );
+    Nothing;
 }
 
 @:rtti
 class BounceCmp implements Component
 {
     @:isVar public var dampenF : Float; //on every bounce, dampen?
-    @:isVar public var bounced : BounceMessage;
+    @:isVar public var lastTouched : LastTouched;
 
     public function new( dampenF : Float ) {
         this.dampenF = dampenF;
-        this.bounced = NoBounce;
+        this.lastTouched = Nothing;
     }
 }

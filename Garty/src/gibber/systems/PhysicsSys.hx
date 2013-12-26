@@ -131,7 +131,7 @@ class PhysicsSys extends EntitySystem
                                 var v = posCmp.dp;
                                 var refl = v.reflect( normal );
                                 posCmp.dp = refl;
-                                e.getComponent( BounceCmp ).bounced = JustBounced( edge.a, edge.b );
+                                e.getComponent( BounceCmp ).lastTouched = Edge( edge.a, edge.b );
                             }
                         }
                     }
