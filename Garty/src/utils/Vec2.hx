@@ -44,6 +44,10 @@ class Vec2
         return this.div( length() );
     }
 
+    public inline function orthogonal( flipY : Bool = false ) : Vec2 {
+        return new Vec2( flipY ? -this.y : this.y, flipY ? this.x : -this.x );
+    }
+
     public inline function reflect( normal: Vec2 ): Vec2 {
         return this.sub( normal.mul( 2 * this.dot( normal ) ) );
     }

@@ -127,7 +127,7 @@ class PhysicsSys extends EntitySystem
                             if ( e.getComponent( BounceCmp ) != null ) {
                                 var edge = res.edge;
                                 var dir = edge.a.sub( edge.b );
-                                var normal = new Vec2( dir.y, -dir.x ).normalize();
+                                var normal = dir.orthogonal().normalize();
                                 var v = posCmp.dp;
                                 var refl = v.reflect( normal );
                                 posCmp.dp = refl;
