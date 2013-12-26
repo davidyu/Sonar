@@ -159,9 +159,9 @@ class EntityBuilder
         var e = world.createEntity();
 
         var posCmp = new PosCmp( sector, pos, true );
-        posCmp.dp = direction.normalize().mul( 5.0 );
+        posCmp.dp = direction.normalize().mul( 9.0 );
         var trailCmp = new TrailCmp( direction );
-        var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
+        var timedEffectCmp = new TimedEffectCmp( 2000, GlobalTickInterval );
         var renderCmp = new RenderCmp( 0xffffff );
         var bounceCmp = new BounceCmp( 1.0 );
 
