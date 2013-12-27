@@ -79,21 +79,21 @@ class SonarSys extends EntitySystem
                                         for ( rng in ranges ) { // any new ranges pushed in this loop body will be checked again
                                             //rng     -----
                                             //orng  ---------
-                                            if ( orng.start < rng.start && orng.end < rng.end ) {
+                                            if ( radianDiff( orng.start, rng.start ) > 0 && radianDiff( orng.end, rng.end ) < 0 ) {
                                                 ranges.remove( rng );
                                             //rng    -----
                                             //orng  ----
-                                            } else if ( orng.start < rng.start && orng.end < rng.end ) {
+                                            } else if ( radianDiff( orng.start, rng.start ) > 0 && radianDiff( orng.end, rng.end ) > 0 ) {
                                                 ranges.remove( rng );
                                                 ranges.push( { start: orng.end, end: rng.end } );
                                             //rng  ----
                                             //orng   -----
-                                            } else if ( orng.start > rng.start && orng.end > rng.end ) {
+                                            } else if ( radianDiff( orng.start, rng.start ) < 0 && radianDiff( orng.end, rng.end ) < 0 ) {
                                                 ranges.remove( rng );
                                                 ranges.push( { start: rng.start, end: orng.start } );
                                             //rng  ---------
                                             //orng   -----
-                                            } else if ( orng.start > rng.start && orng.end < rng.end ) {
+                                            } else if ( radianDiff( orng.start, rng.start ) < 0 && radianDiff( orng.end, rng.end ) > 0 ) {
                                                 ranges.remove( rng );
                                                 ranges.push( { start: rng.start, end: orng.start } );
                                                 ranges.push( { start: orng.end, end: rng.end } );
