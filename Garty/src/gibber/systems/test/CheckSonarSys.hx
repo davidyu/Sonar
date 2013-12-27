@@ -56,4 +56,47 @@ class CheckSonarSys extends haxe.unit.TestCase {
         point = new Vec2( -Math.sqrt( 3 ) / 2, -0.5 );
         assertTrue( Math.abs( sonarSys.pointToRadian( center, point, false ) ) - 4.1887902 <= Math2.EPSILON );
     }
+
+    public function testRadianDiff() {
+        var a: Float,
+            b: Float,
+            expected: Float;
+
+        a = 0.0;
+        b = 60.0;
+        expected = 60.0;
+        assertTrue( Math.abs( sonarSys.radianDiff( a, b ) - expected ) <= Math2.EPSILON );
+
+        a = 50.0;
+        b = 100.0;
+        expected = 50.0;
+        assertTrue( Math.abs( sonarSys.radianDiff( a, b ) - expected ) <= Math2.EPSILON );
+
+        a = 270.0;
+        b = 300.0;
+        expected = 30.0;
+        assertTrue( Math.abs( sonarSys.radianDiff( a, b ) - expected ) <= Math2.EPSILON );
+
+        a = 300.0;
+        b = 270.0;
+        expected = -30.0;
+        assertTrue( Math.abs( sonarSys.radianDiff( a, b ) - expected ) <= Math2.EPSILON );
+
+        a = 270.0;
+        b = 0.0;
+        expected = 90.0;
+        assertTrue( Math.abs( sonarSys.radianDiff( a, b ) - expected ) <= Math2.EPSILON );
+
+        a = 330.0;
+        b = 0.0;
+        expected = 30.0;
+        assertTrue( Math.abs( sonarSys.radianDiff( a, b ) - expected ) <= Math2.EPSILON );
+
+        a = 10.0;
+        b = 350.0;
+        expected = -20.0;
+        assertTrue( Math.abs( sonarSys.radianDiff( a, b ) - expected ) <= Math2.EPSILON );
+
+        // undefined behavior
+    }
 }

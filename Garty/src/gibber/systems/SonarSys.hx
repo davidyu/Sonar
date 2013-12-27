@@ -110,19 +110,23 @@ class SonarSys extends EntitySystem
                                              ( a.start > b.start && a.end > b.end ) ||
                                              ( a.start > b.start && a.end < b.end ) ) {
                                             trace( Math2.radToDeg( a.start )+ " " + Math2.radToDeg( a.end ) );
-                                            throw "range a should have been vetted!";
+                                            // throw "range a should have been vetted!";
                                         }
 #end
                                         return Math2.sign( a.start - b.start );
                                     } );
 
                                     for ( rng in ranges ) {
-                                        function radianToPoint( origin, theta ) : Vec2 {
-                                            var direction = new Vec2( Math.sin( theta ), Math.cos( theta ) );
+                                        function radianToPoint( origin, theta, invertedY : Bool = true ) : Vec2 {
+                                            var direction = new Vec2( Math.sin( theta ), invertedY ? -Math.cos( theta ) : Math.cos( theta ) );
 
+                                            trace( "reconstructed vector: " + direction );
                                             switch ( Math2.getRayLineIntersection( { origin: origin, direction: direction }, { a: p, b: q } ) ) {
                                                 case Point( point ): return point;
-                                                default:             trace( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: p, b: q } ) ); return null;
+                                                default:
+                                                    trace( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: p, b: q } ) );
+                                                    trace( direction );
+                                                    return null;
                                             }
                                         }
 
@@ -133,7 +137,7 @@ class SonarSys extends EntitySystem
                                             createTrace( posMapper.get( sector ).pos, Line( a, b ) );
                                         } else {
                                             trace( Math2.radToDeg( rng.start )+ " " + Math2.radToDeg( rng.end ) );
-                                            throw "a trace could not be created";
+                                            // throw "a trace could not be created";
                                         }
                                     }
                                 case Point( _ ):
@@ -151,16 +155,20 @@ class SonarSys extends EntitySystem
         }
     }
 
+    private function radianDiff( a: Float, b: Float ): Float {
+        var diff = b - a;
+        return diff;
+    }
+
     private function pointToRadian( center: Vec2, point: Vec2, invertedY : Bool = true ) {
         // note that Y is inverted by default because for regular usage in screen space, it grows from 0 downwards
         var ratio : Float = ( point.x - center.x ) / ( invertedY ? ( center.y - point.y ) : ( point.y - center.y ) );
         var radian = Math.atan( ratio );
 
-        // error correction
+        // error correction: the ratio encodes only two signs, but we need to map to four quadrants (if left as-is, it will always map to the first and fourth quadrant)
         if ( ( point.x - center.x < 0 ) && ( invertedY ? ( center.y - point.y < 0 ) : ( point.y - center.y < 0 ) ) ) radian += Math.PI; // point in third quadrant, not the first
         if ( ( point.x - center.x > 0 ) && ( invertedY ? ( center.y - point.y < 0 ) : ( point.y - center.y < 0 ) ) ) radian -= Math.PI; // point in second quadrant, not the fourth
 
-#if unit
         // enforce 0 <= radian <= 2PI
         while ( radian > Math.PI * 2 ) {
             radian -= Math.PI * 2;
@@ -169,7 +177,6 @@ class SonarSys extends EntitySystem
         while ( radian < 0 ) {
             radian += Math.PI * 2;
         }
-#end
 
         return radian;
     }
