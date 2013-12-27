@@ -157,6 +157,16 @@ class SonarSys extends EntitySystem
 
     // returns f, where |f| is the shortest distance between a and b
     // and f > 0 if b follows a clockwise and f < 0 if a follows b clockwise
+    private function radianDiff( a: Float, b: Float ): Float {
+        var diff = b - a;
+        if ( diff >  Math.PI ) diff -= Math.PI * 2; // as expected, b follows a CW, but we should go CCW for the smaller angle
+        if ( diff < -Math.PI ) diff += Math.PI * 2; // edge case: going from a to b we pass the y-axis separating quadrants 1 and 4. So we apply a magical 360 error correcting factor
+        return diff;
+    }
+
+    // convenience; made testing easier
+    // returns f, where |f| is the shortest distance between a and b
+    // and f > 0 if b follows a clockwise and f < 0 if a follows b clockwise
     private function degreeDiff( a: Float, b: Float ): Float {
         var diff = b - a;
         if ( diff >  180.0 ) diff -= 360.0; // as expected, b follows a CW, but we should go CCW for the smaller angle
