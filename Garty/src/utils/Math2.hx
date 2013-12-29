@@ -10,9 +10,11 @@ class Math2 {
     public static var PI : Float = 3.141592653589793238462643383279;
     public static var SMALL : Float = 0.00001;
     public static var EPSILON : Float = SMALL;
+
     public static inline function randomFloat( min : Float, max : Float ) : Float {
         return Math.random() * (max - min) + min;
     }
+
     public static inline function randomInt( min : Int, max : Int ) : Int {
         return Std.random( max - min ) + min;
     }
@@ -86,7 +88,7 @@ class Math2 {
         var t = ( ray.origin.sub( line.a ).cross( ray.direction ) ) / ( b_a.cross( ray.direction ) );
 
         // 0 <= t <= 1, otherwise the point is on the line defined by a and b rather than the line segment itself
-        if ( t >= 0 && t <= 1 ) {
+        if ( t >= -Math2.EPSILON && t <= 1 + Math2.EPSILON  ) {
             return Point( line.a.add( b_a.mul( t ) ) );
         }
 

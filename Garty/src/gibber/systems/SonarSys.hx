@@ -56,10 +56,10 @@ class SonarSys extends EntitySystem
                     var sectorPolys = regionMapper.get( sector ).polys;
 
                     // reveal portions of the sector walls that are "hit" by sonar
-                    for ( p in sectorPolys ) {
-                        for ( k in 0...p.verts.length - 1 ) {
+                    for ( poly in sectorPolys ) {
+                        for ( k in 0...poly.verts.length - 1 ) {
                             // do an intersection test against each edge of the polygon; create a trace for each intersection occurrence
-                            var intersect = Geo.lineCircleIntersect( { center: center, radius: radius }, { a: p.verts[k], b: p.verts[k + 1] } );
+                            var intersect = Geo.lineCircleIntersect( { center: center, radius: radius }, { a: poly.verts[k], b: poly.verts[k + 1] } );
                             //trace( 'performing intersection test with { c : $center, r : $radius } and { a : ${p.verts[k]}, b : ${p.verts[k + 1]} }' );
                             switch ( intersect ) {
                                 case Line( p, q ):
@@ -126,20 +126,6 @@ class SonarSys extends EntitySystem
                                     }
 
                                     sonar.cullRanges = sonar.cullRanges.concat( ranges );
-                                    /*
-                                    sonar.cullRanges.sort( function( a : Range, b : Range ):Int {
-#if unit
-                                        // do simple sanity checks here
-                                        if ( ( radianDiff( a.start, b.start ) > Math2.EPSILON && radianDiff( a.end, b.end ) < -Math2.EPSILON ) ||
-                                             ( radianDiff( a.start, b.start ) > Math2.EPSILON && radianDiff( a.end, b.end ) > Math2.EPSILON ) ||
-                                             ( radianDiff( a.start, b.start ) < -Math2.EPSILON && radianDiff( a.end, b.end ) < -Math2.EPSILON ) ||
-                                             ( radianDiff( a.start, b.start ) < -Math2.EPSILON && radianDiff( a.end, b.end ) > Math2.EPSILON ) ) {
-                                             trace( "overlapping: (" + Math2.radToDeg( a.start )+ " " + Math2.radToDeg( a.end ) + ") and (" + Math2.radToDeg( b.start )+ " " + Math2.radToDeg( b.end ) + ")" );
-                                            // throw "range a should have been vetted!";
-                                        }
-#end
-                                        return -Math2.sign( radianDiff( a.start, b.start ) );
-                                    } ); */
 
                                     trace( "-------ranges to draw---------: " );
                                     for ( rng in ranges ) {
@@ -147,10 +133,10 @@ class SonarSys extends EntitySystem
                                         function radianToPoint( origin, theta, invertedY : Bool = true ) : Vec2 {
                                             var direction = new Vec2( Math.sin( theta ), invertedY ? -Math.cos( theta ) : Math.cos( theta ) );
 
-                                            switch ( Math2.getRayLineIntersection( { origin: origin, direction: direction }, { a: p, b: q } ) ) {
+                                            switch ( Math2.getRayLineIntersection( { origin: origin, direction: direction }, { a: poly.verts[k], b: poly.verts[k + 1] } ) ) {
                                                 case Point( point ): return point;
                                                 default:
-                                                    //trace( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: p, b: q } ) );
+                                                    //trace( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: poly.verts[k], b: poly.verts[k + 1] } ) );
                                                     //trace( direction );
                                                     return null;
                                             }
