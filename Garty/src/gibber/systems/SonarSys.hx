@@ -59,7 +59,7 @@ class SonarSys extends EntitySystem
                     for ( poly in sectorPolys ) {
                         for ( k in 0...poly.verts.length - 1 ) {
                             // do an intersection test against each edge of the polygon; create a trace for each intersection occurrence
-                            var intersect = Geo.lineCircleIntersect( { center: center, radius: radius }, { a: poly.verts[k], b: poly.verts[k + 1] } );
+                            var intersect = Geo.lineCircleIntersect( { center: center, radius: radius }, { a: poly.verts[k], b: k == poly.verts.length - 1 ? poly.verts[0] : poly.verts[k + 1] } ); //wrap
                             //trace( 'performing intersection test with { c : $center, r : $radius } and { a : ${p.verts[k]}, b : ${p.verts[k + 1]} }' );
                             switch ( intersect ) {
                                 case Line( p, q ):
@@ -72,54 +72,52 @@ class SonarSys extends EntitySystem
 
                                     trace( "-------starting to cull ranges---------: " );
                                     trace( "for " + Line( p, q ) );
+                                    trace( "already " + sonar.cullRanges.length + " segments to cull" );
                                     var tryAgain = true;
+                                    var error: Float = 0.017; // allow one degree of error
                                     // compute culling for ranges
                                     while( tryAgain ) {
                                         tryAgain = false;
                                         for ( orng in sonar.cullRanges ) {
-                                            for ( rng in ranges ) { // any new ranges pushed in this loop body will be checked again
-                                                //rng     -----
+                                            for ( rng in ranges ) {
+                                                //rng   ==-----==
                                                 //orng  ---------
                                                 if ( radianDiff( orng.start, rng.start ) > 0 && radianDiff( orng.end, rng.end ) < 0 ) {
                                                     ranges.remove( rng );
                                                 //rng  ---------
                                                 //orng   -----
-                                                } else if ( radianDiff( orng.start, rng.start ) < 0 && radianDiff( orng.end, rng.end ) > 0 ) {
+                                                } else if ( radianDiff( orng.start, rng.start ) < -error && radianDiff( orng.start, rng.end ) > error && radianDiff( orng.end, rng.end ) > error && radianDiff( orng.end, rng.start ) < -error ) {
                                                     ranges.push( { start: rng.start, end: orng.start } );
                                                     ranges.push( { start: orng.end, end: rng.end } );
                                                     if ( ranges.remove( rng ) ) {
+                                                        tryAgain = true;
                                                         trace( "reconstructed range " + rngToString( rng ) );
                                                         trace( "new ranges: " + rngToString( { start: rng.start, end: orng.start } ) + " and " + rngToString( { start: orng.end, end: rng.end } ) );
                                                     } else {
                                                         trace( "error reconstructing range " + rngToString( rng ) );
                                                     }
-                                                    tryAgain = true;
-                                                //rng    -----
-                                                //orng   -----
-                                                } else if ( Math.abs( radianDiff( orng.start, rng.start ) ) < Math2.EPSILON && Math.abs( radianDiff( orng.end, rng.end ) ) < Math2.EPSILON ) {
-                                                    ranges.remove( rng );
-                                                //rng    -----
+                                                //rng   ===---
                                                 //orng  ----
-                                                } else if ( radianDiff( orng.start, rng.start ) > 0 && radianDiff( orng.end, rng.start ) < 0 && radianDiff( orng.end, rng.end ) > 0 ) {
+                                                } else if ( radianDiff( orng.start, rng.start ) >= 0 && radianDiff( orng.end, rng.start ) < 0 && radianDiff( orng.end, rng.end ) > error ) {
                                                     ranges.push( { start: orng.end, end: rng.end } );
                                                     if ( ranges.remove( rng ) ) {
+                                                        tryAgain = true;
                                                         trace( "reconstructed range " + rngToString( rng ) );
                                                         trace( "new range: " + rngToString( { start: orng.end, end: rng.end } ) );
                                                     } else {
                                                         trace( "error reconstructing range " + rngToString( rng ) );
                                                     }
-                                                    tryAgain = true;
-                                                //rng  ----
+                                                //rng  ----===
                                                 //orng   -----
-                                                } else if ( radianDiff( orng.start, rng.start ) < 0 && radianDiff( orng.start, rng.end ) > 0 && radianDiff( orng.end, rng.end ) < 0 ) {
+                                                } else if ( radianDiff( orng.start, rng.start ) < -error && radianDiff( orng.start, rng.end ) > 0 && radianDiff( orng.end, rng.end ) <= 0 ) {
                                                     ranges.push( { start: rng.start, end: orng.start } );
                                                     if ( ranges.remove( rng ) ) {
+                                                        tryAgain = true;
                                                         trace( "reconstructed range " + rngToString( rng ) );
                                                         trace( "new range: " + rngToString( { start: rng.start, end: orng.start } ) );
                                                     } else {
                                                         trace( "error reconstructing range " + rngToString( rng ) );
                                                     }
-                                                    tryAgain = true;
                                                 }
                                             }
                                         }
@@ -129,11 +127,11 @@ class SonarSys extends EntitySystem
 
                                     trace( "-------ranges to draw---------: " );
                                     for ( rng in ranges ) {
-                                        trace( Math2.radToDeg( rng.start ) + " " + Math2.radToDeg( rng.end ) );
+                                        trace( rngToString( rng ) );
                                         function radianToPoint( origin, theta, invertedY : Bool = true ) : Vec2 {
                                             var direction = new Vec2( Math.sin( theta ), invertedY ? -Math.cos( theta ) : Math.cos( theta ) );
 
-                                            switch ( Math2.getRayLineIntersection( { origin: origin, direction: direction }, { a: poly.verts[k], b: poly.verts[k + 1] } ) ) {
+                                            switch ( Math2.getRayLineIntersection( { origin: origin, direction: direction }, { a: poly.verts[k], b: k == poly.verts.length - 1 ? poly.verts[0] : poly.verts[k + 1] } ) ) {
                                                 case Point( point ): return point;
                                                 default:
                                                     //trace( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: poly.verts[k], b: poly.verts[k + 1] } ) );
@@ -204,7 +202,7 @@ class SonarSys extends EntitySystem
 
     // fucking piece of shit helper method
     private function rngToString( rng: Range ): String {
-        return Math2.radToDeg( rng.start ) + " to " + Math2.radToDeg( rng.end );
+        return Std.int( Math2.radToDeg( rng.start ) ) + " to " + Std.int( Math2.radToDeg( rng.end ) );
     }
 
     // creates a beautiful trace entity
@@ -213,7 +211,7 @@ class SonarSys extends EntitySystem
             var e = world.createEntity();
 
             var renderCmp = new RenderCmp( 0xffffff );
-            var traceCmp = new TraceCmp( 0.5, displayType, pos );
+            var traceCmp = new TraceCmp( 1.0, displayType, pos );
             var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
 
             e.addComponent( renderCmp );

@@ -112,6 +112,18 @@ class CheckSonarSys extends haxe.unit.TestCase {
         expected = Math2.degToRad( -10.0 );
         assertTrue( Math.abs( sonarSys.radianDiff( a, b ) - expected ) <= Math2.EPSILON );
 
+        // tricky production test cases
+        a = Math2.degToRad( 3.0 );
+        b = Math2.degToRad( 194.0 );
+        expected = Math2.degToRad( -169.0 );
+        assertTrue( Math.abs( sonarSys.radianDiff( a, b ) - expected ) <= Math2.EPSILON );
+
+        a = Math2.degToRad( 47.0 );
+        b = Math2.degToRad( 201.0 );
+        expected = Math2.degToRad( 154.0 );
+        assertTrue( Math.abs( sonarSys.radianDiff( a, b ) - expected ) <= Math2.EPSILON );
+        // more test ideas: use nonstandard angles (IE: negative angles)
+
         // undefined behavior: what should the sign of degreeDiff be in these cases?
         a = 0.0;
         b = 180.0;
