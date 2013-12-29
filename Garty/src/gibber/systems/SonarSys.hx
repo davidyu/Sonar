@@ -68,25 +68,33 @@ class SonarSys extends EntitySystem
                                     var rangeStart = pointToRadian( center, p );
                                     var rangeEnd   = pointToRadian( center, q );
 
+                                    if ( radianDiff( rangeStart, rangeEnd ) < 0 ) { // normalize: we never do >180 degree reveals for a single edge.
+                                        var temp = rangeStart;
+                                        rangeStart = rangeEnd;
+                                        rangeEnd = temp;
+                                    }
+
                                     ranges.push( { start: rangeStart, end: rangeEnd } );
 
                                     trace( "-------starting to cull ranges---------: " );
                                     trace( "for " + Line( p, q ) );
                                     trace( "already " + sonar.cullRanges.length + " segments to cull" );
                                     var tryAgain = true;
-                                    var error: Float = 0.017; // allow one degree of error
+                                    var error: Float = 0.004; // allow 0.25 degree of error
                                     // compute culling for ranges
                                     while( tryAgain ) {
                                         tryAgain = false;
                                         for ( orng in sonar.cullRanges ) {
                                             for ( rng in ranges ) {
-                                                //rng   ==-----==
+                                                //rng     -----  
                                                 //orng  ---------
-                                                if ( radianDiff( orng.start, rng.start ) > 0 && radianDiff( orng.end, rng.end ) < 0 ) {
+                                                if ( radianDiff( orng.start, rng.start ) > 0 && radianDiff( orng.end, rng.start ) < 0 &&
+                                                     radianDiff( orng.end, rng.end ) < 0     && radianDiff( orng.start, rng.end ) > 0 ) {
                                                     ranges.remove( rng );
                                                 //rng  ---------
                                                 //orng   -----
-                                                } else if ( radianDiff( orng.start, rng.start ) < -error && radianDiff( orng.start, rng.end ) > error && radianDiff( orng.end, rng.end ) > error && radianDiff( orng.end, rng.start ) < -error ) {
+                                                } else if ( radianDiff( orng.start, rng.start ) < -error && radianDiff( orng.start, rng.end ) > 0 &&   // orng.start between rng.start and rng.end
+                                                            radianDiff( orng.end, rng.end ) > error      && radianDiff( orng.end, rng.start ) < 0 ) {  // orng.end between rng.start and rng.end
                                                     ranges.push( { start: rng.start, end: orng.start } );
                                                     ranges.push( { start: orng.end, end: rng.end } );
                                                     if ( ranges.remove( rng ) ) {
