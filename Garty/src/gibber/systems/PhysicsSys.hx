@@ -14,6 +14,7 @@ import utils.Vec2;
 using Lambda;
 using gibber.Util;
 using utils.Geo;
+using utils.Math2;
 
 class PhysicsSys extends EntitySystem
 {
@@ -117,7 +118,7 @@ class PhysicsSys extends EntitySystem
                 if ( isColl ) {
                     for ( p in sectorPolys ) {
                         var res = p.getClosestPointAndEdge( newPos );
-                        collPoint = res.point;
+                        collPoint = res.point.add( res.edge.a.sub( res.edge.b ).orthogonal().normalize().mul( Math2.EPSILON ) );
                         dist = collPoint.sub( newPos ).lengthsq();
                         if ( dist < minDist ) {
                             minDist = dist;
