@@ -18,6 +18,8 @@ import utils.Polygon;
 import utils.Vec2;
 import utils.Math2;
 
+using utils.RadianHelper;
+
 class SonarSys extends EntitySystem
 {
     public function new() {
@@ -182,12 +184,7 @@ class SonarSys extends EntitySystem
         return diff;
     }
 
-    // returns true if a is after b, and false otherwise
-    private function isAfter( a: Float, b: Float ): Bool {
-        return radianDiff( a, b ) < 0;
-    }
-
-    private function pointToRadian( center: Vec2, point: Vec2, invertedY : Bool = true ) {
+    private function pointToRadian( center: Vec2, point: Vec2, invertedY : Bool = true ): Float {
         // note that Y is inverted by default because for regular usage in screen space, it grows from 0 downwards
         var ratio : Float = ( point.x - center.x ) / ( invertedY ? ( center.y - point.y ) : ( point.y - center.y ) );
         var radian = Math.atan( ratio );
