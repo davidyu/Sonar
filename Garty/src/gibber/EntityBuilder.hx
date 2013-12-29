@@ -19,6 +19,7 @@ import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
 import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
+import gibber.components.PosTrackerCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
 import gibber.components.SonarCmp;
@@ -159,6 +160,7 @@ class EntityBuilder
         var e = world.createEntity();
 
         var posCmp = new PosCmp( sector, pos, true );
+        var posTrackerCmp = new PosTrackerCmp( LastPos );
         posCmp.dp = direction.normalize().mul( 9.0 );
         var trailCmp = new TrailCmp( direction );
         var timedEffectCmp = new TimedEffectCmp( 2000, GlobalTickInterval );
@@ -168,6 +170,7 @@ class EntityBuilder
         e.addComponent( timedEffectCmp );
         e.addComponent( trailCmp );
         e.addComponent( posCmp );
+        e.addComponent( posTrackerCmp );
         e.addComponent( renderCmp );
         e.addComponent( bounceCmp );
 

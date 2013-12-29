@@ -14,6 +14,7 @@ import flash.display.MovieClip;
 import flash.display.Bitmap;
 
 import gibber.components.PosCmp;
+import gibber.components.PosTrackerCmp;
 import gibber.components.RenderCmp;
 import gibber.components.TrailCmp;
 import gibber.components.TimedEffectCmp;
@@ -36,6 +37,7 @@ class RenderTrailSys extends EntitySystem
 
     override public function initialize() : Void {
         posMapper         = world.getMapper( PosCmp );
+        posTrackerMapper  = world.getMapper( PosTrackerCmp );
         timedEffectMapper = world.getMapper( TimedEffectCmp );
         trailMapper       = world.getMapper( TrailCmp );
         fade              = new ColorTransform( 1.0, 1.0, 1.0, 0.9 );
@@ -52,6 +54,7 @@ class RenderTrailSys extends EntitySystem
         var time : TimedEffectCmp;
         var trail : TrailCmp;
         var pos : PosCmp;
+        var posTracker : PosTrackerCmp;
         var lastScreenPos : Vec2;
         var curScreenPos : Vec2;
 
@@ -62,12 +65,12 @@ class RenderTrailSys extends EntitySystem
             time = timedEffectMapper.get( e );
             trail = trailMapper.get( e );
             pos = posMapper.get( e );
+            posTracker = posTrackerMapper.get( e );
 
             // implement brensenham to draw line from prev pos to current?
             // there should be a helper function (maybe it exists already) to get abs coords of a posCmp
-            lastScreenPos = pos.pos.add( posMapper.get( pos.sector ).pos ).sub( pos.dp );
+            lastScreenPos = posTracker.getLastPosition().add( posMapper.get( pos.sector ).pos );
             curScreenPos = pos.pos.add( posMapper.get( pos.sector ).pos );
-            // bmd.setPixel32( Std.int( screenPos.x ), Std.int( screenPos.y ), 0xffffffff );
 
             // pass this into bresenham
             function plotPixelOnBmd( x: Int, y: Int ) {
@@ -80,7 +83,7 @@ class RenderTrailSys extends EntitySystem
         }
     }
 
-    // very smart, complete, and well-optimized algorithm courtesy of wikipedia
+    // very smart, complete, and reasonably well-optimized algorithm courtesy of wikipedia
     private function bresenham( x0, y0, x1, y1, plot: Int->Int-> Void ) {
         var dx : Float = Math.abs( x1 - x0 );
         var dy : Float = Math.abs( y1 - y0 );
@@ -120,6 +123,7 @@ class RenderTrailSys extends EntitySystem
     var trailMapper       : ComponentMapper<TrailCmp>;
     var posMapper         : ComponentMapper<PosCmp>;
     var timedEffectMapper : ComponentMapper<TimedEffectCmp>;
+    var posTrackerMapper  : ComponentMapper<PosTrackerCmp>;
 
     private var root   : MovieClip;
     private var bitbuf : Bitmap;

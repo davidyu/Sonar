@@ -19,6 +19,7 @@ import gibber.managers.SynonymMgr;
 import gibber.managers.WordsMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.PhysicsSys;
+import gibber.systems.PosTrackerSys;
 import gibber.systems.RenderSonarSys;
 import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
@@ -84,6 +85,7 @@ class God
         world.setManager( new WordsMgr() ); // Needs to be last
         world.setManager( new NameRegistry() ); // Needs to be last
 
+        world.setSystem( new PosTrackerSys() ); // should be before anything that explicitly updates PosCmp
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new RenderSectorSys( root ) );
