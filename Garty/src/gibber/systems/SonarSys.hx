@@ -86,10 +86,10 @@ class SonarSys extends EntitySystem
                                         tryAgain = false;
                                         for ( orng in sonar.cullRanges ) {
                                             for ( rng in ranges ) {
-                                                //rng     -----  
+                                                //rng   ==-----==
                                                 //orng  ---------
-                                                if ( radianDiff( orng.start, rng.start ) > 0 && radianDiff( orng.end, rng.start ) < 0 &&
-                                                     radianDiff( orng.end, rng.end ) < 0     && radianDiff( orng.start, rng.end ) > 0 ) {
+                                                if ( radianDiff( orng.start, rng.start ) >= 0 && radianDiff( orng.end, rng.start ) < 0 &&
+                                                     radianDiff( orng.end, rng.end ) <= 0     && radianDiff( orng.start, rng.end ) > 0 ) {
                                                     ranges.remove( rng );
                                                 //rng  ---------
                                                 //orng   -----
