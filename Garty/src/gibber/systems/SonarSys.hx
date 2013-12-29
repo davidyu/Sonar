@@ -61,7 +61,7 @@ class SonarSys extends EntitySystem
                     for ( poly in sectorPolys ) {
                         for ( k in 0...poly.verts.length - 1 ) {
                             // do an intersection test against each edge of the polygon; create a trace for each intersection occurrence
-                            var intersect = Geo.lineCircleIntersect( { center: center, radius: radius }, { a: poly.verts[k], b: k == poly.verts.length - 1 ? poly.verts[0] : poly.verts[k + 1] } ); //wrap
+                            var intersect = Geo.lineCircleIntersect( { center: center, radius: radius }, { a: poly.verts[k], b: poly.verts[k + 1] } ); //wrap
                             //trace( 'performing intersection test with { c : $center, r : $radius } and { a : ${p.verts[k]}, b : ${p.verts[k + 1]} }' );
                             switch ( intersect ) {
                                 case Line( p, q ):
@@ -141,7 +141,7 @@ class SonarSys extends EntitySystem
                                         function radianToPoint( origin, theta, invertedY : Bool = true ) : Vec2 {
                                             var direction = new Vec2( Math.sin( theta ), invertedY ? -Math.cos( theta ) : Math.cos( theta ) );
 
-                                            switch ( Math2.getRayLineIntersection( { origin: origin, direction: direction }, { a: poly.verts[k], b: k == poly.verts.length - 1 ? poly.verts[0] : poly.verts[k + 1] } ) ) {
+                                            switch ( Math2.getRayLineIntersection( { origin: origin, direction: direction }, { a: poly.verts[k], b: poly.verts[k + 1] } ) ) {
                                                 case Point( point ): return point;
                                                 default:
                                                     //trace( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: poly.verts[k], b: poly.verts[k + 1] } ) );
