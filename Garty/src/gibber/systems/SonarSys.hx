@@ -219,7 +219,7 @@ class SonarSys extends EntitySystem
             var e = world.createEntity();
 
             var renderCmp = new RenderCmp( 0xffffff );
-            var traceCmp = new TraceCmp( 1.0, displayType, pos );
+            var traceCmp = new TraceCmp( 0.8, displayType, pos );
             var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
 
             e.addComponent( renderCmp );
