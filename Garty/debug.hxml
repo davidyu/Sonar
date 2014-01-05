@@ -1,15 +1,17 @@
 -cp src
 -cp ../../artemis-haxelib/src
 
--lib hscript
-
-#REMEMBER THIS FOR DEBUGGING AND NEVER FORGET
+-debug
 -D fdb
+-lib hscript
+-swf-lib ./libs/TheMiner_en.swc
+
+-D debug
 
 -swf-header 1280:720:30:000000
 -swf-version 11.7
 
 -resource resource/classpaths.inc@classpaths
 
--swf bin/Engine.swf
+-swf bin/Engine_debug.swf
 -main Main

@@ -22,6 +22,10 @@ import haxe.ds.GenericStack;
 import haxe.Unserializer;
 import utils.Words;
 
+#if debug
+import com.sociodox.theminer.TheMiner;
+#end
+
 using gibber.Util;
 
 class Test
@@ -51,5 +55,8 @@ class Main
         // entry point
         trace( "Starting up God" );
         var g = new God( Lib.current );
+#if debug
+        stage.addChild( new TheMiner() );
+#end
     }
 }
