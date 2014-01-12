@@ -6,6 +6,9 @@ import com.artemisx.Entity;
 import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
 
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.geom.ColorTransform;
 import flash.display.Graphics;
 import flash.display.MovieClip;
 import flash.display.Sprite;
@@ -24,9 +27,12 @@ class RenderSonarSys extends EntitySystem
     public function new( root : MovieClip ) {
         super( Aspect.getAspectForAll( [SonarCmp, RenderCmp] ) );
 
+        bmd    = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0xff000000 );
+        bitbuf = new Bitmap( bmd );
         buffer = new Sprite();
         this.root = root;
 
+        root.addChild( bitbuf );
         root.addChild( buffer );
     }
 
@@ -53,6 +59,7 @@ class RenderSonarSys extends EntitySystem
         var sonar : SonarCmp;
         var time : TimedEffectCmp;
         var pos : PosCmp;
+        var screenTransform : Vec2;
 
         for ( i in 0...actives.size ) {
             e = actives.get( i );
@@ -66,13 +73,22 @@ class RenderSonarSys extends EntitySystem
             render.sprite.x = posMapper.get( pos.sector ).pos.x; //too much lambda lifting
             render.sprite.y = posMapper.get( pos.sector ).pos.y;
 
+            screenTransform = posMapper.get( pos.sector ).pos;
+
             var g = render.sprite.graphics;
+
             g.clear();
+
+            bmd.fillRect( bmd.rect, 0xff000000 );
 
             g.lineStyle( 2.0, render.colour, 1.0 - time.internalAcc / time.duration );
 
+            function plotPixelOnBmd( x: Int, y: Int ) {
+                bmd.setPixel32( x, y, 0xffffffff );
+            }
+
             if ( sonar.cullRanges.length == 0 ) {
-                g.drawCircle( pos.pos.x, pos.pos.y, radius ); //just draw circle
+                drawArc( pos.pos.add( screenTransform ), radius, 0, 1.0, plotPixelOnBmd ); //just draw circle
             } else {
                 for ( i in 0...sonar.cullRanges.length ) {
                     var r1 = sonar.cullRanges[i];
@@ -80,25 +96,67 @@ class RenderSonarSys extends EntitySystem
                     var diff = r2.start - r1.end; // invariant: r2.start comes after (clockwise) r1.end
                     if ( diff < 0 ) diff += 2 * Math.PI;
                     if ( diff > 2 * Math.PI ) diff -= 2 * Math.PI;
-                    drawArc( g, pos.pos, radius, r1.end / ( 2 * Math.PI ), diff / ( 2 * Math.PI ) );
+                    drawArc( pos.pos.add( screenTransform ), radius, r1.end / ( 2 * Math.PI ), diff / ( 2 * Math.PI ), plotPixelOnBmd );
                 }
             }
+
+            // apply color transform
+            var fade : ColorTransform = new ColorTransform( 1.0, 1.0, 1.0, 1.0 - time.internalAcc / time.duration );
+            bmd.colorTransform( bmd.rect, fade );
         }
     }
 
-    private function drawArc( g, center, radius : Float, startAngle : Float, arcAngle : Float ){
+    private function drawArc( center, radius : Float, startAngle : Float, arcAngle : Float, plot: Int->Int-> Void ){
         var steps = Std.int( arcAngle * 100 ); //adaptive sampling FTW!
         startAngle -= .25;
         var twoPI = 2 * Math.PI;
         var angleStep = arcAngle/steps;
-        var xx = center.x + Math.cos( startAngle * twoPI ) * radius;
-        var yy = center.y + Math.sin( startAngle * twoPI ) * radius;
-        g.moveTo( xx, yy );
+        var xx : Int = Std.int( center.x + Math.cos( startAngle * twoPI ) * radius );
+        var yy : Int = Std.int( center.y + Math.sin( startAngle * twoPI ) * radius );
+        var x : Int = xx;
+        var y : Int = yy;
         for ( i in 1...steps + 1 ) {
             var angle = startAngle + i * angleStep;
-            xx = center.x + Math.cos( angle * twoPI ) * radius;
-            yy = center.y + Math.sin( angle * twoPI ) * radius;
-            g.lineTo( xx, yy );
+            xx = Std.int( center.x + Math.cos( angle * twoPI ) * radius );
+            yy = Std.int( center.y + Math.sin( angle * twoPI ) * radius );
+            bresenham( x, y, xx, yy, plot );
+            x = xx;
+            y = yy;
+        }
+    }
+
+    private function bresenham( x0, y0, x1, y1, plot: Int->Int-> Void ) {
+        var dx : Float = Math.abs( x1 - x0 );
+        var dy : Float = Math.abs( y1 - y0 );
+
+        var xStep : Int = 0;
+        var yStep : Int = 0;
+
+        // this takes care of all possible slopes
+        if ( x0 < x1 ) xStep = 1 else xStep = -1;
+        if ( y0 < y1 ) yStep = 1 else yStep = -1;
+
+        var err : Float = dx - dy; // in the vanilla algorithm, if Math.abs(err) > 0.5 then we increment y by yStep
+
+        while ( true ) {
+            plot( x0, y0 );
+            if ( x0 == x1 && y0 == y1 ) break;
+
+            var e2 = err * 2;
+            if ( e2 > -dy ) { // -> 2dx > dy ( slope is greater than 1/2 )
+                err -= dy;
+                x0 += xStep;
+            }
+
+            if ( x0 == x1 && y0 == y1 ) {
+                plot( x0, y0 );
+                break;
+            }
+
+            if ( e2 < dx ) { // -> 2dy > dx ( slope is less than 2 )
+                err += dx;
+                y0 += yStep;
+            }
         }
     }
 
@@ -108,5 +166,7 @@ class RenderSonarSys extends EntitySystem
     var timedEffectMapper : ComponentMapper<TimedEffectCmp>;
 
     private var root   : MovieClip;
+    private var bmd    : BitmapData;
+    private var bitbuf : Bitmap;
     private var buffer : Sprite;
 }
