@@ -80,7 +80,7 @@ class RenderSonarSys extends EntitySystem
             }
 
             if ( sonar.cullRanges.length == 0 ) {
-                drawArc( pos.pos.add( screenTransform ), radius, 0, 1.0, plotPixelOnBmd ); //just draw circle
+                Render.drawArc( pos.pos.add( screenTransform ), radius, 0, 1.0, plotPixelOnBmd ); //just draw circle
             } else {
                 for ( i in 0...sonar.cullRanges.length ) {
                     var r1 = sonar.cullRanges[i];
@@ -88,31 +88,11 @@ class RenderSonarSys extends EntitySystem
                     var diff = r2.start - r1.end; // invariant: r2.start comes after (clockwise) r1.end
                     if ( diff < 0 ) diff += 2 * Math.PI;
                     if ( diff > 2 * Math.PI ) diff -= 2 * Math.PI;
-                    drawArc( pos.pos.add( screenTransform ), radius, r1.end / ( 2 * Math.PI ), diff / ( 2 * Math.PI ), plotPixelOnBmd );
+                    Render.drawArc( pos.pos.add( screenTransform ), radius, r1.end / ( 2 * Math.PI ), diff / ( 2 * Math.PI ), plotPixelOnBmd );
                 }
             }
         }
     }
-
-    private function drawArc( center, radius : Float, startAngle : Float, arcAngle : Float, plot: Int->Int-> Void ){
-        var steps = Std.int( arcAngle * 100 ); //adaptive sampling FTW!
-        startAngle -= .25;
-        var twoPI = 2 * Math.PI;
-        var angleStep = arcAngle/steps;
-        var xx : Int = Std.int( center.x + Math.cos( startAngle * twoPI ) * radius );
-        var yy : Int = Std.int( center.y + Math.sin( startAngle * twoPI ) * radius );
-        var x : Int = xx;
-        var y : Int = yy;
-        for ( i in 1...steps + 1 ) {
-            var angle = startAngle + i * angleStep;
-            xx = Std.int( center.x + Math.cos( angle * twoPI ) * radius );
-            yy = Std.int( center.y + Math.sin( angle * twoPI ) * radius );
-            Render.bresenham( x, y, xx, yy, plot );
-            x = xx;
-            y = yy;
-        }
-    }
-
 
     var renderMapper      : ComponentMapper<RenderCmp>;
     var sonarMapper       : ComponentMapper<SonarCmp>;

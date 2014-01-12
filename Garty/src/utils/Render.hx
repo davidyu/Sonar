@@ -1,7 +1,31 @@
 package utils;
 
+import utils.Vec2;
+
 class Render
 {
+    // draws a good number of lines to fake the appearance of a circular arc
+    public static function drawArc( center: Vec2, radius : Float, startAngle : Float, arcAngle : Float, plot: Int->Int-> Void ) {
+        var steps = Std.int( arcAngle * radius * 2 ); //adaptive sampling FTW!
+        startAngle -= .25; // compensate; apparently 0 means start at 90 deg
+
+        var twoPI = 2 * Math.PI;
+        var angleStep = arcAngle/steps;
+
+        var x : Int = Std.int( center.x + Math.cos( startAngle * twoPI ) * radius ),
+            y : Int = Std.int( center.y + Math.sin( startAngle * twoPI ) * radius ),
+            xx : Int, yy : Int;
+
+        for ( i in 1...steps + 1 ) {
+            var angle = startAngle + i * angleStep;
+            xx = Std.int( center.x + Math.cos( angle * twoPI ) * radius );
+            yy = Std.int( center.y + Math.sin( angle * twoPI ) * radius );
+            bresenham( x, y, xx, yy, plot );
+            x = xx;
+            y = yy;
+        }
+    }
+
     // very smart, complete, and reasonably well-optimized algorithm courtesy of wikipedia
     public static function bresenham( x0, y0, x1, y1, plot: Int->Int-> Void ) {
         var dx : Float = Math.abs( x1 - x0 );
