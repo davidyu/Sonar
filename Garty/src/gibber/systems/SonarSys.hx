@@ -176,6 +176,11 @@ class SonarSys extends EntitySystem
             sonar.cullRanges.sort( function( a : Range, b : Range ):Int {
                 return Math2.sign( a.start - b.start );
             } );
+
+            trace("----culled range list----");
+            for ( s in sonar.cullRanges ) {
+                trace( rngToString( s ) );
+            }
         }
     }
 

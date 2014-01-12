@@ -73,26 +73,21 @@ class RenderSonarSys extends EntitySystem
 
             if ( sonar.cullRanges.length == 0 ) {
                 g.drawCircle( pos.pos.x, pos.pos.y, radius ); //just draw circle
-            } else if ( sonar.cullRanges.length == 1 ) {
-                var start = sonar.cullRanges[0].end;
-                var range = sonar.cullRanges[0].start - sonar.cullRanges[0].end;
-                if ( range < Math.PI ) {
-                    range -= 2 * Math.PI;
-                } else if ( range > -Math.PI ) {
-                    range += 2 * Math.PI;
-                }
-                drawArc( g, pos.pos, radius, start / ( 2 * Math.PI ), range / ( 2 * Math.PI ) );
             } else {
                 for ( i in 0...sonar.cullRanges.length ) {
                     var r1 = sonar.cullRanges[i];
                     var r2 = i == sonar.cullRanges.length - 1 ? sonar.cullRanges[0] : sonar.cullRanges[i + 1];
-                    drawArc( g, pos.pos, radius, r1.end / ( 2 * Math.PI ), ( r2.start - r1.end ) / ( 2 * Math.PI ) );
+                    var diff = r2.start - r1.end; // invariant: r2.start comes after (clockwise) r1.end
+                    if ( diff < 0 ) diff += 2 * Math.PI;
+                    if ( diff > 2 * Math.PI ) diff -= 2 * Math.PI;
+                    drawArc( g, pos.pos, radius, r1.end / ( 2 * Math.PI ), diff / ( 2 * Math.PI ) );
                 }
             }
         }
     }
 
-    private function drawArc( g, center, radius : Float, startAngle : Float, arcAngle : Float, steps = 20 ){
+    private function drawArc( g, center, radius : Float, startAngle : Float, arcAngle : Float ){
+        var steps = Std.int( arcAngle * 100 ); //adaptive sampling FTW!
         startAngle -= .25;
         var twoPI = 2 * Math.PI;
         var angleStep = arcAngle/steps;
