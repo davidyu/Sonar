@@ -28,7 +28,7 @@ class RenderTrailSys extends EntitySystem
     public function new( root : MovieClip ) {
         super( Aspect.getAspectForAll( [TrailCmp, RenderCmp] ) );
 
-        bmd       = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0xff000000 );
+        bmd       = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0x00000000 );
         bitbuf    = new Bitmap( bmd );
         this.root = root;
 
@@ -41,6 +41,7 @@ class RenderTrailSys extends EntitySystem
         timedEffectMapper = world.getMapper( TimedEffectCmp );
         trailMapper       = world.getMapper( TrailCmp );
         fade              = new ColorTransform( 1.0, 1.0, 1.0, 0.9 );
+        compensatingFades = 30;
     }
 
     override public function onInserted( e : Entity ) : Void {
@@ -58,7 +59,10 @@ class RenderTrailSys extends EntitySystem
         var lastScreenPos : Vec2;
         var curScreenPos : Vec2;
 
-        bmd.colorTransform( bmd.rect, fade ); // fade out every update
+        if ( actives.size > 0 && compensatingFades > 0 ) {
+            bmd.colorTransform( bmd.rect, fade ); // fade out every update
+            compensatingFades--;
+        }
 
         for ( i in 0...actives.size ) {
             e   = actives.get( i );
@@ -80,6 +84,8 @@ class RenderTrailSys extends EntitySystem
             bresenham( Std.int( lastScreenPos.x ), Std.int( lastScreenPos.y ),
                        Std.int( curScreenPos.x ) , Std.int( curScreenPos.y ) ,
                        plotPixelOnBmd );
+
+            compensatingFades = 30; // in case this is the final active entity; force the system to apply a few more fades before short-circuiting
         }
     }
 
@@ -129,4 +135,5 @@ class RenderTrailSys extends EntitySystem
     private var bitbuf : Bitmap;
     private var bmd    : BitmapData;
     private var fade   : ColorTransform;
+    private var compensatingFades : Int;
 }

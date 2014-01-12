@@ -27,13 +27,11 @@ class RenderSonarSys extends EntitySystem
     public function new( root : MovieClip ) {
         super( Aspect.getAspectForAll( [SonarCmp, RenderCmp] ) );
 
-        bmd    = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0xff000000 );
+        bmd    = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0x00000000 );
         bitbuf = new Bitmap( bmd );
-        buffer = new Sprite();
         this.root = root;
 
         root.addChild( bitbuf );
-        root.addChild( buffer );
     }
 
     override public function initialize() : Void {
@@ -61,6 +59,9 @@ class RenderSonarSys extends EntitySystem
         var pos : PosCmp;
         var screenTransform : Vec2;
 
+        if ( actives.size > 0 )
+            bmd.fillRect( bmd.rect, 0x00000000 );
+
         for ( i in 0...actives.size ) {
             e = actives.get( i );
             sonar = sonarMapper.get( e );
@@ -70,21 +71,11 @@ class RenderSonarSys extends EntitySystem
 
             var radius : Float = sonar.growthRate * ( time.internalAcc / 1000.0 );
 
-            render.sprite.x = posMapper.get( pos.sector ).pos.x; //too much lambda lifting
-            render.sprite.y = posMapper.get( pos.sector ).pos.y;
-
             screenTransform = posMapper.get( pos.sector ).pos;
 
-            var g = render.sprite.graphics;
-
-            g.clear();
-
-            bmd.fillRect( bmd.rect, 0xff000000 );
-
-            g.lineStyle( 2.0, render.colour, 1.0 - time.internalAcc / time.duration );
-
             function plotPixelOnBmd( x: Int, y: Int ) {
-                bmd.setPixel32( x, y, 0xffffffff );
+                var alpha = Std.int( ( 1.0 - time.internalAcc / time.duration ) * 255 ) << 24;
+                bmd.setPixel32( x, y, 0xffffff | alpha );
             }
 
             if ( sonar.cullRanges.length == 0 ) {
@@ -99,10 +90,6 @@ class RenderSonarSys extends EntitySystem
                     drawArc( pos.pos.add( screenTransform ), radius, r1.end / ( 2 * Math.PI ), diff / ( 2 * Math.PI ), plotPixelOnBmd );
                 }
             }
-
-            // apply color transform
-            var fade : ColorTransform = new ColorTransform( 1.0, 1.0, 1.0, 1.0 - time.internalAcc / time.duration );
-            bmd.colorTransform( bmd.rect, fade );
         }
     }
 
@@ -168,5 +155,4 @@ class RenderSonarSys extends EntitySystem
     private var root   : MovieClip;
     private var bmd    : BitmapData;
     private var bitbuf : Bitmap;
-    private var buffer : Sprite;
 }
