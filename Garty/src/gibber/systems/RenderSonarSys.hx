@@ -18,8 +18,9 @@ import gibber.components.RenderCmp;
 import gibber.components.SonarCmp;
 import gibber.components.TimedEffectCmp;
 
-import utils.Vec2;
 import utils.Math2;
+import utils.Render;
+import utils.Vec2;
 
 //@dyu: FINISH THIS
 class RenderSonarSys extends EntitySystem
@@ -106,46 +107,12 @@ class RenderSonarSys extends EntitySystem
             var angle = startAngle + i * angleStep;
             xx = Std.int( center.x + Math.cos( angle * twoPI ) * radius );
             yy = Std.int( center.y + Math.sin( angle * twoPI ) * radius );
-            bresenham( x, y, xx, yy, plot );
+            Render.bresenham( x, y, xx, yy, plot );
             x = xx;
             y = yy;
         }
     }
 
-    private function bresenham( x0, y0, x1, y1, plot: Int->Int-> Void ) {
-        var dx : Float = Math.abs( x1 - x0 );
-        var dy : Float = Math.abs( y1 - y0 );
-
-        var xStep : Int = 0;
-        var yStep : Int = 0;
-
-        // this takes care of all possible slopes
-        if ( x0 < x1 ) xStep = 1 else xStep = -1;
-        if ( y0 < y1 ) yStep = 1 else yStep = -1;
-
-        var err : Float = dx - dy; // in the vanilla algorithm, if Math.abs(err) > 0.5 then we increment y by yStep
-
-        while ( true ) {
-            plot( x0, y0 );
-            if ( x0 == x1 && y0 == y1 ) break;
-
-            var e2 = err * 2;
-            if ( e2 > -dy ) { // -> 2dx > dy ( slope is greater than 1/2 )
-                err -= dy;
-                x0 += xStep;
-            }
-
-            if ( x0 == x1 && y0 == y1 ) {
-                plot( x0, y0 );
-                break;
-            }
-
-            if ( e2 < dx ) { // -> 2dy > dx ( slope is less than 2 )
-                err += dx;
-                y0 += yStep;
-            }
-        }
-    }
 
     var renderMapper      : ComponentMapper<RenderCmp>;
     var sonarMapper       : ComponentMapper<SonarCmp>;
