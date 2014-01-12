@@ -170,7 +170,12 @@ class SonarSys extends EntitySystem
                 case Process( true ): //expiring sonar, clear its obscuredRange array
                     time.processState = Processed;
                 default:
-            }
+            } // end switch on time.processState (wow! how gross!)
+
+            // sort cull ranges
+            sonar.cullRanges.sort( function( a : Range, b : Range ):Int {
+                return Math2.sign( a.start - b.start );
+            } );
         }
     }
 

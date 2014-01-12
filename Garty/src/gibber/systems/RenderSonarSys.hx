@@ -16,6 +16,7 @@ import gibber.components.SonarCmp;
 import gibber.components.TimedEffectCmp;
 
 import utils.Vec2;
+import utils.Math2;
 
 //@dyu: FINISH THIS
 class RenderSonarSys extends EntitySystem
@@ -67,8 +68,42 @@ class RenderSonarSys extends EntitySystem
 
             var g = render.sprite.graphics;
             g.clear();
+
             g.lineStyle( 2.0, render.colour, 1.0 - time.internalAcc / time.duration );
-            g.drawCircle( pos.pos.x, pos.pos.y, radius ); //this pos syntax is ridiculous
+
+            if ( sonar.cullRanges.length == 0 ) {
+                g.drawCircle( pos.pos.x, pos.pos.y, radius ); //just draw circle
+            } else if ( sonar.cullRanges.length == 1 ) {
+                var start = sonar.cullRanges[0].end;
+                var range = sonar.cullRanges[0].start - sonar.cullRanges[0].end;
+                if ( range < Math.PI ) {
+                    range -= 2 * Math.PI;
+                } else if ( range > -Math.PI ) {
+                    range += 2 * Math.PI;
+                }
+                drawArc( g, pos.pos, radius, start / ( 2 * Math.PI ), range / ( 2 * Math.PI ) );
+            } else {
+                for ( i in 0...sonar.cullRanges.length ) {
+                    var r1 = sonar.cullRanges[i];
+                    var r2 = i == sonar.cullRanges.length - 1 ? sonar.cullRanges[0] : sonar.cullRanges[i + 1];
+                    drawArc( g, pos.pos, radius, r1.end / ( 2 * Math.PI ), ( r2.start - r1.end ) / ( 2 * Math.PI ) );
+                }
+            }
+        }
+    }
+
+    private function drawArc( g, center, radius : Float, startAngle : Float, arcAngle : Float, steps = 20 ){
+        startAngle -= .25;
+        var twoPI = 2 * Math.PI;
+        var angleStep = arcAngle/steps;
+        var xx = center.x + Math.cos( startAngle * twoPI ) * radius;
+        var yy = center.y + Math.sin( startAngle * twoPI ) * radius;
+        g.moveTo( xx, yy );
+        for ( i in 1...steps + 1 ) {
+            var angle = startAngle + i * angleStep;
+            xx = center.x + Math.cos( angle * twoPI ) * radius;
+            yy = center.y + Math.sin( angle * twoPI ) * radius;
+            g.lineTo( xx, yy );
         }
     }
 
