@@ -60,7 +60,7 @@ class RenderTrailSys extends EntitySystem
         var lastScreenPos : Vec2;
         var curScreenPos : Vec2;
 
-        if ( actives.size > 0 && compensatingFades > 0 ) {
+        if ( actives.size > 0 || compensatingFades > 0 ) {
             bmd.colorTransform( bmd.rect, fade ); // fade out every update
             compensatingFades--;
         }
