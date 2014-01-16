@@ -1,0 +1,3 @@
+[submodule "Garty/libs/artemisx"]
+	path = Garty/libs/artemisx
+	url = git@github.com:desktop/artemisx.git
