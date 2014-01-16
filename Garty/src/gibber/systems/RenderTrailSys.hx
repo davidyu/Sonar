@@ -72,7 +72,6 @@ class RenderTrailSys extends EntitySystem
             pos = posMapper.get( e );
             posTracker = posTrackerMapper.get( e );
 
-            // implement brensenham to draw line from prev pos to current?
             // there should be a helper function (maybe it exists already) to get abs coords of a posCmp
             lastScreenPos = posTracker.getLastPosition().add( posMapper.get( pos.sector ).pos );
             curScreenPos = pos.pos.add( posMapper.get( pos.sector ).pos );

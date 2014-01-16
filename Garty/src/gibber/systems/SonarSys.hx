@@ -62,7 +62,6 @@ class SonarSys extends EntitySystem
                         for ( k in 0...poly.verts.length - 1 ) {
                             // do an intersection test against each edge of the polygon; create a trace for each intersection occurrence
                             var intersect = Geo.lineCircleIntersect( { center: center, radius: radius }, { a: poly.verts[k], b: poly.verts[k + 1] } ); //wrap
-                            //trace( 'performing intersection test with { c : $center, r : $radius } and { a : ${p.verts[k]}, b : ${p.verts[k + 1]} }' );
                             switch ( intersect ) {
                                 case Line( p, q ):
                                     var ranges : Array<Range> = new Array<Range>(); // this will be the new set of culled ranges we add to sonar.cullRanges
@@ -101,10 +100,12 @@ class SonarSys extends EntitySystem
                                                     ranges.push( { start: orng.end, end: rng.end } );
                                                     if ( ranges.remove( rng ) ) {
                                                         tryAgain = true;
+#if debug
                                                         trace( "reconstructed range " + rngToString( rng ) );
                                                         trace( "new ranges: " + rngToString( { start: rng.start, end: orng.start } ) + " and " + rngToString( { start: orng.end, end: rng.end } ) );
                                                     } else {
                                                         trace( "error reconstructing range " + rngToString( rng ) );
+#end
                                                     }
                                                 //rng   ===---
                                                 //orng  ----
@@ -112,10 +113,12 @@ class SonarSys extends EntitySystem
                                                     ranges.push( { start: orng.end, end: rng.end } );
                                                     if ( ranges.remove( rng ) ) {
                                                         tryAgain = true;
+#if debug
                                                         trace( "reconstructed range " + rngToString( rng ) );
                                                         trace( "new range: " + rngToString( { start: orng.end, end: rng.end } ) );
                                                     } else {
                                                         trace( "error reconstructing range " + rngToString( rng ) );
+#end
                                                     }
                                                 //rng  ----===
                                                 //orng   -----
@@ -123,10 +126,12 @@ class SonarSys extends EntitySystem
                                                     ranges.push( { start: rng.start, end: orng.start } );
                                                     if ( ranges.remove( rng ) ) {
                                                         tryAgain = true;
+#if debug
                                                         trace( "reconstructed range " + rngToString( rng ) );
                                                         trace( "new range: " + rngToString( { start: rng.start, end: orng.start } ) );
                                                     } else {
                                                         trace( "error reconstructing range " + rngToString( rng ) );
+#end
                                                     }
                                                 }
                                             }
@@ -134,19 +139,19 @@ class SonarSys extends EntitySystem
                                     }
 
                                     sonar.cullRanges = sonar.cullRanges.concat( ranges );
-
+#if debug
                                     trace( "-------ranges to draw---------: " );
+#end
                                     for ( rng in ranges ) {
+#if debug
                                         trace( rngToString( rng ) );
+#end
                                         function radianToPoint( origin, theta, invertedY : Bool = true ) : Vec2 {
                                             var direction = new Vec2( Math.sin( theta ), invertedY ? -Math.cos( theta ) : Math.cos( theta ) );
 
                                             switch ( Math2.getRayLineIntersection( { origin: origin, direction: direction }, { a: poly.verts[k], b: poly.verts[k + 1] } ) ) {
                                                 case Point( point ): return point;
-                                                default:
-                                                    //trace( Math2.getRayLineIntersection( { origin: center, direction: direction }, { a: poly.verts[k], b: poly.verts[k + 1] } ) );
-                                                    //trace( direction );
-                                                    return null;
+                                                default: return null;
                                             }
                                         }
 
@@ -155,8 +160,10 @@ class SonarSys extends EntitySystem
 
                                         if ( a != null && b != null ) {
                                             createTrace( posMapper.get( sector ).pos, Line( a, b ) );
+#if debug
                                         } else {
                                             trace( "this range could not be created" );
+#end
                                         }
                                     }
                                 case Point( _ ):
@@ -177,10 +184,12 @@ class SonarSys extends EntitySystem
                 return Math2.sign( a.start - b.start );
             } );
 
+#if debug
             trace("----culled range list----");
             for ( s in sonar.cullRanges ) {
                 trace( rngToString( s ) );
             }
+#end
         }
     }
 

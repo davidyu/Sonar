@@ -22,7 +22,6 @@ import utils.Math2;
 import utils.Render;
 import utils.Vec2;
 
-//@dyu: FINISH THIS
 class RenderSonarSys extends EntitySystem
 {
     public function new( root : MovieClip ) {
