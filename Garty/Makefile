@@ -11,6 +11,10 @@ game: preprocess
 	haxe compile.hxml
 	open bin/Engine.swf
 
+server:
+	haxe server.hxml
+	neko bin/server.n
+
 check:
 	haxe unit.hxml
 	open testbin/Check.swf
