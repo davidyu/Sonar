@@ -20,6 +20,7 @@ import gibber.managers.SynonymMgr;
 import gibber.managers.WordsMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.ControllerSys;
+import gibber.systems.DebugClientSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.PosTrackerSys;
 import gibber.systems.RenderSonarSys;
@@ -87,6 +88,7 @@ class God
         world.setManager( new WordsMgr() ); // Needs to be last
         world.setManager( new NameRegistry() ); // Needs to be last
 
+        world.setSystem( new DebugClientSys( root ) );
         world.setSystem( new PosTrackerSys() ); // should be before anything that explicitly updates PosCmp
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
@@ -139,6 +141,8 @@ class God
         sectors.push( entityBuilder.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
         player = entityBuilder.createPlayer( "ship", sectors[0], new SynTag( "bob", ["bob", "player"], SynType.NOUN ), true );
+
+        entityBuilder.createDebugClient( "localhost", 5000 );
 
         var cmdCmp = player.getComponent( CmdQueue );
     }
