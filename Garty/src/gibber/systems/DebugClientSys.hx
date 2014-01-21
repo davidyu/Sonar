@@ -48,8 +48,14 @@ class DebugClientSys extends IntervalEntitySystem
         for ( i in 0...actives.size ) {
             e = actives.get( i );
             d = clientMapper.get( e );
+
             while ( d.socket.connected && d.socket.bytesAvailable > 0 ) {
                 out.text += d.socket.readUTFBytes( 1 );
+            }
+
+            if ( !d.socket.connected ) { //retry connection
+                trace("disconnected...trying to reconnect...");
+                d.socket.connect( d.host, d.port );
             }
         }
     }

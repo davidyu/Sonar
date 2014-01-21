@@ -90,6 +90,7 @@ class God
         world.setManager( new NameRegistry() ); // Needs to be last
 
         world.setSystem( new PosTrackerSys() ); // should be before anything that explicitly updates PosCmp
+        world.setSystem( new DebugClientSys( root ) );
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new RenderSectorSys( root ) );
