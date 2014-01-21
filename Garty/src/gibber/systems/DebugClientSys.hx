@@ -13,13 +13,13 @@ import flash.text.TextField;
 import flash.text.TextFieldType;
 import flash.text.TextFormat;
 
-import gibber.components.DebugClientCmp;
+import gibber.components.ClientCmp;
 
 class DebugClientSys extends IntervalEntitySystem
 {
     public function new( root : MovieClip ) {
         this.root = root;
-        super( Aspect.getAspectForAll( [DebugClientCmp] ), 100.0 );
+        super( Aspect.getAspectForAll( [ClientCmp] ), 100.0 );
     }
 
     override public function initialize() : Void {
@@ -39,22 +39,22 @@ class DebugClientSys extends IntervalEntitySystem
         root.addChild( out );
 
         out.text += "debug client output:";
-        debugClientMapper = world.getMapper( DebugClientCmp );
+        clientMapper = world.getMapper( ClientCmp );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
         var e : Entity;
-        var d : DebugClientCmp;
+        var d : ClientCmp;
         for ( i in 0...actives.size ) {
             e = actives.get( i );
-            d = debugClientMapper.get( e );
+            d = clientMapper.get( e );
             while ( d.socket.connected && d.socket.bytesAvailable > 0 ) {
                 out.text += d.socket.readUTFBytes( 1 );
             }
         }
     }
 
-    private var debugClientMapper : ComponentMapper<DebugClientCmp>;
+    private var clientMapper : ComponentMapper<ClientCmp>;
     private var out    : TextField;
     private var root   : MovieClip;
     private var buffer : Sprite;
