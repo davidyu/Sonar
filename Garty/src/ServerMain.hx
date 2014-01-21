@@ -32,7 +32,17 @@ class ServerMain
                                ( right ? "right" : "" ) );
                     default: trace( "unknown opcode: " + opcode );
                 }
-                opcode = conn.input.readByte();
+
+                try {
+                    opcode = conn.input.readByte();
+                } catch ( e : Dynamic ) {
+                    if ( Std.is( e, haxe.io.Eof ) ) {
+                        break;
+                    } else {
+                        trace( e );
+                        break;
+                    }
+                }
             }
             trace( "Client connection closed." );
             conn.close();
