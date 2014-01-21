@@ -15,7 +15,7 @@ import gibber.components.BounceCmp;
 import gibber.components.CmdQueue;
 import gibber.components.ContainerCmp;
 import gibber.components.ControllerCmp;
-import gibber.components.DebugClientCmp;
+import gibber.components.ClientCmp;
 import gibber.components.InventoryCmp;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
@@ -159,11 +159,11 @@ class EntityBuilder
         return e;
     }
 
-    public function createDebugClient( host : String, port : UInt ) {
+    public function createClient( host : String, port : UInt ) {
         var e = world.createEntity();
-        var debugClient = new DebugClientCmp( host, port );
+        var client = new ClientCmp( host, port );
 
-        e.addComponent( debugClient );
+        e.addComponent( client );
 
         world.addEntity( e );
 

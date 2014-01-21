@@ -8,6 +8,7 @@ import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFieldType;
 import flash.ui.Keyboard;
+import gibber.components.ClientCmp;
 import gibber.components.CmdQueue;
 import gibber.components.ControllerCmp;
 import gibber.components.PosCmp;
@@ -20,7 +21,6 @@ import gibber.managers.SynonymMgr;
 import gibber.managers.WordsMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.ControllerSys;
-import gibber.systems.DebugClientSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.PosTrackerSys;
 import gibber.systems.RenderSonarSys;
@@ -53,6 +53,7 @@ class God
         root.stage.addEventListener( flash.events.KeyboardEvent.KEY_DOWN, onEnterKey );
         root.stage.addEventListener( flash.events.MouseEvent.CLICK, onMouseClick );
         Key.init();
+        f = 0;
         root.addEventListener( flash.events.Event.ENTER_FRAME, tick );
 
         setupDebugConsole();
@@ -88,7 +89,6 @@ class God
         world.setManager( new WordsMgr() ); // Needs to be last
         world.setManager( new NameRegistry() ); // Needs to be last
 
-        world.setSystem( new DebugClientSys( root ) );
         world.setSystem( new PosTrackerSys() ); // should be before anything that explicitly updates PosCmp
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
@@ -142,7 +142,7 @@ class God
 
         player = entityBuilder.createPlayer( "ship", sectors[0], new SynTag( "bob", ["bob", "player"], SynType.NOUN ), true );
 
-        entityBuilder.createDebugClient( "localhost", 5000 );
+        client = entityBuilder.createClient( "localhost", 5000 );
 
         var cmdCmp = player.getComponent( CmdQueue );
     }
@@ -150,23 +150,45 @@ class God
     public function tick( _ ) : Void {
         pollInput();
         world.process();
+        if ( ++f % 4 == 0 ) { // true every fourth frame
+            sendInputState();
+            f = 0;
+        }
     }
 
     function pollInput() : Void {
-        if ( Key.isDown( Keyboard.RIGHT ) ) {
-            player.getComponent( ControllerCmp ).moveRight = true;
-        }
+        up    = Key.isDown( Keyboard.UP );
+        down  = Key.isDown( Keyboard.DOWN );
+        left  = Key.isDown( Keyboard.LEFT );
+        right = Key.isDown( Keyboard.RIGHT );
 
-        if ( Key.isDown( Keyboard.LEFT ) ){
-            player.getComponent( ControllerCmp ).moveLeft = true;
-        }
-
-        if ( Key.isDown( Keyboard.UP ) ) {
+        if ( up ) {
             player.getComponent( ControllerCmp ).moveUp = true;
         }
 
-        if ( Key.isDown( Keyboard.DOWN ) ) {
+        if ( down ) {
             player.getComponent( ControllerCmp ).moveDown = true;
+        }
+
+        if ( left ) {
+            player.getComponent( ControllerCmp ).moveLeft = true;
+        }
+
+        if ( right ) {
+            player.getComponent( ControllerCmp ).moveRight = true;
+        }
+    }
+
+    function sendInputState() : Void {
+        var socket = client.getComponent( ClientCmp ).socket;
+
+        if ( socket.connected ) {
+            socket.writeByte( 1 );
+            socket.writeBoolean( up );
+            socket.writeBoolean( down );
+            socket.writeBoolean( left );
+            socket.writeBoolean( right );
+            socket.flush();
         }
     }
 
@@ -242,15 +264,24 @@ class God
         outputTextfield.text = "";
     }
 
+
+    var f : UInt;
+
     var root : MovieClip;
     var inputTextfield : TextField;
     var baseTextFormat : TextFormat;
-    public var outputTextfield : TextField;
+
+    private var up    : Bool;
+    private var down  : Bool;
+    private var left  : Bool;
+    private var right : Bool;
 
     var parser : AdvancedParser;
     public var commander : Commander;
+    public var outputTextfield : TextField;
     public var sectors : Array<Entity>;
     public var player : Entity;
+    public var client : Entity;
 }
 
 typedef P2 = { p1 : Entity, p2 : Entity };
