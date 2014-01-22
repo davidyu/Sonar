@@ -7,14 +7,19 @@ var socket = net.createServer( function ( socket ) {
   clients.push( socket );
   console.log( "connected to client " + socket.name );
 
-  var opcode = new Buffer( [ 255 ] );
-  socket.write( opcode );
-  socket.write( "hello " + socket.name );
-  relay( socket.name + " joined the game." );
+  var clientID = new Buffer( [ 255, clients.length - 1 ] );
+  socket.write( clientID );
+  var clientJoinMsg = new Buffer( [ 254, clients.length - 1 ] );
+  relay( clientJoinMsg, socket );
 
   socket.on( 'data', function( data ) {
     opcode = new Buffer( [ 100 ] );
-    relay( socket.name + ">" + data, socket );
+    console.log( data );
+    //relay( socket.name + ">" + data, socket );
+  } );
+
+  socket.on( 'close', function() {
+
   } );
 
   function relay( data, sender ) {
