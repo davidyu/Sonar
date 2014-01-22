@@ -50,6 +50,7 @@ GenericScript gibber.scripts.GenericScript
 Script gibber.scripts.Script
 TransitScript gibber.scripts.TransitScript
 VoidExecuteScript gibber.scripts.VoidExecuteScript
+ClientSys gibber.systems.ClientSys
 CmdProcessSys gibber.systems.CmdProcessSys
 ControllerSys gibber.systems.ControllerSys
 DebugClientSys gibber.systems.DebugClientSys

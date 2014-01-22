@@ -11,6 +11,7 @@ class ClientCmp implements Component
     @:isVar public var socket : Socket;
     @:isVar public var host : String;
     @:isVar public var port : UInt;
+    @:isVar public var id : UInt;
 
     public function new( host: String, port: UInt ) {
         this.host = host;
