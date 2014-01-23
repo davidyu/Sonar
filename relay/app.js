@@ -18,8 +18,10 @@ var socket = net.createServer( function ( socket ) {
     //relay( socket.name + ">" + data, socket );
   } );
 
-  socket.on( 'close', function() {
-
+  socket.on( 'end', function() {
+    clients.splice( clients.indexOf( socket ), 1 );
+    // relay leave event
+    console.log( "client " + socket.name + " left the game." );
   } );
 
   function relay( data, sender ) {

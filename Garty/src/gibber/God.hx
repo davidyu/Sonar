@@ -91,7 +91,7 @@ class God
         world.setManager( new NameRegistry() ); // Needs to be last
 
         world.setSystem( new PosTrackerSys() ); // should be before anything that explicitly updates PosCmp
-        world.setSystem( new ClientSys( root ) );
+        world.setSystem( new ClientSys( this ) );
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new RenderSectorSys( root ) );
@@ -142,11 +142,9 @@ class God
 
         sectors.push( entityBuilder.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
-        player = entityBuilder.createPlayer( "ship", sectors[0], new SynTag( "bob", ["bob", "player"], SynType.NOUN ), true );
-
         client = entityBuilder.createClient( "localhost", 5000 );
 
-        var cmdCmp = player.getComponent( CmdQueue );
+        // var cmdCmp = player.getComponent( CmdQueue );
     }
 
     public function tick( _ ) : Void {

@@ -18,6 +18,7 @@ ControllerCmp gibber.components.ControllerCmp
 InventoryCmp gibber.components.InventoryCmp
 LookCmp gibber.components.LookCmp
 NameIdCmp gibber.components.NameIdCmp
+NetworkPlayerCmp gibber.components.NetworkPlayerCmp
 PortalCmp gibber.components.PortalCmp
 PosCmp gibber.components.PosCmp
 PosTrackerCmp gibber.components.PosTrackerCmp
@@ -73,7 +74,6 @@ Teract gibber.teracts.Teract
 TestBed gibber.TestBed
 Util gibber.Util
 Main Main
-ServerMain ServerMain
 Geo utils.Geo
 Key utils.Key
 Math2 utils.Math2
