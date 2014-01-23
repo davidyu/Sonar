@@ -18,6 +18,7 @@ import gibber.components.ClientCmp;
 import gibber.components.InventoryCmp;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
+import gibber.components.NetworkPlayerCmp;
 import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
 import gibber.components.PosTrackerCmp;
@@ -77,32 +78,27 @@ class EntityBuilder
         addPortalEdges( portal, [new PortalEdge( s2, s1, god.sf.createScript( "transit" ) )] );
     }
 
-    public function createPlayer( name : String, sector : Entity, syns : SynTag, isPlayer : Bool = false ) : Entity {
+    public function createNetworkPlayer( name: String, sector: Entity, position: Vec2, id: UInt ): Entity {
+        var player = createPlayer( name, sector, position );
+        var npCmp = new NetworkPlayerCmp( id );
+        player.addComponent( npCmp );
+        return player;
+    }
+
+    public function createPlayer( name: String, sector: Entity, position: Vec2 ): Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
-        var nameCmp = new NameIdCmp( name, syns );
-        var posCmp = new PosCmp( sector, new Vec2( 20, 20 ) );
+        var nameCmp = new NameIdCmp( name, new SynTag( name, ["sub", name], SynType.NOUN ) );
+        var posCmp = new PosCmp( sector, position );
         var renderCmp = new RenderCmp();
         var cmdCmp = new CmdQueue();
-        var containerCmp = new ContainerCmp(); //temporary hack solution
-        var containableCmp = new ContainableCmp( containerMgr, e, sector ); //temporary hack solution
-        var teractCmp = new TeractNodeCmp( [new LookTeract( god, null )]);
-        if ( isPlayer ) {
-            teractCmp.attached.push ( new LookTeract( god, new SynTag( "passiveLook", ["look"], SynType.VERB ) ) );
-            teractCmp.attached.push ( new MoveTeract( god, new SynTag( "walk", [ "walk", "goto", "move" ], SynType.VERB ) ) );
-        }
         var inventoryCmp = new InventoryCmp();
-
-        lookCmp.lookText = "This is the player";
 
         e.addComponent( lookCmp );
         e.addComponent( nameCmp );
         e.addComponent( posCmp );
         e.addComponent( renderCmp );
         e.addComponent( cmdCmp );
-        e.addComponent( teractCmp );
-        e.addComponent( containerCmp );
-        e.addComponent( containableCmp );
         e.addComponent( inventoryCmp );
 
         world.addEntity( e );

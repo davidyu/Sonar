@@ -15,15 +15,18 @@ import flash.text.TextFormat;
 
 import gibber.components.ClientCmp;
 
+import utils.Vec2;
+
 class ClientSys extends IntervalEntitySystem
 {
-    public function new( root : MovieClip ) {
-        this.root = root;
+    public function new( god : God ) {
+        this.god = god;
         super( Aspect.getAspectForAll( [ClientCmp] ), 100.0 );
     }
 
     override public function initialize() : Void {
         clientMapper = world.getMapper( ClientCmp );
+
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -39,9 +42,19 @@ class ClientSys extends IntervalEntitySystem
                     case 255:
                         d.id = d.socket.readUnsignedByte();
                         trace( "my ID is " + d.id );
+                        if ( d.id > 0 ) {
+                            god.player = god.entityBuilder.createPlayer( "ship", god.sectors[0], new Vec2( 1080, 250 ) );
+                        } else {
+                            god.player = god.entityBuilder.createPlayer( "ship", god.sectors[0], new Vec2( 20, 20 ) );
+                        }
                     case 254:
                         var newClientID = d.socket.readUnsignedByte();
                         trace( "another client with ID " + newClientID + " joined this game." );
+                        if ( newClientID > 0 ) {
+                            god.entityBuilder.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 1080, 250 ), newClientID );
+                        } else {
+                            god.entityBuilder.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 20, 20 ), newClientID );
+                        }
                     default:
                         trace( "unknown server opcode: " + opcode );
                 }
@@ -54,6 +67,6 @@ class ClientSys extends IntervalEntitySystem
         }
     }
 
+    private var god : God;
     private var clientMapper : ComponentMapper<ClientCmp>;
-    private var root   : MovieClip;
 }
