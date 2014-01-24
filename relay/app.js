@@ -32,4 +32,4 @@ var socket = net.createServer( function ( socket ) {
       client.write( data );
     } );
   }
-} ).listen( process.env.PORT || 5000, null );
+} ).listen( process.env.PORT || 80, null );
