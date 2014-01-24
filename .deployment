@@ -1,2 +1,2 @@
 [config]
-command=deployRelay.bat
+command=deploy_relay.bat
