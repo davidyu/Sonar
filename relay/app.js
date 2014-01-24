@@ -4,6 +4,7 @@ var clients = [];
 
 var socket = net.createServer( function ( socket ) {
   socket.name = socket.remoteAddress + ":" + socket.remotePort;
+  socket.id = clients.length;
   clients.push( socket );
   console.log( "connected to client " + socket.name );
 
@@ -13,9 +14,8 @@ var socket = net.createServer( function ( socket ) {
   relay( clientJoinMsg, socket );
 
   socket.on( 'data', function( data ) {
-    opcode = new Buffer( [ 100 ] );
     console.log( data );
-    //relay( socket.name + ">" + data, socket );
+    relay( data, socket );
   } );
 
   socket.on( 'end', function() {
@@ -27,7 +27,9 @@ var socket = net.createServer( function ( socket ) {
   function relay( data, sender ) {
     clients.forEach( function( client ) {
       if ( client == sender ) return;
+      var posID = new Buffer( [ 253, sender.id ] );
+      client.write( posID );
       client.write( data );
     } );
   }
-} ).listen( 5000 );
+} ).listen( process.env.PORT || 5000, null );
