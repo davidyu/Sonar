@@ -1,3 +1,0 @@
-@echo off
-echo Deploying files...
-xcopy %DEPLOYMENT_SOURCE%/relay %DEPLOYMENT_TARGET% /Y
