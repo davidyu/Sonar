@@ -11,7 +11,10 @@ var socket = net.createServer( function ( socket ) {
   var clientID = new Buffer( [ 255, clients.length - 1 ] );
   socket.write( clientID );
   var clientJoinMsg = new Buffer( [ 254, clients.length - 1 ] );
-  relay( clientJoinMsg, socket );
+  clients.forEach( function( client ) {
+    if ( client == socket ) return;
+    client.write( clientJoinMsg );
+  } );
 
   socket.on( 'data', function( data ) {
     console.log( data );
@@ -32,4 +35,4 @@ var socket = net.createServer( function ( socket ) {
       client.write( data );
     } );
   }
-} ).listen( process.env.PORT || 80, null );
+} ).listen( process.env.PORT || 5000, null );
