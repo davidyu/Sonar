@@ -108,6 +108,7 @@ class God
 
     public function initializeEntities() : Void {
         sectors = new Array();
+        netPlayers = new Array();
 
         /*
          * map: the Hammer
@@ -280,6 +281,8 @@ class God
     public var sectors : Array<Entity>;
     public var player : Entity;
     public var client : Entity;
+
+    public var netPlayers : Array<Entity>;
 }
 
 typedef P2 = { p1 : Entity, p2 : Entity };
