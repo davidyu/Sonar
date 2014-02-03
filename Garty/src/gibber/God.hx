@@ -19,6 +19,7 @@ import gibber.managers.SectorGraphMgr;
 import gibber.managers.SynonymMgr;
 import gibber.managers.WordsMgr;
 import gibber.systems.CmdProcessSys;
+import gibber.systems.ControllerSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.PosTrackerSys;
 import gibber.systems.RenderSonarSys;
@@ -99,6 +100,8 @@ class God
         world.setSystem( new TraceSys() );
         world.setSystem( new TrailSys() );
 
+        world.setSystem( new ControllerSys() ); // this must be last to clear all controller states
+
         world.delta = 1000 / ( root.stage.frameRate ); //this is gross!
         world.initialize();
     }
@@ -147,7 +150,7 @@ class God
 
     function pollInput() : Void {
         if ( Key.isDown( Keyboard.RIGHT ) ) {
-            player.getComponent( ControllerCmp ).moveUp = true;
+            player.getComponent( ControllerCmp ).moveRight = true;
         }
 
         if ( Key.isDown( Keyboard.LEFT ) ){
