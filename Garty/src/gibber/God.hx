@@ -9,6 +9,7 @@ import flash.text.TextFormat;
 import flash.text.TextFieldType;
 import flash.ui.Keyboard;
 import gibber.components.CmdQueue;
+import gibber.components.ControllerCmp;
 import gibber.components.PosCmp;
 import gibber.components.TakeCmp;
 import gibber.gabby.SynTag;
@@ -145,22 +146,20 @@ class God
     }
 
     function pollInput() : Void {
-        var speed = 1.0;
-
         if ( Key.isDown( Keyboard.RIGHT ) ) {
-            player.getComponent( PosCmp ).dp.x = speed;
+            player.getComponent( ControllerCmp ).moveUp = true;
         }
 
         if ( Key.isDown( Keyboard.LEFT ) ){
-            player.getComponent( PosCmp ).dp.x = -speed;
+            player.getComponent( ControllerCmp ).moveLeft = true;
         }
 
         if ( Key.isDown( Keyboard.UP ) ) {
-            player.getComponent( PosCmp ).dp.y = -speed;
+            player.getComponent( ControllerCmp ).moveUp = true;
         }
 
         if ( Key.isDown( Keyboard.DOWN ) ) {
-            player.getComponent( PosCmp ).dp.y = speed;
+            player.getComponent( ControllerCmp ).moveDown = true;
         }
     }
 

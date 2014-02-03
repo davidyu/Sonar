@@ -14,6 +14,7 @@ import gibber.commands.MoveCmd;
 import gibber.components.BounceCmp;
 import gibber.components.CmdQueue;
 import gibber.components.ContainerCmp;
+import gibber.components.ControllerCmp;
 import gibber.components.InventoryCmp;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
@@ -86,6 +87,7 @@ class EntityBuilder
         var containerCmp = new ContainerCmp(); //temporary hack solution
         var containableCmp = new ContainableCmp( containerMgr, e, sector ); //temporary hack solution
         var teractCmp = new TeractNodeCmp( [new LookTeract( god, null )]);
+        var controllerCmp = new ControllerCmp();
         if ( isPlayer ) {
             teractCmp.attached.push ( new LookTeract( god, new SynTag( "passiveLook", ["look"], SynType.VERB ) ) );
             teractCmp.attached.push ( new MoveTeract( god, new SynTag( "walk", [ "walk", "goto", "move" ], SynType.VERB ) ) );
@@ -103,6 +105,7 @@ class EntityBuilder
         e.addComponent( containerCmp );
         e.addComponent( containableCmp );
         e.addComponent( inventoryCmp );
+        e.addComponent( controllerCmp );
 
         world.addEntity( e );
 
