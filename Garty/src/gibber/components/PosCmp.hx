@@ -23,4 +23,16 @@ class PosCmp implements Component
         this.pos = pos;
         this.dp = new Vec2();
     }
+
+    function hxSerialize( s : haxe.Serializer ) {
+        s.serialize(regionsIn);
+        s.serialize(pos);
+        s.serialize(dp);
+    }
+
+    function hxUnserialize( s : haxe.Unserializer ) {
+        regionsIn = s.unserialize();
+        pos = s.unserialize();
+        dp = s.unserialize();
+    }
 }

@@ -62,17 +62,27 @@ class ClientSys extends IntervalEntitySystem
                         var id = d.socket.readUnsignedByte();
                         var opcode = d.socket.readUnsignedByte();
 
-                        if ( opcode != 1 ) break;
+                        function getNetworkPlayerById( id ) {
+                            for ( p in god.netPlayers ) {
+                                if ( netPlayerMapper.get( p ).id == id ) {
+                                    return p;
+                                }
+                            }
+                            return null;
+                        }
 
-                        var up = d.socket.readUnsignedByte() > 0;
-                        var down = d.socket.readUnsignedByte() > 0;
-                        var left = d.socket.readUnsignedByte() > 0;
-                        var right = d.socket.readUnsignedByte() > 0;
+                        var netPlayer = getNetworkPlayerById( id );
+                        if ( netPlayer == null ) return;
 
-                        // update entity with id
-                        for ( p in god.netPlayers ) {
-                            if ( netPlayerMapper.get( p ).id == id ) {
-                                var pos : PosCmp = posMapper.get( p );
+                        switch ( opcode ) {
+                            case 1:
+                                var up = d.socket.readUnsignedByte() > 0;
+                                var down = d.socket.readUnsignedByte() > 0;
+                                var left = d.socket.readUnsignedByte() > 0;
+                                var right = d.socket.readUnsignedByte() > 0;
+
+                                // update entity with id
+                                var pos : PosCmp = posMapper.get( netPlayer );
 
                                 if ( up ) {
                                     pos.dp.y = -1.0;
@@ -89,8 +99,17 @@ class ClientSys extends IntervalEntitySystem
                                 if ( right ) {
                                     pos.dp.x = 1.0;
                                 }
-                            }
+                            case 2:
+                                var len = d.socket.readShort();
+                                var serializedPos = d.socket.readUTFBytes( len );
+
+                                var newPosCmp : PosCmp = haxe.Unserializer.run( serializedPos );
+                                var posCmp : PosCmp = posMapper.get( netPlayer );
+                                posCmp.pos = newPosCmp.pos;
+                                posCmp.dp = newPosCmp.dp;
+                            default: "unknown p2p opcode: " + opcode;
                         }
+
                     default:
                         trace( "unknown server opcode: " + opcode );
                 }

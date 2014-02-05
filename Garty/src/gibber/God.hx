@@ -153,6 +153,10 @@ class God
         world.process();
         if ( ++f % 4 == 0 ) { // true every fourth frame
             sendInputState();
+        }
+
+        if ( ++f % 24 == 0 ) {
+            sendEntityPositions();
             f = 0;
         }
     }
@@ -177,6 +181,18 @@ class God
 
         if ( right ) {
             player.getComponent( ControllerCmp ).moveRight = true;
+        }
+    }
+
+    function sendEntityPositions() : Void {
+        var socket = client.getComponent( ClientCmp ).socket;
+        var serializedPos : String = haxe.Serializer.run( player.getComponent( PosCmp ) );
+        trace( "send: " + serializedPos );
+        if ( socket.connected ) {
+            socket.writeByte( 2 );
+            socket.writeShort( serializedPos.length );
+            socket.writeUTFBytes( serializedPos );
+            socket.flush();
         }
     }
 
