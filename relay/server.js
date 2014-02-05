@@ -10,10 +10,12 @@ var socket = net.createServer( function ( socket ) {
 
   var clientID = new Buffer( [ 255, clients.length - 1 ] );
   socket.write( clientID );
-  var clientJoinMsg = new Buffer( [ 254, clients.length - 1 ] );
-  clients.forEach( function( client ) {
+  var socketJoin = new Buffer( [ 254, clients.length - 1 ] );
+  clients.forEach( function( client, clientIndex ) {
     if ( client == socket ) return;
-    client.write( clientJoinMsg );
+    client.write( socketJoin );
+    var clientAdd = new Buffer( [ 254, clientIndex ] );
+    socket.write( clientAdd );
   } );
 
   socket.on( 'data', function( data ) {
