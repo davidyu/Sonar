@@ -9,7 +9,7 @@ using gibber.Util;
 class PosCmp implements Component
 {
     @:isVar public var regionsIn : List<Entity>;
-    @:isVar public var sector ( default, default ) : Entity;
+    @:isVar public var sector : Entity;
     @:isVar public var pos :  Vec2;
     @:isVar public var dp :  Vec2; //aka velocity
     @:isVar public var noDamping : Bool;
@@ -25,13 +25,11 @@ class PosCmp implements Component
     }
 
     function hxSerialize( s : haxe.Serializer ) {
-        s.serialize(regionsIn);
         s.serialize(pos);
         s.serialize(dp);
     }
 
     function hxUnserialize( s : haxe.Unserializer ) {
-        regionsIn = s.unserialize();
         pos = s.unserialize();
         dp = s.unserialize();
     }

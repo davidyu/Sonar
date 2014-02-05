@@ -7,6 +7,7 @@ import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
 import gibber.components.TimedEffectCmp;
 
+@:rtti
 class TimedEffectSys extends EntitySystem
 {
     private var acc : UInt; //"probably" reduces floating point errors; come back to this if it causes any problems

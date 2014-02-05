@@ -107,6 +107,20 @@ class ClientSys extends IntervalEntitySystem
                                 var posCmp : PosCmp = posMapper.get( netPlayer );
                                 posCmp.pos = newPosCmp.pos;
                                 posCmp.dp = newPosCmp.dp;
+
+                            case 3: // unidirectional sonar
+                                var len = d.socket.readShort();
+                                var pos : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( len ) );
+                                god.entityBuilder.createSonar( netPlayer.getComponent( PosCmp ).sector, pos );
+                            case 4: // directional sonar
+                                var originLen = d.socket.readShort();
+                                var directionLen = d.socket.readShort();
+
+                                var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( originLen ) );
+                                var direction : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( directionLen ) );
+
+                                god.entityBuilder.createSonarBeam( netPlayer.getComponent( PosCmp ).sector, origin, direction );
+
                             default: "unknown p2p opcode: " + opcode;
                         }
 

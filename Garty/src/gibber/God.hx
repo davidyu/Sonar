@@ -187,11 +187,35 @@ class God
     function sendEntityPositions() : Void {
         var socket = client.getComponent( ClientCmp ).socket;
         var serializedPos : String = haxe.Serializer.run( player.getComponent( PosCmp ) );
-        trace( "send: " + serializedPos );
         if ( socket.connected ) {
             socket.writeByte( 2 );
             socket.writeShort( serializedPos.length );
             socket.writeUTFBytes( serializedPos );
+            socket.flush();
+        }
+    }
+
+    function sendSonarBeamCreationEvent( origin : Vec2, direction : Vec2 ) : Void {
+        var socket = client.getComponent( ClientCmp ).socket;
+        var originSerialized : String = haxe.Serializer.run( origin );
+        var directionSerialized : String = haxe.Serializer.run( direction );
+        if ( socket.connected ) {
+            socket.writeByte( 4 );
+            socket.writeShort( originSerialized.length );
+            socket.writeShort( directionSerialized.length );
+            socket.writeUTFBytes( originSerialized );
+            socket.writeUTFBytes( directionSerialized );
+            socket.flush();
+        }
+    }
+
+    function sendSonarCreationEvent( pos : Vec2 ) {
+        var socket = client.getComponent( ClientCmp ).socket;
+        var posSerialized : String = haxe.Serializer.run( pos );
+        if ( socket.connected ) {
+            socket.writeByte( 3 );
+            socket.writeShort( posSerialized.length );
+            socket.writeUTFBytes( posSerialized );
             socket.flush();
         }
     }
@@ -213,6 +237,7 @@ class God
         switch ( e.keyCode ) {
             case Keyboard.SPACE:
                 entityBuilder.createSonar( player.getComponent( PosCmp ).sector, player.getComponent( PosCmp ).pos );
+                sendSonarCreationEvent( player.getComponent( PosCmp ).pos );
 
             case Keyboard.ENTER:
                 var line = inputTextfield.text;
@@ -233,6 +258,7 @@ class God
         var origin = player.getComponent( PosCmp ).pos;
         var direction = new Vec2( e.localX, e.localY ).sub( player.getComponent( PosCmp ).sector.getComponent( PosCmp ).pos ).sub( origin ); // wow
         entityBuilder.createSonarBeam( player.getComponent( PosCmp ).sector, origin, direction );
+        sendSonarBeamCreationEvent( origin, direction  );
     }
 
     //debugger console methods
