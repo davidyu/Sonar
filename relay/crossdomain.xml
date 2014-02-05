@@ -1,4 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-  <cross-domain-policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.adobe.com/xml/schemas/PolicyFileSocket.xsd">
-  <allow-access-from domain="*" to-ports="*"  />
+<?xml version="1.0"?>
+<!DOCTYPE cross-domain-policy SYSTEM
+"http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
+
+<cross-domain-policy>
+<site-control permitted-cross-domain-policies="master-only"/>
+<allow-access-from domain="*"/>
+<allow-http-request-headers-from domain="*" headers="SOAPAction"/>
 </cross-domain-policy>

@@ -19,8 +19,13 @@ var socket = net.createServer( function ( socket ) {
   } );
 
   socket.on( 'data', function( data ) {
-    console.log( data );
-    relay( data, socket );
+    console.log( "|" + data.toString() + "|" );
+    if ( data == "<policy-file-request/>\0" ) {
+      socket.setEncoding( "utf8" );
+      socket.write( getCrossDomainPolicy() + '\0' );
+    } else {
+      relay( data, socket );
+    }
   } );
 
   socket.on( 'end', function() {
@@ -38,3 +43,7 @@ var socket = net.createServer( function ( socket ) {
     } );
   }
 } ).listen( process.env.PORT || 5000, null );
+
+function getCrossDomainPolicy() {
+  return policy = '<?xml version="1.0"?> <!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd"> <cross-domain-policy> <site-control permitted-cross-domain-policies="master-only"/> <allow-access-from domain="*"/> <allow-http-request-headers-from domain="*" headers="SOAPAction"/> </cross-domain-policy>';
+}
