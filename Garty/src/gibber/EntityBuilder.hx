@@ -82,6 +82,7 @@ class EntityBuilder
     public function createNetworkPlayer( name: String, sector: Entity, position: Vec2, id: UInt ): Entity {
         var player = createPlayer( name, sector, position );
         var npCmp = new NetworkPlayerCmp( id );
+        player.removeComponent( RenderCmp ); // do not render the network player!
         player.addComponent( npCmp );
         return player;
     }

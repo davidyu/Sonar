@@ -144,8 +144,8 @@ class God
 
         sectors.push( entityBuilder.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
-        Security.loadPolicyFile( "xmlsocket://localhost:10000" );
-        client = entityBuilder.createClient( "localhost", 5000 );
+        Security.loadPolicyFile( "xmlsocket://168.62.40.105:10000" );
+        client = entityBuilder.createClient( "168.62.40.105", 5000 );
 
         // var cmdCmp = player.getComponent( CmdQueue );
     }
