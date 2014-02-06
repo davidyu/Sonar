@@ -144,8 +144,8 @@ class God
 
         sectors.push( entityBuilder.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
-        Security.loadPolicyFile( "xmlsocket://sonarnet.azurewebsites.net:10000" );
-        client = entityBuilder.createClient( "sonarnet.azurewebsites.net", 5000 );
+        Security.loadPolicyFile( "xmlsocket://localhost:10000" );
+        client = entityBuilder.createClient( "localhost", 5000 );
 
         // var cmdCmp = player.getComponent( CmdQueue );
     }
