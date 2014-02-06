@@ -8,6 +8,7 @@ import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFieldType;
 import flash.ui.Keyboard;
+import flash.system.Security;
 import gibber.components.ClientCmp;
 import gibber.components.CmdQueue;
 import gibber.components.ControllerCmp;
@@ -143,7 +144,8 @@ class God
 
         sectors.push( entityBuilder.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
-        client = entityBuilder.createClient( "localhost", 5000 );
+        Security.loadPolicyFile( "xmlsocket://sonarnet.azurewebsites.net:10000" );
+        client = entityBuilder.createClient( "sonarnet.azurewebsites.net", 5000 );
 
         // var cmdCmp = player.getComponent( CmdQueue );
     }
