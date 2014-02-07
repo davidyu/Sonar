@@ -3,6 +3,7 @@ net = require( 'net' );
 var clients = [];
 
 var socket = net.createServer( function ( socket ) {
+  socket.setTimeout( 60 * 1000 ); // 1 minute timeout
   socket.name = socket.remoteAddress + ":" + socket.remotePort;
   socket.id = clients.length;
 
