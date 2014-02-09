@@ -23,6 +23,7 @@ import gibber.managers.WordsMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.ControllerSys;
 import gibber.systems.ClientSys;
+import gibber.systems.InputSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.PosTrackerSys;
 import gibber.systems.RenderSonarSys;
@@ -54,7 +55,6 @@ class God
 
         root.stage.addEventListener( flash.events.KeyboardEvent.KEY_DOWN, onEnterKey );
         root.stage.addEventListener( flash.events.MouseEvent.CLICK, onMouseClick );
-        Key.init();
         f = 0;
         root.addEventListener( flash.events.Event.ENTER_FRAME, tick );
 
@@ -93,6 +93,8 @@ class God
 
         world.setSystem( new PosTrackerSys() ); // should be before anything that explicitly updates PosCmp
         world.setSystem( new ClientSys( this ) );
+        world.setSystem( new InputSys() );
+        world.setSystem( new ControllerSys( this ) ); // this must follow InputSys to apply effects of controller states
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new RenderSectorSys( root ) );
@@ -104,8 +106,6 @@ class God
         world.setSystem( new TimedEffectSys() );
         world.setSystem( new TraceSys() );
         world.setSystem( new TrailSys() );
-
-        world.setSystem( new ControllerSys() ); // this must be last to clear all controller states
 
         world.delta = 1000 / ( root.stage.frameRate ); //this is gross!
         world.initialize();
@@ -144,45 +144,22 @@ class God
 
         sectors.push( entityBuilder.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
+#if local
+        Security.loadPolicyFile( "xmlsocket://localhost:10000" );
+        client = entityBuilder.createClient( "localhost", 5000 );
+#else
         Security.loadPolicyFile( "xmlsocket://168.62.40.105:10000" );
         client = entityBuilder.createClient( "168.62.40.105", 5000 );
+#end
 
         // var cmdCmp = player.getComponent( CmdQueue );
     }
 
     public function tick( _ ) : Void {
-        pollInput();
         world.process();
-        if ( ++f % 4 == 0 ) { // true every fourth frame
-            sendInputState();
-        }
-
         if ( ++f % 24 == 0 ) {
             sendEntityPositions();
             f = 0;
-        }
-    }
-
-    function pollInput() : Void {
-        up    = Key.isDown( Keyboard.UP );
-        down  = Key.isDown( Keyboard.DOWN );
-        left  = Key.isDown( Keyboard.LEFT );
-        right = Key.isDown( Keyboard.RIGHT );
-
-        if ( up ) {
-            player.getComponent( ControllerCmp ).moveUp = true;
-        }
-
-        if ( down ) {
-            player.getComponent( ControllerCmp ).moveDown = true;
-        }
-
-        if ( left ) {
-            player.getComponent( ControllerCmp ).moveLeft = true;
-        }
-
-        if ( right ) {
-            player.getComponent( ControllerCmp ).moveRight = true;
         }
     }
 
@@ -211,7 +188,7 @@ class God
         }
     }
 
-    function sendSonarCreationEvent( pos : Vec2 ) {
+    public function sendSonarCreationEvent( pos : Vec2 ) {
         var socket = client.getComponent( ClientCmp ).socket;
         var posSerialized : String = haxe.Serializer.run( pos );
         if ( socket.connected ) {
@@ -222,25 +199,8 @@ class God
         }
     }
 
-    function sendInputState() : Void {
-        var socket = client.getComponent( ClientCmp ).socket;
-
-        if ( socket.connected ) {
-            socket.writeByte( 1 );
-            socket.writeBoolean( up );
-            socket.writeBoolean( down );
-            socket.writeBoolean( left );
-            socket.writeBoolean( right );
-            socket.flush();
-        }
-    }
-
     function onEnterKey( e : flash.events.KeyboardEvent ) : Void {
         switch ( e.keyCode ) {
-            case Keyboard.SPACE:
-                entityBuilder.createSonar( player.getComponent( PosCmp ).sector, player.getComponent( PosCmp ).pos );
-                sendSonarCreationEvent( player.getComponent( PosCmp ).pos );
-
             case Keyboard.ENTER:
                 var line = inputTextfield.text;
                 inputTextfield.text = "";

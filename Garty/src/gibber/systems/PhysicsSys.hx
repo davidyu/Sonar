@@ -5,7 +5,6 @@ import com.artemisx.Entity;
 import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
 import gibber.components.BounceCmp;
-import gibber.components.ControllerCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.StaticPosCmp;
@@ -26,7 +25,6 @@ class PhysicsSys extends EntitySystem
     override public function initialize() : Void {
         posMapper = world.getMapper( PosCmp );
         regionMapper = world.getMapper( RegionCmp );
-        controllerMapper = world.getMapper( ControllerCmp );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -38,7 +36,6 @@ class PhysicsSys extends EntitySystem
         var sectorPolys : Array<Polygon>; // Walls
         var sectorPos : Vec2;       // Origin of sector
         var isColl = true;
-        var controller : ControllerCmp;
 
         for ( i in 0...actives.size ) {
             e = actives.get( i );
@@ -167,26 +164,6 @@ class PhysicsSys extends EntitySystem
                 }
             }
 
-            controller = controllerMapper.get( e );
-
-            if ( controller != null ) {
-                var speed = 1.0;
-                if ( controller.moveUp ) {
-                    posCmp.dp.y = -speed;
-                }
-
-                if ( controller.moveDown ) {
-                    posCmp.dp.y = speed;
-                }
-
-                if ( controller.moveLeft ) {
-                    posCmp.dp.x = -speed;
-                }
-
-                if ( controller.moveRight ) {
-                    posCmp.dp.x = speed;
-                }
-            }
         } // end for ( i in actives.size)
     }
     var once = true;
@@ -194,5 +171,4 @@ class PhysicsSys extends EntitySystem
     var posMapper : ComponentMapper<PosCmp>;
     var regionMapper : ComponentMapper<RegionCmp>;
     var bounceMapper : ComponentMapper<BounceCmp>;
-    var controllerMapper : ComponentMapper<ControllerCmp>;
 }

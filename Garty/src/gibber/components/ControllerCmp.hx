@@ -8,6 +8,7 @@ class ControllerCmp implements Component
     @:isVar public var moveDown  (default, set): Bool;
     @:isVar public var moveLeft  (default, set): Bool;
     @:isVar public var moveRight (default, set): Bool;
+    @:isVar public var createSonar : Bool;
 
     public function new() {
         moveUp = moveDown = moveLeft = moveRight = false;

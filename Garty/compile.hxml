@@ -13,8 +13,3 @@
 
 -swf bin/Engine.swf
 -main Main
-
---next
--cp src
--neko bin/server.n
--main ServerMain

@@ -5,6 +5,7 @@ import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import com.artemisx.World;
 import flash.utils.IDataInput2;
+import flash.ui.Keyboard;
 import gibber.components.ContainableCmp;
 import gibber.components.StaticPosCmp;
 import gibber.components.TeractNodeCmp;
@@ -17,6 +18,7 @@ import gibber.components.ContainerCmp;
 import gibber.components.ControllerCmp;
 import gibber.components.ClientCmp;
 import gibber.components.InventoryCmp;
+import gibber.components.InputCmp;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
 import gibber.components.NetworkPlayerCmp;
@@ -96,6 +98,8 @@ class EntityBuilder
         var cmdCmp = new CmdQueue();
         var controllerCmp = new ControllerCmp();
         var inventoryCmp = new InventoryCmp();
+        var inputCmp = new InputCmp( Keyboard.UP, Keyboard.DOWN, Keyboard.LEFT, Keyboard.RIGHT,
+                                     Keyboard.SPACE, 1 );
 
         e.addComponent( lookCmp );
         e.addComponent( nameCmp );
@@ -103,6 +107,7 @@ class EntityBuilder
         e.addComponent( renderCmp );
         e.addComponent( cmdCmp );
         e.addComponent( inventoryCmp );
+        e.addComponent( inputCmp );
         e.addComponent( controllerCmp );
 
         world.addEntity( e );
