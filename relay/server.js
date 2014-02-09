@@ -6,6 +6,7 @@ var socket = net.createServer( function ( socket ) {
   socket.setTimeout( 60 * 1000 ); // 1 minute timeout
   socket.name = socket.remoteAddress + ":" + socket.remotePort;
   socket.id = clients.length;
+  socket.initialized = false;
 
   clients.push( socket );
   console.log( "connected to client " + socket.name );
@@ -15,12 +16,15 @@ var socket = net.createServer( function ( socket ) {
     var clientID = new Buffer( [ 255, clients.indexOf( socket ) ] );
     socket.write( clientID ); // send the client ID
     var socketJoin = new Buffer( [ 254, clients.length - 1 ] );
+
+    // broadcast this client's joining to every other client
     clients.forEach( function( client, clientIndex ) {
       if ( client == socket ) return;
       client.write( socketJoin );
       var clientAdd = new Buffer( [ 254, clientIndex ] );
       socket.write( clientAdd );
     } );
+    socket.initialized = true;
   } );
 
   socket.on( 'data', function( data ) {
@@ -42,9 +46,11 @@ var socket = net.createServer( function ( socket ) {
   function relay( data, sender ) {
     clients.forEach( function( client ) {
       if ( client == sender ) return;
+      if ( !client.initiaized ) return;
       var posID = new Buffer( [ 253, sender.id ] );
       client.write( posID );
       client.write( data );
+      console.log( posID + " " + data );
     } );
   }
 } ).listen( process.env.PORT || 5000, null );
