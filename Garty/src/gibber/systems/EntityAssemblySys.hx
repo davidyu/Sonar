@@ -1,11 +1,15 @@
-package gibber;
+package gibber.systems;
+
 import com.artemisx.Aspect;
 import com.artemisx.Component;
 import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
+import com.artemisx.EntitySystem;
 import com.artemisx.World;
+
 import flash.utils.IDataInput2;
 import flash.ui.Keyboard;
+
 import gibber.components.ContainableCmp;
 import gibber.components.StaticPosCmp;
 import gibber.components.TeractNodeCmp;
@@ -40,45 +44,16 @@ import utils.Vec2;
 
 using Lambda;
 
-class EntityBuilder
+class EntityAssemblySys extends EntitySystem
 {
-    public function new( g : God ) {
-       god = g;
-       world = god.world;
-
-       init();
+    public function new() {
+        super( Aspect.getEmpty() );
     }
 
-    public function init() : Void {
-        containerMgr = god.world.getManager( ContainerMgr );
+    override public function initialize() : Void {
+        containerMgr = world.getManager( ContainerMgr );
         regionMapper = world.getMapper( RegionCmp );
         posMapper = world.getMapper( PosCmp );
-    }
-
-    public function addPortalEdges( portal : Entity, edges : Array<PortalEdge> ) : Void {
-        var portalCmp = portal.getComponent( PortalCmp );
-        var portalRegionCmp = regionMapper.get( portal );
-        var portalPosCmp = posMapper.get( portal );
-
-        portalCmp.edges = portalCmp.edges.concat( edges );
-        portal.addComponent( portalCmp );
-
-        //portalRegionCmp.parent = portalPosCmp.sector;
-        //portalRegionCmp.adj.push( portalPosCmp.sector );
-        for ( e in edges ) {
-            if ( !portalRegionCmp.adj.has( e.pSrc ) ) {
-                portalRegionCmp.adj.push( e.pSrc );
-            }
-            if ( !portalRegionCmp.adj.has( e.pDest ) ) {
-                portalRegionCmp.adj.push( e.pDest );
-            }
-            regionMapper.get( e.pSrc ).adj.push( portal );
-        }
-    }
-
-    public function doubleEdge( portal : Entity, s1 : Entity, s2 : Entity ) : Void {
-        addPortalEdges( portal, [new PortalEdge( s1, s2, god.sf.createScript( "transit" ) )] );
-        addPortalEdges( portal, [new PortalEdge( s2, s1, god.sf.createScript( "transit" ) )] );
     }
 
     public function createNetworkPlayer( name: String, sector: Entity, position: Vec2, id: UInt ): Entity {
@@ -109,33 +84,6 @@ class EntityBuilder
         e.addComponent( inventoryCmp );
         e.addComponent( inputCmp );
         e.addComponent( controllerCmp );
-
-        world.addEntity( e );
-
-        return e;
-    }
-
-    public function createPortal( name : String, pos : Vec2 ) : Entity {
-        var e = world.createEntity();
-        var nameCmp = new NameIdCmp( name, new SynTag( name, new Array<String>(), SynType.NOUN ) );
-        var lookCmp = new LookCmp();
-        var posCmp = new PosCmp( null, pos );
-        var staticCmp = new StaticPosCmp();
-        var portalCmp = new PortalCmp();
-        var regionCmp = new RegionCmp( [new Polygon( Vec2.getVecArray( [0, 0, 0, 10, 10, 10, 10, 0] ) )] );
-        //var contCmp = new ContainableCmp( containerMgr, e, null );
-        var renderCmp = new RenderCmp( 0x00ff00 );
-
-        lookCmp.lookText = "This is the player";
-
-        e.addComponent( posCmp );
-        e.addComponent( lookCmp );
-        e.addComponent( portalCmp );
-        e.addComponent( staticCmp );
-        //e.addComponent( contCmp );
-        e.addComponent( renderCmp );
-        e.addComponent( regionCmp );
-        e.addComponent( nameCmp );
 
         world.addEntity( e );
 
@@ -191,6 +139,10 @@ class EntityBuilder
         e.addComponent( renderCmp );
         e.addComponent( bounceCmp );
 
+        trace( bounceCmp );
+
+        trace( e.listComponents() );
+
         world.addEntity( e );
 
         return e;
@@ -209,7 +161,6 @@ class EntityBuilder
         var staticCmp = new StaticPosCmp();
         var lookCmp = new LookCmp();
         var regionCmp = new RegionCmp( polygonAreas );
-        var teractNodeCmp = new TeractNodeCmp( [ new MoveTeract( god, null ) ] );
         var renderCmp = new RenderCmp( 0x00ffff );
         var containerCmp = new ContainerCmp();
 
@@ -220,53 +171,8 @@ class EntityBuilder
         e.addComponent( staticCmp );
         e.addComponent( lookCmp );
         e.addComponent( regionCmp );
-        e.addComponent( teractNodeCmp );
         e.addComponent( renderCmp );
         e.addComponent( containerCmp );
-
-        world.addEntity( e );
-
-        return e;
-    }
-
-    public function createTransitRequest( mover : Entity, destSector : Entity, transitScript : TransitScript ) : Entity {
-        var e : Entity = world.createEntity();
-        var tr = new TransitRequestCmp( mover, destSector, transitScript );
-
-        e.addComponent( tr );
-
-        world.addEntity( e );
-
-        return e;
-    }
-
-    public function createObject( name : String, pos : Vec2, ?lookText : String ) : Entity
-    {
-        var e = world.createEntity();
-        var lookCmp = new LookCmp();
-        var nameIdCmp = new NameIdCmp( name, new SynTag( name, new Array<String>(), SynType.NOUN ) );
-        var posCmp = new PosCmp( god.sectors[0], pos );
-        var staticCmp = new StaticPosCmp();
-        var renderCmp = new RenderCmp();
-        var containableCmp = new ContainableCmp( containerMgr, god.sectors[0], god.sectors[0] );
-
-        if ( lookText == "" || lookText == null ) {
-            var firstChar = name.charAt( 0 );
-            if ( firstChar == "a" || firstChar == "e" || firstChar == "i" || firstChar == "o" || firstChar == "u" ) {
-                lookCmp.lookText = "An " + name.toLowerCase();
-            } else {
-                lookCmp.lookText = "A " + name.toLowerCase();
-            }
-        } else {
-            lookCmp.lookText = lookText;
-        }
-
-        e.addComponent( nameIdCmp );
-        e.addComponent( lookCmp );
-        e.addComponent( posCmp );
-        e.addComponent( staticCmp );
-        e.addComponent( renderCmp );
-        e.addComponent( containableCmp );
 
         world.addEntity( e );
 
@@ -285,15 +191,7 @@ class EntityBuilder
         return e;
     }
 
-    // this is pretty bad
-    public function pipeDebug( str ) {
-        god.debugPrintln( str );
-    }
-
-    var god : God;
-    var world : World;
     var containerMgr : ContainerMgr;
-
     var regionMapper : ComponentMapper<RegionCmp>;
     var posMapper : ComponentMapper<PosCmp>;
 }

@@ -5,6 +5,7 @@ import flash.net.Socket;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.events.SecurityErrorEvent;
+import flash.events.ProgressEvent;
 
 class ClientCmp implements Component
 {
@@ -12,12 +13,10 @@ class ClientCmp implements Component
     @:isVar public var host : String;
     @:isVar public var port : UInt;
     @:isVar public var id : UInt;
-    @:isVar public var verified : Bool;
 
     public function new( host: String, port: UInt ) {
         this.host = host;
         this.port = port;
-        this.verified = false;
         socket = new Socket( host, port );
         socket.addEventListener( Event.CONNECT, function( event: Event) {
             trace( "Connected to server " + host + ":" + port );

@@ -8,6 +8,7 @@ import com.artemisx.Entity;
 import haxe.Json;
 import gibber.managers.NameRegistry;
 import gibber.managers.ContainerMgr;
+import gibber.systems.EntityAssemblySys;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.events.Event;
@@ -21,7 +22,7 @@ class EntityDeserializer
     // because the designer shouldn't need to think about the internals of the engine when creating
     // an object
     @:isVar public var RESOURCE_PATH ( default, null ) : String = "../resource";
-    @:isVar private var entityBuilder ( default, null ) : EntityBuilder;
+    @:isVar private var entityAssembler ( default, null ) : EntityAssemblySys;
     @:isVar private var nameRegistry  ( default, null ) : NameRegistry;
     @:isVar private var god           ( default, null ) : God;
     @:isVar private var containerMgr  ( default, null ) : ContainerMgr;
@@ -29,7 +30,7 @@ class EntityDeserializer
     private var classpathTable : StringMap<String>;
 
     public function new( god : God ) {
-        entityBuilder = god.entityBuilder;
+        entityAssembler = god.entityAssembler;
         nameRegistry = god.world.getManager( NameRegistry );
         containerMgr = god.world.getManager( ContainerMgr );
         this.god = god;
@@ -87,13 +88,6 @@ class EntityDeserializer
         // recursively iterate over all fields in obj
         // topmost field: specifies EntityBuilder method or vanilla "Entity"
         switch ( Reflect.fields( parsed )[0] ) {
-            case "createObject":
-                var info = parsed.Object;
-                var out = recursiveCompile( info );
-
-                // a bit of hardcoding here, should rid this case ASAP
-                return entityBuilder.createObject( out.name, cast( out.pos, Vec2 ), out.lookText );
-
             case "Entity":
                 var info = parsed.Entity;
                 var componentDataArray : Array<Dynamic> = info.components;
@@ -108,7 +102,7 @@ class EntityDeserializer
                     components.push( cmp );
                 }
 
-                var entity = entityBuilder.createEntityWithCmps( components );
+                var entity = entityAssembler.createEntityWithCmps( components );
                 return null;
 
             default:

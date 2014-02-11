@@ -1,4 +1,5 @@
 package gibber.systems;
+
 import com.artemisx.Aspect;
 import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
@@ -6,6 +7,7 @@ import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
 import gibber.components.ControllerCmp;
 import gibber.components.PosCmp;
+import gibber.systems.EntityAssemblySys;
 
 class ControllerSys extends EntitySystem
 {
@@ -17,6 +19,7 @@ class ControllerSys extends EntitySystem
     override public function initialize() : Void {
         controllerMapper = world.getMapper( ControllerCmp );
         posMapper = world.getMapper( PosCmp );
+        entityAssembler = world.getSystem( EntityAssemblySys );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -47,7 +50,7 @@ class ControllerSys extends EntitySystem
             }
 
             if ( controller.createBlip ) {
-                god.entityBuilder.createSonar( pos.sector, pos.pos );
+                entityAssembler.createSonar( pos.sector, pos.pos );
                 god.sendSonarCreationEvent( pos.pos );
                 controller.createBlip = false;
             }
@@ -57,7 +60,7 @@ class ControllerSys extends EntitySystem
                     var origin = pos.pos;
                     var sectorPos = posMapper.get( pos.sector ).pos;
                     var direction = mousePos.sub( sectorPos ).sub( origin ); // wow
-                    god.entityBuilder.createSonarBeam( pos.sector, origin, direction );
+                    entityAssembler.createSonarBeam( pos.sector, origin, direction );
                     god.sendSonarBeamCreationEvent( origin, direction  );
                     controller.createPing = No;
                 default:
@@ -67,6 +70,7 @@ class ControllerSys extends EntitySystem
 
     var controllerMapper : ComponentMapper<ControllerCmp>;
     var posMapper : ComponentMapper<PosCmp>;
+    var entityAssembler : EntityAssemblySys;
 
     var god : God;
 }

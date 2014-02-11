@@ -23,6 +23,7 @@ import gibber.managers.WordsMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.ControllerSys;
 import gibber.systems.ClientSys;
+import gibber.systems.EntityAssemblySys;
 import gibber.systems.InputSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.PosTrackerSys;
@@ -45,7 +46,7 @@ class God
 {
     @:isVar public var world ( default, null ) : World;
     @:isVar public var cf ( default, null ) : CmdFactory;
-    @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
+    @:isVar public var entityAssembler ( default, null ): EntityAssemblySys;
     @:isVar public var entityDeserializer ( default, null ) : EntityDeserializer;
     @:isVar public var sf ( default, null ) : ScriptFactory;
     @:isVar public var entityResolver ( default, null ) : EntityResolver;
@@ -66,7 +67,6 @@ class God
         Util.init( this );
 
         cf = new CmdFactory( this );
-        entityBuilder = new EntityBuilder( this );
         entityDeserializer = new EntityDeserializer( this );
 
         commander = new Commander( this );
@@ -90,6 +90,7 @@ class God
         world.setManager( new WordsMgr() ); // Needs to be last
         world.setManager( new NameRegistry() ); // Needs to be last
 
+        entityAssembler = world.setSystem( new EntityAssemblySys() );
         world.setSystem( new PosTrackerSys() ); // should be before anything that explicitly updates PosCmp
         world.setSystem( new ClientSys( this ) );
         world.setSystem( new InputSys() );
@@ -141,17 +142,15 @@ class God
                                     /* p14 */ 660, 576, 620, 576, 620, 279, /* p17 */ 426, 279,
                                     /* p18 */ 256, 360, 144, 360, 144, 144 ] );
 
-        sectors.push( entityBuilder.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
+        sectors.push( entityAssembler.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
 #if local
         Security.loadPolicyFile( "xmlsocket://localhost:10000" );
-        client = entityBuilder.createClient( "localhost", 5000 );
+        client = entityAssembler.createClient( "localhost", 5000 );
 #else
         Security.loadPolicyFile( "xmlsocket://168.62.40.105:10000" );
-        client = entityBuilder.createClient( "168.62.40.105", 5000 );
+        client = entityAssembler.createClient( "168.62.40.105", 5000 );
 #end
-
-        // var cmdCmp = player.getComponent( CmdQueue );
     }
 
     public function tick( _ ) : Void {
@@ -266,11 +265,6 @@ class God
     var root : MovieClip;
     var inputTextfield : TextField;
     var baseTextFormat : TextFormat;
-
-    private var up    : Bool;
-    private var down  : Bool;
-    private var left  : Bool;
-    private var right : Bool;
 
     var parser : AdvancedParser;
     public var commander : Commander;

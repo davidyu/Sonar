@@ -17,6 +17,8 @@ import gibber.components.ClientCmp;
 import gibber.components.PosCmp;
 import gibber.components.NetworkPlayerCmp;
 
+import gibber.systems.EntityAssemblySys;
+
 import utils.Vec2;
 
 class ClientSys extends IntervalEntitySystem
@@ -30,6 +32,7 @@ class ClientSys extends IntervalEntitySystem
         clientMapper = world.getMapper( ClientCmp );
         posMapper = world.getMapper( PosCmp );
         netPlayerMapper = world.getMapper( NetworkPlayerCmp );
+        entityAssembler = world.getSystem( EntityAssemblySys );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -46,17 +49,17 @@ class ClientSys extends IntervalEntitySystem
                         d.id = d.socket.readUnsignedByte();
                         trace( "my ID is " + d.id );
                         if ( d.id > 0 ) {
-                            god.player = god.entityBuilder.createPlayer( "ship", god.sectors[0], new Vec2( 1080, 250 ) );
+                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 1080, 250 ) );
                         } else {
-                            god.player = god.entityBuilder.createPlayer( "ship", god.sectors[0], new Vec2( 20, 20 ) );
+                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 20, 20 ) );
                         }
                     case 254: //join
                         var newClientID = d.socket.readUnsignedByte();
                         trace( "another client with ID " + newClientID + " joined this game." );
                         if ( newClientID > 0 ) {
-                            god.netPlayers.push( god.entityBuilder.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 1080, 250 ), newClientID ) );
+                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 1080, 250 ), newClientID ) );
                         } else {
-                            god.netPlayers.push( god.entityBuilder.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 20, 20 ), newClientID ) );
+                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 20, 20 ), newClientID ) );
                         }
                     case 253: //relay data
                         var id = d.socket.readUnsignedByte();
@@ -111,7 +114,7 @@ class ClientSys extends IntervalEntitySystem
                             case 3: // unidirectional sonar
                                 var len = d.socket.readShort();
                                 var pos : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( len ) );
-                                god.entityBuilder.createSonar( netPlayer.getComponent( PosCmp ).sector, pos );
+                                entityAssembler.createSonar( netPlayer.getComponent( PosCmp ).sector, pos );
                             case 4: // directional sonar
                                 var originLen = d.socket.readShort();
                                 var directionLen = d.socket.readShort();
@@ -119,7 +122,7 @@ class ClientSys extends IntervalEntitySystem
                                 var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( originLen ) );
                                 var direction : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( directionLen ) );
 
-                                god.entityBuilder.createSonarBeam( netPlayer.getComponent( PosCmp ).sector, origin, direction );
+                                entityAssembler.createSonarBeam( netPlayer.getComponent( PosCmp ).sector, origin, direction );
 
                             default: "unknown p2p opcode: " + opcode;
                         }
@@ -140,4 +143,5 @@ class ClientSys extends IntervalEntitySystem
     private var clientMapper : ComponentMapper<ClientCmp>;
     private var posMapper : ComponentMapper<PosCmp>;
     private var netPlayerMapper : ComponentMapper<NetworkPlayerCmp>;
+    private var entityAssembler : EntityAssemblySys;
 }
