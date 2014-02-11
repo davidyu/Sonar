@@ -9,6 +9,7 @@ import gibber.components.InputCmp;
 import utils.Polygon;
 import utils.Vec2;
 import utils.Key;
+import utils.Mouse;
 
 class InputSys extends EntitySystem
 {
@@ -20,6 +21,7 @@ class InputSys extends EntitySystem
         inputMapper = world.getMapper( InputCmp );
         controllerMapper = world.getMapper( ControllerCmp );
         Key.init();
+        Mouse.init();
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -37,8 +39,12 @@ class InputSys extends EntitySystem
             controller.moveLeft = Key.isDown( input.leftKey );
             controller.moveRight = Key.isDown( input.rightKey );
 
-            if ( Key.isToggled( input.sonarTriggerKey ) ) {
-                controller.createSonar = true;
+            if ( Key.isToggled( input.blipTriggerKey ) ) {
+                controller.createBlip = true;
+            }
+
+            if ( Mouse.wasPressed() ) {
+                controller.createPing = Ping( Mouse.getMouseCoords() );
             }
 
         } // end for ( i in actives.size)

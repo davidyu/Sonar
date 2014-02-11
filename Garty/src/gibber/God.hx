@@ -54,7 +54,6 @@ class God
         root = r;
 
         root.stage.addEventListener( flash.events.KeyboardEvent.KEY_DOWN, onEnterKey );
-        root.stage.addEventListener( flash.events.MouseEvent.CLICK, onMouseClick );
         f = 0;
         root.addEventListener( flash.events.Event.ENTER_FRAME, tick );
 
@@ -174,7 +173,7 @@ class God
         }
     }
 
-    function sendSonarBeamCreationEvent( origin : Vec2, direction : Vec2 ) : Void {
+    public function sendSonarBeamCreationEvent( origin : Vec2, direction : Vec2 ) : Void {
         var socket = client.getComponent( ClientCmp ).socket;
         var originSerialized : String = haxe.Serializer.run( origin );
         var directionSerialized : String = haxe.Serializer.run( direction );
@@ -213,14 +212,6 @@ class God
             case Keyboard.DELETE:
                 debugClear();
         }
-    }
-
-    function onMouseClick( e : flash.events.MouseEvent ) : Void {
-        //shoot a sonar particle in the direction of the mouse cursor
-        var origin = player.getComponent( PosCmp ).pos;
-        var direction = new Vec2( e.localX, e.localY ).sub( player.getComponent( PosCmp ).sector.getComponent( PosCmp ).pos ).sub( origin ); // wow
-        entityBuilder.createSonarBeam( player.getComponent( PosCmp ).sector, origin, direction );
-        sendSonarBeamCreationEvent( origin, direction  );
     }
 
     //debugger console methods

@@ -46,10 +46,21 @@ class ControllerSys extends EntitySystem
                 pos.dp.x = speed;
             }
 
-            if ( controller.createSonar ) {
+            if ( controller.createBlip ) {
                 god.entityBuilder.createSonar( pos.sector, pos.pos );
                 god.sendSonarCreationEvent( pos.pos );
-                controller.createSonar = false;
+                controller.createBlip = false;
+            }
+
+            switch ( controller.createPing ) {
+                case Ping( mousePos ):
+                    var origin = pos.pos;
+                    var sectorPos = posMapper.get( pos.sector ).pos;
+                    var direction = mousePos.sub( sectorPos ).sub( origin ); // wow
+                    god.entityBuilder.createSonarBeam( pos.sector, origin, direction );
+                    god.sendSonarBeamCreationEvent( origin, direction  );
+                    controller.createPing = No;
+                default:
             }
         }
     }
