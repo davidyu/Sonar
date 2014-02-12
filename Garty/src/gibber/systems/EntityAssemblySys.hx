@@ -32,6 +32,7 @@ import gibber.components.PosTrackerCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
 import gibber.components.SonarCmp;
+import gibber.components.SyncCmp;
 import gibber.components.TrailCmp;
 import gibber.components.TimedEffectCmp;
 import gibber.components.TransitRequestCmp;
@@ -59,7 +60,9 @@ class EntityAssemblySys extends EntitySystem
     public function createNetworkPlayer( name: String, sector: Entity, position: Vec2, id: UInt ): Entity {
         var player = createPlayer( name, sector, position );
         var npCmp = new NetworkPlayerCmp( id );
-        player.removeComponent( RenderCmp ); // do not render the network player!
+        // player.removeComponent( RenderCmp ); // do not render the network player!
+        player.removeComponent( InputCmp ); // do not control the network player!
+        player.removeComponent( SyncCmp ); // do not sync the network player!
         player.addComponent( npCmp );
         return player;
     }
@@ -71,6 +74,7 @@ class EntityAssemblySys extends EntitySystem
         var posCmp = new PosCmp( sector, position );
         var renderCmp = new RenderCmp();
         var cmdCmp = new CmdQueue();
+        var syncCmp = new SyncCmp();
         var controllerCmp = new ControllerCmp();
         var inventoryCmp = new InventoryCmp();
         var inputCmp = new InputCmp( Keyboard.UP, Keyboard.DOWN, Keyboard.LEFT, Keyboard.RIGHT,
@@ -83,6 +87,7 @@ class EntityAssemblySys extends EntitySystem
         e.addComponent( cmdCmp );
         e.addComponent( inventoryCmp );
         e.addComponent( inputCmp );
+        e.addComponent( syncCmp );
         e.addComponent( controllerCmp );
 
         world.addEntity( e );

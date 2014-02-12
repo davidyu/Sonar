@@ -32,6 +32,7 @@ import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
 import gibber.systems.RenderTrailSys;
 import gibber.systems.RenderTraceSys;
+import gibber.systems.SyncSys;
 import gibber.systems.SonarSys;
 import gibber.systems.TimedEffectSys;
 import gibber.systems.TraceSys;
@@ -102,6 +103,7 @@ class God
         world.setSystem( new RenderTrailSys( root ) );
         world.setSystem( new RenderSys( root ) );
         world.setSystem( new RenderTraceSys( root ) );
+        world.setSystem( new SyncSys() );
         world.setSystem( new SonarSys() );
         world.setSystem( new TimedEffectSys() );
         world.setSystem( new TraceSys() );
@@ -155,46 +157,6 @@ class God
 
     public function tick( _ ) : Void {
         world.process();
-        if ( ++f % 24 == 0 ) {
-            sendEntityPositions();
-            f = 0;
-        }
-    }
-
-    function sendEntityPositions() : Void {
-        var socket = client.getComponent( ClientCmp ).socket;
-        var serializedPos : String = haxe.Serializer.run( player.getComponent( PosCmp ) );
-        if ( socket.connected ) {
-            socket.writeByte( 2 );
-            socket.writeShort( serializedPos.length );
-            socket.writeUTFBytes( serializedPos );
-            socket.flush();
-        }
-    }
-
-    public function sendSonarBeamCreationEvent( origin : Vec2, direction : Vec2 ) : Void {
-        var socket = client.getComponent( ClientCmp ).socket;
-        var originSerialized : String = haxe.Serializer.run( origin );
-        var directionSerialized : String = haxe.Serializer.run( direction );
-        if ( socket.connected ) {
-            socket.writeByte( 4 );
-            socket.writeShort( originSerialized.length );
-            socket.writeShort( directionSerialized.length );
-            socket.writeUTFBytes( originSerialized );
-            socket.writeUTFBytes( directionSerialized );
-            socket.flush();
-        }
-    }
-
-    public function sendSonarCreationEvent( pos : Vec2 ) {
-        var socket = client.getComponent( ClientCmp ).socket;
-        var posSerialized : String = haxe.Serializer.run( pos );
-        if ( socket.connected ) {
-            socket.writeByte( 3 );
-            socket.writeShort( posSerialized.length );
-            socket.writeUTFBytes( posSerialized );
-            socket.flush();
-        }
     }
 
     function onEnterKey( e : flash.events.KeyboardEvent ) : Void {

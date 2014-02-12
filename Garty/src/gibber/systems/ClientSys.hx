@@ -103,28 +103,34 @@ class ClientSys extends IntervalEntitySystem
                                     pos.dp.x = 1.0;
                                 }
                             case 2:
-                                var len = d.socket.readShort();
-                                var serializedPos = d.socket.readUTFBytes( len );
+                                var len = d.socket.readUnsignedInt();
 
-                                var newPosCmp : PosCmp = haxe.Unserializer.run( serializedPos );
-                                var posCmp : PosCmp = posMapper.get( netPlayer );
-                                posCmp.pos = newPosCmp.pos;
-                                posCmp.dp = newPosCmp.dp;
+                                if ( d.socket.bytesAvailable >= len ) {
+                                    var serializedPos = d.socket.readUTFBytes( len );
+                                    var newPosCmp : PosCmp = haxe.Unserializer.run( serializedPos );
+                                    var posCmp : PosCmp = posMapper.get( netPlayer );
+                                    posCmp.pos = newPosCmp.pos;
+                                    posCmp.dp = newPosCmp.dp;
+                                } else {
+                                    trace( 'corrupt data; data indicates $len available but we actually have ${d.socket.bytesAvailable}' );
+                                    d.socket.readUTFBytes( d.socket.bytesAvailable ); //read-flush the socket
+                                    return;
+                                }
 
                             case 3: // unidirectional sonar
-                                var len = d.socket.readShort();
+                                var len = d.socket.readUnsignedInt();
                                 var pos : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( len ) );
                                 entityAssembler.createSonar( netPlayer.getComponent( PosCmp ).sector, pos );
                             case 4: // directional sonar
-                                var originLen = d.socket.readShort();
-                                var directionLen = d.socket.readShort();
+                                var originLen = d.socket.readUnsignedInt();
+                                var directionLen = d.socket.readUnsignedInt();
 
                                 var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( originLen ) );
                                 var direction : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( directionLen ) );
 
                                 entityAssembler.createSonarBeam( netPlayer.getComponent( PosCmp ).sector, origin, direction );
 
-                            default: "unknown p2p opcode: " + opcode;
+                            default: trace( "unknown p2p opcode: " + opcode );
                         }
 
                     default:
@@ -136,6 +142,31 @@ class ClientSys extends IntervalEntitySystem
                 trace("disconnected...trying to reconnect...");
                 d.socket.connect( d.host, d.port );
             }
+        }
+    }
+
+    public function sendSonarBeamCreationEvent( origin : Vec2, direction : Vec2 ) : Void {
+        var socket = god.client.getComponent( ClientCmp ).socket;
+        var originSerialized : String = haxe.Serializer.run( origin );
+        var directionSerialized : String = haxe.Serializer.run( direction );
+        if ( socket.connected ) {
+            socket.writeByte( 4 );
+            socket.writeUnsignedInt( originSerialized.length );
+            socket.writeUnsignedInt( directionSerialized.length );
+            socket.writeUTFBytes( originSerialized );
+            socket.writeUTFBytes( directionSerialized );
+            socket.flush();
+        }
+    }
+
+    public function sendSonarCreationEvent( pos : Vec2 ) {
+        var socket = god.client.getComponent( ClientCmp ).socket;
+        var posSerialized : String = haxe.Serializer.run( pos );
+        if ( socket.connected ) {
+            socket.writeByte( 3 );
+            socket.writeUnsignedInt( posSerialized.length );
+            socket.writeUTFBytes( posSerialized );
+            socket.flush();
         }
     }
 

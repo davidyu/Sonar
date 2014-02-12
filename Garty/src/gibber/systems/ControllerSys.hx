@@ -8,6 +8,7 @@ import com.artemisx.utils.Bag;
 import gibber.components.ControllerCmp;
 import gibber.components.PosCmp;
 import gibber.systems.EntityAssemblySys;
+import gibber.systems.ClientSys;
 
 class ControllerSys extends EntitySystem
 {
@@ -20,6 +21,7 @@ class ControllerSys extends EntitySystem
         controllerMapper = world.getMapper( ControllerCmp );
         posMapper = world.getMapper( PosCmp );
         entityAssembler = world.getSystem( EntityAssemblySys );
+        netClient = world.getSystem( ClientSys );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -51,7 +53,7 @@ class ControllerSys extends EntitySystem
 
             if ( controller.createBlip ) {
                 entityAssembler.createSonar( pos.sector, pos.pos );
-                god.sendSonarCreationEvent( pos.pos );
+                netClient.sendSonarCreationEvent( pos.pos );
                 controller.createBlip = false;
             }
 
@@ -61,7 +63,7 @@ class ControllerSys extends EntitySystem
                     var sectorPos = posMapper.get( pos.sector ).pos;
                     var direction = mousePos.sub( sectorPos ).sub( origin ); // wow
                     entityAssembler.createSonarBeam( pos.sector, origin, direction );
-                    god.sendSonarBeamCreationEvent( origin, direction  );
+                    netClient.sendSonarBeamCreationEvent( origin, direction  );
                     controller.createPing = No;
                 default:
             }
@@ -71,6 +73,7 @@ class ControllerSys extends EntitySystem
     var controllerMapper : ComponentMapper<ControllerCmp>;
     var posMapper : ComponentMapper<PosCmp>;
     var entityAssembler : EntityAssemblySys;
+    var netClient : ClientSys;
 
     var god : God;
 }

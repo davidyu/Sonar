@@ -2,11 +2,10 @@ net = require( 'net' );
 
 var clients = [];
 
-var socket = net.createServer( function ( socket ) {
+var gameServer = net.createServer( function ( socket ) {
   socket.setTimeout( 60 * 1000 ); // 1 minute timeout
   socket.name = socket.remoteAddress + ":" + socket.remotePort;
   socket.id = clients.length;
-  socket.initialized = false;
 
   clients.push( socket );
   console.log( "connected to client " + socket.name );
@@ -24,7 +23,6 @@ var socket = net.createServer( function ( socket ) {
       var clientAdd = new Buffer( [ 254, clientIndex ] );
       socket.write( clientAdd );
     } );
-    socket.initialized = true;
   } );
 
   socket.on( 'data', function( data ) {
@@ -46,7 +44,6 @@ var socket = net.createServer( function ( socket ) {
   function relay( data, sender ) {
     clients.forEach( function( client ) {
       if ( client == sender ) return;
-      if ( !client.initiaized ) return;
       var posID = new Buffer( [ 253, sender.id ] );
       client.write( posID );
       client.write( data );
