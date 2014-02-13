@@ -60,7 +60,11 @@ class EntityAssemblySys extends EntitySystem
     public function createNetworkPlayer( name: String, sector: Entity, position: Vec2, id: UInt ): Entity {
         var player = createPlayer( name, sector, position );
         var npCmp = new NetworkPlayerCmp( id );
-        // player.removeComponent( RenderCmp ); // do not render the network player!
+#if ( debug && local )
+        // render the network player in debug-local builds
+#else
+        player.removeComponent( RenderCmp ); // do not render the network player!
+#end
         player.removeComponent( InputCmp ); // do not control the network player!
         player.removeComponent( SyncCmp ); // do not sync the network player!
         player.addComponent( npCmp );
