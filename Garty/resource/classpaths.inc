@@ -15,6 +15,7 @@ CommandCmp gibber.components.CommandCmp
 ContainableCmp gibber.components.ContainableCmp
 ContainerCmp gibber.components.ContainerCmp
 ControllerCmp gibber.components.ControllerCmp
+InputCmp gibber.components.InputCmp
 InventoryCmp gibber.components.InventoryCmp
 LookCmp gibber.components.LookCmp
 NameIdCmp gibber.components.NameIdCmp
@@ -28,6 +29,7 @@ RicochetCmp gibber.components.RicochetCmp
 SonarCmp gibber.components.SonarCmp
 SonarParticleGroupCmp gibber.components.SonarParticleGroupCmp
 StaticPosCmp gibber.components.StaticPosCmp
+SyncCmp gibber.components.SyncCmp
 TakeCmp gibber.components.TakeCmp
 TeractNodeCmp gibber.components.TeractNodeCmp
 TimedEffectCmp gibber.components.TimedEffectCmp
@@ -35,7 +37,6 @@ TraceCmp gibber.components.TraceCmp
 TrailCmp gibber.components.TrailCmp
 TransitRequestCmp gibber.components.TransitRequestCmp
 UsageCmp gibber.components.UsageCmp
-EntityBuilder gibber.EntityBuilder
 EntityDeserializer gibber.EntityDeserializer
 EntityResolver gibber.EntityResolver
 PortalEdge gibber.gabby.PortalEdge
@@ -55,6 +56,8 @@ ClientSys gibber.systems.ClientSys
 CmdProcessSys gibber.systems.CmdProcessSys
 ControllerSys gibber.systems.ControllerSys
 DebugClientSys gibber.systems.DebugClientSys
+EntityAssemblySys gibber.systems.EntityAssemblySys
+InputSys gibber.systems.InputSys
 PhysicsSys gibber.systems.PhysicsSys
 PosTrackerSys gibber.systems.PosTrackerSys
 RenderSectorSys gibber.systems.RenderSectorSys
@@ -63,6 +66,7 @@ RenderSys gibber.systems.RenderSys
 RenderTraceSys gibber.systems.RenderTraceSys
 RenderTrailSys gibber.systems.RenderTrailSys
 SonarSys gibber.systems.SonarSys
+SyncSys gibber.systems.SyncSys
 CheckSonarSys gibber.systems.test.CheckSonarSys
 TimedEffectSys gibber.systems.TimedEffectSys
 TraceSys gibber.systems.TraceSys
@@ -77,6 +81,7 @@ Main Main
 Geo utils.Geo
 Key utils.Key
 Math2 utils.Math2
+Mouse utils.Mouse
 Polygon utils.Polygon
 RadianHelper utils.RadianHelper
 Render utils.Render
