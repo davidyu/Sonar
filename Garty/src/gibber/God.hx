@@ -8,6 +8,8 @@ import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFieldType;
 import flash.ui.Keyboard;
+import flash.system.Security;
+import gibber.components.ClientCmp;
 import gibber.components.CmdQueue;
 import gibber.components.ControllerCmp;
 import gibber.components.PosCmp;
@@ -20,6 +22,9 @@ import gibber.managers.SynonymMgr;
 import gibber.managers.WordsMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.ControllerSys;
+import gibber.systems.ClientSys;
+import gibber.systems.EntityAssemblySys;
+import gibber.systems.InputSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.PosTrackerSys;
 import gibber.systems.RenderSonarSys;
@@ -27,6 +32,7 @@ import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
 import gibber.systems.RenderTrailSys;
 import gibber.systems.RenderTraceSys;
+import gibber.systems.SyncSys;
 import gibber.systems.SonarSys;
 import gibber.systems.TimedEffectSys;
 import gibber.systems.TraceSys;
@@ -41,7 +47,7 @@ class God
 {
     @:isVar public var world ( default, null ) : World;
     @:isVar public var cf ( default, null ) : CmdFactory;
-    @:isVar public var entityBuilder ( default, null ) : EntityBuilder;
+    @:isVar public var entityAssembler ( default, null ): EntityAssemblySys;
     @:isVar public var entityDeserializer ( default, null ) : EntityDeserializer;
     @:isVar public var sf ( default, null ) : ScriptFactory;
     @:isVar public var entityResolver ( default, null ) : EntityResolver;
@@ -50,8 +56,7 @@ class God
         root = r;
 
         root.stage.addEventListener( flash.events.KeyboardEvent.KEY_DOWN, onEnterKey );
-        root.stage.addEventListener( flash.events.MouseEvent.CLICK, onMouseClick );
-        Key.init();
+        f = 0;
         root.addEventListener( flash.events.Event.ENTER_FRAME, tick );
 
         setupDebugConsole();
@@ -63,7 +68,6 @@ class God
         Util.init( this );
 
         cf = new CmdFactory( this );
-        entityBuilder = new EntityBuilder( this );
         entityDeserializer = new EntityDeserializer( this );
 
         commander = new Commander( this );
@@ -87,7 +91,11 @@ class God
         world.setManager( new WordsMgr() ); // Needs to be last
         world.setManager( new NameRegistry() ); // Needs to be last
 
+        entityAssembler = world.setSystem( new EntityAssemblySys() );
         world.setSystem( new PosTrackerSys() ); // should be before anything that explicitly updates PosCmp
+        world.setSystem( new ClientSys( this ) );
+        world.setSystem( new InputSys() );
+        world.setSystem( new ControllerSys( this ) ); // this must follow InputSys to apply effects of controller states
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new RenderSectorSys( root ) );
@@ -95,12 +103,11 @@ class God
         world.setSystem( new RenderTrailSys( root ) );
         world.setSystem( new RenderSys( root ) );
         world.setSystem( new RenderTraceSys( root ) );
+        world.setSystem( new SyncSys() );
         world.setSystem( new SonarSys() );
         world.setSystem( new TimedEffectSys() );
         world.setSystem( new TraceSys() );
         world.setSystem( new TrailSys() );
-
-        world.setSystem( new ControllerSys() ); // this must be last to clear all controller states
 
         world.delta = 1000 / ( root.stage.frameRate ); //this is gross!
         world.initialize();
@@ -108,6 +115,7 @@ class God
 
     public function initializeEntities() : Void {
         sectors = new Array();
+        netPlayers = new Array();
 
         /*
          * map: the Hammer
@@ -136,41 +144,23 @@ class God
                                     /* p14 */ 660, 576, 620, 576, 620, 279, /* p17 */ 426, 279,
                                     /* p18 */ 256, 360, 144, 360, 144, 144 ] );
 
-        sectors.push( entityBuilder.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
+        sectors.push( entityAssembler.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
-        player = entityBuilder.createPlayer( "ship", sectors[0], new SynTag( "bob", ["bob", "player"], SynType.NOUN ), true );
-
-        var cmdCmp = player.getComponent( CmdQueue );
+#if local
+        Security.loadPolicyFile( "xmlsocket://localhost:10000" );
+        client = entityAssembler.createClient( "localhost", 5000 );
+#else
+        Security.loadPolicyFile( "xmlsocket://168.62.40.105:10000" );
+        client = entityAssembler.createClient( "168.62.40.105", 5000 );
+#end
     }
 
     public function tick( _ ) : Void {
-        pollInput();
         world.process();
-    }
-
-    function pollInput() : Void {
-        if ( Key.isDown( Keyboard.RIGHT ) ) {
-            player.getComponent( ControllerCmp ).moveRight = true;
-        }
-
-        if ( Key.isDown( Keyboard.LEFT ) ){
-            player.getComponent( ControllerCmp ).moveLeft = true;
-        }
-
-        if ( Key.isDown( Keyboard.UP ) ) {
-            player.getComponent( ControllerCmp ).moveUp = true;
-        }
-
-        if ( Key.isDown( Keyboard.DOWN ) ) {
-            player.getComponent( ControllerCmp ).moveDown = true;
-        }
     }
 
     function onEnterKey( e : flash.events.KeyboardEvent ) : Void {
         switch ( e.keyCode ) {
-            case Keyboard.SPACE:
-                entityBuilder.createSonar( player.getComponent( PosCmp ).sector, player.getComponent( PosCmp ).pos );
-
             case Keyboard.ENTER:
                 var line = inputTextfield.text;
                 inputTextfield.text = "";
@@ -183,13 +173,6 @@ class God
             case Keyboard.DELETE:
                 debugClear();
         }
-    }
-
-    function onMouseClick( e : flash.events.MouseEvent ) : Void {
-        //shoot a sonar particle in the direction of the mouse cursor
-        var origin = player.getComponent( PosCmp ).pos;
-        var direction = new Vec2( e.localX, e.localY ).sub( player.getComponent( PosCmp ).sector.getComponent( PosCmp ).pos ).sub( origin ); // wow
-        entityBuilder.createSonarBeam( player.getComponent( PosCmp ).sector, origin, direction );
     }
 
     //debugger console methods
@@ -238,15 +221,21 @@ class God
         outputTextfield.text = "";
     }
 
+
+    var f : UInt;
+
     var root : MovieClip;
     var inputTextfield : TextField;
     var baseTextFormat : TextFormat;
-    public var outputTextfield : TextField;
 
     var parser : AdvancedParser;
     public var commander : Commander;
+    public var outputTextfield : TextField;
     public var sectors : Array<Entity>;
     public var player : Entity;
+    public var client : Entity;
+
+    public var netPlayers : Array<Entity>;
 }
 
 typedef P2 = { p1 : Entity, p2 : Entity };

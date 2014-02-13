@@ -7,9 +7,13 @@ fdb: preprocess
 	haxe debug.hxml
 	fdb bin/Engine_debug.swf
 
+fdb-local: preprocess
+	haxe local.hxml
+	fdb bin/Engine_local.swf
+
 game: preprocess
 	haxe compile.hxml
-	open bin/Engine.swf
+	cp bin/Engine.swf ../relay/
 
 check:
 	haxe unit.hxml
