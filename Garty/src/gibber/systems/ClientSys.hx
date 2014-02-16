@@ -9,6 +9,7 @@ import com.artemisx.systems.IntervalEntitySystem;
 import flash.display.Graphics;
 import flash.display.MovieClip;
 import flash.display.Sprite;
+import flash.errors.Error;
 import flash.text.TextField;
 import flash.text.TextFieldType;
 import flash.text.TextFormat;
@@ -103,30 +104,29 @@ class ClientSys extends IntervalEntitySystem
                                     pos.dp.x = 1.0;
                                 }
                             case 2:
-                                var len = d.socket.readUnsignedInt();
-
-                                if ( d.socket.bytesAvailable >= len ) {
-                                    var serializedPos = d.socket.readUTFBytes( len );
-                                    var newPosCmp : PosCmp = haxe.Unserializer.run( serializedPos );
-                                    var posCmp : PosCmp = posMapper.get( netPlayer );
-                                    posCmp.pos = newPosCmp.pos;
-                                    posCmp.dp = newPosCmp.dp;
+                                if ( d.socket.bytesAvailable >= 0 ) {
+                                    try {
+                                        var serializedPos = d.socket.readUTF();
+                                        trace( serializedPos );
+                                        var newPosCmp : PosCmp = haxe.Unserializer.run( serializedPos );
+                                        var posCmp : PosCmp = posMapper.get( netPlayer );
+                                        posCmp.pos = newPosCmp.pos;
+                                        posCmp.dp = newPosCmp.dp;
+                                    } catch ( e : Error ) {
+                                        trace( "ERROR " + e );
+                                        d.socket.readUTFBytes( d.socket.bytesAvailable );
+                                    }
                                 } else {
-                                    trace( 'corrupt data; data indicates $len available but we actually have ${d.socket.bytesAvailable}' );
-                                    d.socket.readUTFBytes( d.socket.bytesAvailable ); //read-flush the socket
+                                    trace( 'nothing to read' );
                                     return;
                                 }
 
                             case 3: // unidirectional sonar
-                                var len = d.socket.readUnsignedInt();
-                                var pos : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( len ) );
-                                entityAssembler.createSonar( netPlayer.getComponent( PosCmp ).sector, pos );
+                                var pos : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
+                                entityAssembler.createSonar( netPlayer.id, netPlayer.getComponent( PosCmp ).sector, pos );
                             case 4: // directional sonar
-                                var originLen = d.socket.readUnsignedInt();
-                                var directionLen = d.socket.readUnsignedInt();
-
-                                var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( originLen ) );
-                                var direction : Vec2 = haxe.Unserializer.run( d.socket.readUTFBytes( directionLen ) );
+                                var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
+                                var direction : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
 
                                 entityAssembler.createSonarBeam( netPlayer.getComponent( PosCmp ).sector, origin, direction );
 
@@ -135,6 +135,7 @@ class ClientSys extends IntervalEntitySystem
 
                     default:
                         trace( "unknown server opcode: " + opcode );
+                        d.socket.readUTFBytes( d.socket.bytesAvailable ); //read-flush
                 }
             }
 
@@ -151,10 +152,8 @@ class ClientSys extends IntervalEntitySystem
         var directionSerialized : String = haxe.Serializer.run( direction );
         if ( socket.connected ) {
             socket.writeByte( 4 );
-            socket.writeUnsignedInt( originSerialized.length );
-            socket.writeUnsignedInt( directionSerialized.length );
-            socket.writeUTFBytes( originSerialized );
-            socket.writeUTFBytes( directionSerialized );
+            socket.writeUTF( originSerialized );
+            socket.writeUTF( directionSerialized );
             socket.flush();
         }
     }
@@ -164,8 +163,7 @@ class ClientSys extends IntervalEntitySystem
         var posSerialized : String = haxe.Serializer.run( pos );
         if ( socket.connected ) {
             socket.writeByte( 3 );
-            socket.writeUnsignedInt( posSerialized.length );
-            socket.writeUTFBytes( posSerialized );
+            socket.writeUTF( posSerialized );
             socket.flush();
         }
     }
