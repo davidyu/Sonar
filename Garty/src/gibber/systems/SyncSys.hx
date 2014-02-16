@@ -40,7 +40,8 @@ class SyncSys extends IntervalEntitySystem
             if ( s != null ) { // entity we need to sync
                 var serializedPos : String = haxe.Serializer.run( posMapper.get( e ) );
                 buffer.writeByte( 2 );
-                buffer.writeUTF( serializedPos );
+                buffer.writeShort( serializedPos.length );
+                buffer.writeUTFBytes( serializedPos );
             }
         }
 
@@ -49,9 +50,10 @@ class SyncSys extends IntervalEntitySystem
             c = clientMapper.get( e );
             if ( c != null ) { // entity with socket
                 var socket = c.socket;
-                if ( socket.connected ) {
+                if ( socket.connected && socket.bytesPending == 0 ) {
                     socket.writeUTFBytes( buffer.toString() );
                     socket.flush();
+                    buffer.clear();
                 }
             }
         }

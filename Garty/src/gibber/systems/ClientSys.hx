@@ -43,9 +43,9 @@ class ClientSys extends IntervalEntitySystem
             e = actives.get( i );
             d = clientMapper.get( e );
 
-            while ( d.socket.connected && d.socket.bytesAvailable > 0 ) {
-                var opcode = d.socket.readUnsignedByte();
-                switch ( opcode ) {
+            if ( d.socket.connected && d.socket.bytesAvailable > 0 ) {
+                var serverOpcode = d.cache.serverOpcode == 0 ? d.socket.readUnsignedByte() : d.cache.serverOpcode;
+                switch ( serverOpcode ) {
                     case 255: //ack
                         d.id = d.socket.readUnsignedByte();
                         trace( "my ID is " + d.id );
@@ -64,7 +64,7 @@ class ClientSys extends IntervalEntitySystem
                         }
                     case 253: //relay data
                         var id = d.socket.readUnsignedByte();
-                        var opcode = d.socket.readUnsignedByte();
+                        var peerOpcode = d.cache.peerOpcode == 0 ? d.socket.readUnsignedByte() : d.cache.peerOpcode;
 
                         function getNetworkPlayerById( id ) {
                             for ( p in god.netPlayers ) {
@@ -78,7 +78,7 @@ class ClientSys extends IntervalEntitySystem
                         var netPlayer = getNetworkPlayerById( id );
                         if ( netPlayer == null ) return;
 
-                        switch ( opcode ) {
+                        switch ( peerOpcode ) {
                             case 1:
                                 var up = d.socket.readUnsignedByte() > 0;
                                 var down = d.socket.readUnsignedByte() > 0;
@@ -104,20 +104,22 @@ class ClientSys extends IntervalEntitySystem
                                     pos.dp.x = 1.0;
                                 }
                             case 2:
-                                if ( d.socket.bytesAvailable >= 0 ) {
+                                var len = d.cache.len == 0 ? d.socket.readUnsignedShort() : d.cache.len;
+                                if ( d.socket.bytesAvailable >= len ) {
                                     try {
-                                        var serializedPos = d.socket.readUTF();
-                                        trace( serializedPos );
+                                        var serializedPos = d.socket.readUTFBytes( len );
                                         var newPosCmp : PosCmp = haxe.Unserializer.run( serializedPos );
                                         var posCmp : PosCmp = posMapper.get( netPlayer );
                                         posCmp.pos = newPosCmp.pos;
                                         posCmp.dp = newPosCmp.dp;
                                     } catch ( e : Error ) {
                                         trace( "ERROR " + e );
-                                        d.socket.readUTFBytes( d.socket.bytesAvailable );
                                     }
                                 } else {
-                                    trace( 'nothing to read' );
+                                    trace( "waiting until next update" );
+                                    d.cache.serverOpcode = serverOpcode;
+                                    d.cache.peerOpcode = peerOpcode;
+                                    d.cache.len = len;
                                     return;
                                 }
 
@@ -130,14 +132,19 @@ class ClientSys extends IntervalEntitySystem
 
                                 entityAssembler.createSonarBeam( netPlayer.getComponent( PosCmp ).sector, origin, direction );
 
-                            default: trace( "unknown p2p opcode: " + opcode );
+                            default: trace( "unknown peer opcode: " + peerOpcode );
+                                     return;
+                            // probably bad state
                         }
 
                     default:
-                        trace( "unknown server opcode: " + opcode );
-                        d.socket.readUTFBytes( d.socket.bytesAvailable ); //read-flush
+                        trace( "unknown server opcode: " + serverOpcode );
+                        return;
+                        // probably bad state
                 }
             }
+
+            d.cache = { serverOpcode : 0, peerOpcode : 0, len : 0 };
 
             if ( !d.socket.connected ) { //retry connection
                 trace("disconnected...trying to reconnect...");
@@ -163,7 +170,8 @@ class ClientSys extends IntervalEntitySystem
         var posSerialized : String = haxe.Serializer.run( pos );
         if ( socket.connected ) {
             socket.writeByte( 3 );
-            socket.writeUTF( posSerialized );
+            socket.writeShort( posSerialized.length );
+            socket.writeUTFBytes( posSerialized );
             socket.flush();
         }
     }
