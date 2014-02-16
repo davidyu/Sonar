@@ -10,7 +10,7 @@ import gibber.managers.ContainerMgr;
 @:rtti
 class ContainableCmp implements Component
 {
-    @:isVar public var container ( default, set_container ) : Entity;
+    @:isVar public var container ( default, null ) : Entity;
     @:isVar public var owner : Entity;
     
     public function new( mgr : ContainerMgr, owner : Entity, container : Entity = null ) {
@@ -20,13 +20,4 @@ class ContainableCmp implements Component
     }
     
     var mgr : ContainerMgr;
-    
-    function set_container( newContainer : Entity ) : Entity {
-        if ( container != null ) {
-            mgr.changeContainerOfEntity( owner, container, newContainer );
-        }
-        container = newContainer;
-        return newContainer;
-    }
-    
 }

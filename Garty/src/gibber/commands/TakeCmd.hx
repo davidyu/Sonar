@@ -46,15 +46,9 @@ class TakeCmd implements Command
     public function Execute() : Array<Dynamic> {
         var containerSig = Aspect.getAspectForAll( [ContainerCmp, NameIdCmp] );
 
-        if ( Aspect.matches( containerSig, newLoc.componentBits ) ) {
-            containableMapper.get( obj ).container = newLoc;
-            state = Command.TCmdRes.PASS;
-            cf.god.debugPrintln( nameMapper.get( newLoc ).name + " took " + nameMapper.get( obj ).name );
-            return [ "moved to " + nameMapper.get( newLoc ).name, true ];
-        }
-
         state = Command.TCmdRes.FAIL;
-        return [ "location that " + nameMapper.get( obj ).name + " is being moved to is not a container.", false ];
+
+        return [ "moving containers is NOT implemented.", false ];
     }
     
     public function onFinished() : Void {

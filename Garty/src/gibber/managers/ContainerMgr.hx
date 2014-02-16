@@ -40,6 +40,7 @@ class ContainerMgr extends Manager
             var entities = containerEntities.get( e.id );
 
             if ( entities == null ) {
+                trace( "registering new container " + e.id );
                 containerEntities.set( e.id, new StringMap() );
             } else {
                 throw "Adding same container entity twice: " + eName;
@@ -60,6 +61,7 @@ class ContainerMgr extends Manager
                     entArr = new Array<Entity>();
                     containerEnts.set( aspectName, entArr );
                 }
+                trace( "adding entity " + e.id );
                 entArr.push( e );                   // Add entity to container
                 entityContainer.set( e.id, container );  // Set container for entity
             } else {
@@ -162,11 +164,6 @@ class ContainerMgr extends Manager
         }
     }
     
-    public function changeContainerOfEntity( e : Entity, oldContainer : Entity, newContainer : Entity ) : Void {
-        //getEntitiesOfContainer( oldContainer ).remove( e );
-        //entityContainer.set( nameMapper.get( e ).name, newContainer );
-    }
-    
     public function getAllEntitiesOfContainer( container : Entity ) : Array<Entity> {
         var res = new Array<Entity>();
         var maps = containerEntities.get( container.id );
@@ -175,16 +172,6 @@ class ContainerMgr extends Manager
             res = res.concat( el );
         }
         return res;
-    }
-    
-    public function getEntitiesOfContainer( container : Entity, aspect : Aspect ) : Array<Entity> {
-        for ( a in aspectMap ) {
-            var cont = containerEntities.get( container.id );
-            if ( cont != null && Aspect.fufills( a.aspect, aspect ) ) {
-                return cont.get( a.name );
-            }
-        }
-        return null;
     }
     
     public function getContainerOfEntity( e : Entity ) : Entity {
