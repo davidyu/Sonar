@@ -103,10 +103,10 @@ class ClientSys extends IntervalEntitySystem
                                     trace( 'checking if we now have $len bytes to read...' );
                                 }
                                 if ( d.socket.bytesAvailable >= len ) {
+                                    if ( d.cache.len != 0 ) {
+                                        trace( 'yes, we have ${d.socket.bytesAvailable} bytes to read!' );
+                                    }
                                     try {
-                                        if ( d.cache.len != 0 ) {
-                                            trace( 'yes, we have ${d.socket.bytesAvailable} bytes to read!' );
-                                        }
                                         var serializedPos = d.socket.readUTFBytes( len );
                                         trace( serializedPos );
                                         var newPosCmp : PosCmp = haxe.Unserializer.run( serializedPos );

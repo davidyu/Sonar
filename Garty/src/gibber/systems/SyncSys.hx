@@ -55,7 +55,7 @@ class SyncSys extends IntervalEntitySystem
             if ( c != null ) { // entity with socket
                 var socket = c.socket;
                 if ( socket.connected && socket.bytesPending == 0 ) {
-                    socket.writeUTFBytes( buffer.toString() );
+                    socket.writeBytes( buffer, 0, buffer.length );
                     socket.flush();
                     buffer.clear();
                 } else {
