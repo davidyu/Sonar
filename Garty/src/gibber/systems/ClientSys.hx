@@ -26,7 +26,11 @@ class ClientSys extends IntervalEntitySystem
 {
     public function new( god : God ) {
         this.god = god;
-        super( Aspect.getAspectForAll( [ClientCmp] ), 100.0 );
+#if local
+        super( Aspect.getAspectForAll( [ClientCmp] ), 5.0 );
+#else
+        super( Aspect.getAspectForAll( [ClientCmp] ), 50.0 );
+#end
     }
 
     override public function initialize() : Void {
@@ -63,8 +67,14 @@ class ClientSys extends IntervalEntitySystem
                             god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 20, 20 ), newClientID ) );
                         }
                     case 253: //relay data
-                        var id = d.socket.readUnsignedByte();
-                        var peerOpcode = d.cache.peerOpcode == 0 ? d.socket.readUnsignedByte() : d.cache.peerOpcode;
+                        var id : UInt, peerOpcode : UInt;
+                        if ( d.socket.bytesAvailable >= 2 ) {
+                            id = d.cache.id == 0 ? d.socket.readUnsignedByte() : d.cache.id;
+                            peerOpcode = d.cache.peerOpcode == 0 ? d.socket.readUnsignedByte() : d.cache.peerOpcode;
+                        } else {
+                            d.cache.serverOpcode = serverOpcode;
+                            return;
+                        }
 
                         function getNetworkPlayerById( id ) {
                             for ( p in god.netPlayers ) {
@@ -108,6 +118,7 @@ class ClientSys extends IntervalEntitySystem
                                 if ( d.socket.bytesAvailable >= len ) {
                                     try {
                                         var serializedPos = d.socket.readUTFBytes( len );
+                                        trace( serializedPos );
                                         var newPosCmp : PosCmp = haxe.Unserializer.run( serializedPos );
                                         var posCmp : PosCmp = posMapper.get( netPlayer );
                                         posCmp.pos = newPosCmp.pos;
@@ -144,7 +155,7 @@ class ClientSys extends IntervalEntitySystem
                 }
             }
 
-            d.cache = { serverOpcode : 0, peerOpcode : 0, len : 0 };
+            d.cache = { serverOpcode : 0, peerOpcode : 0, id : 0, len : 0 };
 
             if ( !d.socket.connected ) { //retry connection
                 trace("disconnected...trying to reconnect...");
