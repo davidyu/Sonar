@@ -10,6 +10,7 @@ import flash.events.ProgressEvent;
 typedef Cache = {
     serverOpcode : UInt,
     peerOpcode : UInt,
+    id : UInt,
     len : UInt,
 };
 
@@ -24,7 +25,7 @@ class ClientCmp implements Component
     public function new( host: String, port: UInt ) {
         this.host = host;
         this.port = port;
-        this.cache = { serverOpcode : 0, peerOpcode : 0, len : 0 };
+        this.cache = { serverOpcode : 0, peerOpcode : 0, len : 0, id : 0 };
         socket = new Socket( host, port );
         socket.addEventListener( Event.CONNECT, function( event: Event) {
             trace( "Connected to server " + host + ":" + port );

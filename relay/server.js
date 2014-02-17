@@ -4,17 +4,19 @@ var clients = [];
 
 var gameServer = net.createServer( function ( socket ) {
   socket.setTimeout( 60 * 1000 ); // 1 minute timeout
+  socket.setNoDelay( true );
   socket.name = socket.remoteAddress + ":" + socket.remotePort;
-  socket.id = clients.length;
+  socket.id = clients.length + 1; // start ids at 1
 
   clients.push( socket );
+
   console.log( "connected to client " + socket.name );
 
   socket.on( 'connect', function( data ) {
     console.log( "connect event" );
-    var clientID = new Buffer( [ 255, clients.indexOf( socket ) ] );
+    var clientID = new Buffer( [ 255, socket.id ] );
     socket.write( clientID ); // send the client ID
-    var socketJoin = new Buffer( [ 254, clients.length - 1 ] );
+    var socketJoin = new Buffer( [ 254, socket.id ] );
 
     // broadcast this client's joining to every other client
     clients.forEach( function( client, clientIndex ) {

@@ -19,7 +19,7 @@ class SyncSys extends IntervalEntitySystem
 {
     public function new() {
 #if local
-        super( Aspect.getAspectForOne( [ ClientCmp, SyncCmp ] ), 50.0 );
+        super( Aspect.getAspectForOne( [ ClientCmp, SyncCmp ] ), 100.0 );
 #else
         super( Aspect.getAspectForOne( [ ClientCmp, SyncCmp ] ), 1000.0 );
 #end
@@ -58,6 +58,8 @@ class SyncSys extends IntervalEntitySystem
                     socket.writeUTFBytes( buffer.toString() );
                     socket.flush();
                     buffer.clear();
+                } else {
+                    socket.flush();
                 }
             }
         }

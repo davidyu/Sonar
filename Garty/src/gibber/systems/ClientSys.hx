@@ -29,7 +29,7 @@ class ClientSys extends IntervalEntitySystem
 #if local
         super( Aspect.getAspectForAll( [ClientCmp] ), 5.0 );
 #else
-        super( Aspect.getAspectForAll( [ClientCmp] ), 50.0 );
+        super( Aspect.getAspectForAll( [ClientCmp] ), 100.0 );
 #end
     }
 
@@ -49,11 +49,12 @@ class ClientSys extends IntervalEntitySystem
 
             if ( d.socket.connected && d.socket.bytesAvailable > 0 ) {
                 var serverOpcode = d.cache.serverOpcode == 0 ? d.socket.readUnsignedByte() : d.cache.serverOpcode;
+                trace( 'process; ${d.socket.bytesAvailable} bytes available; s-op: $serverOpcode' );
                 switch ( serverOpcode ) {
                     case 255: //ack
                         d.id = d.socket.readUnsignedByte();
                         trace( "my ID is " + d.id );
-                        if ( d.id > 0 ) {
+                        if ( d.id > 1 ) {
                             god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 1080, 250 ) );
                         } else {
                             god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 20, 20 ) );
@@ -61,7 +62,7 @@ class ClientSys extends IntervalEntitySystem
                     case 254: //join
                         var newClientID = d.socket.readUnsignedByte();
                         trace( "another client with ID " + newClientID + " joined this game." );
-                        if ( newClientID > 0 ) {
+                        if ( newClientID > 1 ) {
                             god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 1080, 250 ), newClientID ) );
                         } else {
                             god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 20, 20 ), newClientID ) );
@@ -71,6 +72,7 @@ class ClientSys extends IntervalEntitySystem
                         if ( d.socket.bytesAvailable >= 2 ) {
                             id = d.cache.id == 0 ? d.socket.readUnsignedByte() : d.cache.id;
                             peerOpcode = d.cache.peerOpcode == 0 ? d.socket.readUnsignedByte() : d.cache.peerOpcode;
+                            trace( 'id = $id, p-op = $peerOpcode' );
                         } else {
                             d.cache.serverOpcode = serverOpcode;
                             return;
@@ -82,41 +84,29 @@ class ClientSys extends IntervalEntitySystem
                                     return p;
                                 }
                             }
+                            for ( p in god.netPlayers ) {
+                                trace( 'we need $id, but we have ${netPlayerMapper.get( p ).id}' );
+                            }
                             return null;
                         }
 
                         var netPlayer = getNetworkPlayerById( id );
-                        if ( netPlayer == null ) return;
+                        if ( netPlayer == null ) {
+                            trace( "can't find netPlayer...aborting" );
+                            return;
+                        }
 
                         switch ( peerOpcode ) {
-                            case 1:
-                                var up = d.socket.readUnsignedByte() > 0;
-                                var down = d.socket.readUnsignedByte() > 0;
-                                var left = d.socket.readUnsignedByte() > 0;
-                                var right = d.socket.readUnsignedByte() > 0;
-
-                                // update entity with id
-                                var pos : PosCmp = posMapper.get( netPlayer );
-
-                                if ( up ) {
-                                    pos.dp.y = -1.0;
-                                }
-
-                                if ( down ) {
-                                    pos.dp.y = 1.0;
-                                }
-
-                                if ( left ) {
-                                    pos.dp.x = -1.0;
-                                }
-
-                                if ( right ) {
-                                    pos.dp.x = 1.0;
-                                }
                             case 2:
                                 var len = d.cache.len == 0 ? d.socket.readUnsignedShort() : d.cache.len;
+                                if ( d.cache.len != 0 ) {
+                                    trace( 'checking if we now have $len bytes to read...' );
+                                }
                                 if ( d.socket.bytesAvailable >= len ) {
                                     try {
+                                        if ( d.cache.len != 0 ) {
+                                            trace( 'yes, we have ${d.socket.bytesAvailable} bytes to read!' );
+                                        }
                                         var serializedPos = d.socket.readUTFBytes( len );
                                         trace( serializedPos );
                                         var newPosCmp : PosCmp = haxe.Unserializer.run( serializedPos );
@@ -127,9 +117,10 @@ class ClientSys extends IntervalEntitySystem
                                         trace( "ERROR " + e );
                                     }
                                 } else {
-                                    trace( "waiting until next update" );
+                                    trace( 'waiting until we have at least $len bytes to read...' );
                                     d.cache.serverOpcode = serverOpcode;
                                     d.cache.peerOpcode = peerOpcode;
+                                    d.cache.id = id;
                                     d.cache.len = len;
                                     return;
                                 }
