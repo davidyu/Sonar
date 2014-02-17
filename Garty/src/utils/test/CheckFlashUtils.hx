@@ -16,10 +16,12 @@ class CheckFlashUtils extends haxe.unit.TestCase {
         ba.position = 0;
         assertEquals( ba.readUnsignedByte(), 2 );
         assertEquals( ba.readUnsignedShort(), 140 );
+    }
 
+    public function testByteArrayToStringRoundTrip() {
+        var ba = new ByteArray();
         var bb = new ByteArray();
 
-        ba.clear();
         ba.writeByte( 2 );
         ba.writeShort( 140 );
 
@@ -27,5 +29,8 @@ class CheckFlashUtils extends haxe.unit.TestCase {
         bb.position = 0;
         assertEquals( bb.readUnsignedByte(), 2 );
         assertEquals( bb.readUnsignedShort(), 140 );
+
+        bb.clear();
+        ba.clear();
     }
 }
