@@ -49,7 +49,6 @@ class ClientSys extends IntervalEntitySystem
 
             if ( d.socket.connected && d.socket.bytesAvailable > 0 ) {
                 var serverOpcode = d.cache.serverOpcode == 0 ? d.socket.readUnsignedByte() : d.cache.serverOpcode;
-                trace( 'process; ${d.socket.bytesAvailable} bytes available; s-op: $serverOpcode' );
                 switch ( serverOpcode ) {
                     case 255: //ack
                         d.id = d.socket.readUnsignedByte();
@@ -72,7 +71,6 @@ class ClientSys extends IntervalEntitySystem
                         if ( d.socket.bytesAvailable >= 2 ) {
                             id = d.cache.id == 0 ? d.socket.readUnsignedByte() : d.cache.id;
                             peerOpcode = d.cache.peerOpcode == 0 ? d.socket.readUnsignedByte() : d.cache.peerOpcode;
-                            trace( 'id = $id, p-op = $peerOpcode' );
                         } else {
                             d.cache.serverOpcode = serverOpcode;
                             return;
@@ -83,9 +81,6 @@ class ClientSys extends IntervalEntitySystem
                                 if ( netPlayerMapper.get( p ).id == id ) {
                                     return p;
                                 }
-                            }
-                            for ( p in god.netPlayers ) {
-                                trace( 'we need $id, but we have ${netPlayerMapper.get( p ).id}' );
                             }
                             return null;
                         }
@@ -108,7 +103,6 @@ class ClientSys extends IntervalEntitySystem
                                     }
                                     try {
                                         var serializedPos = d.socket.readUTFBytes( len );
-                                        trace( serializedPos );
                                         var newPosCmp : PosCmp = haxe.Unserializer.run( serializedPos );
                                         var posCmp : PosCmp = posMapper.get( netPlayer );
                                         posCmp.pos = newPosCmp.pos;
