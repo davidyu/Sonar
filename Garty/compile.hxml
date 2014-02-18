@@ -3,11 +3,9 @@
 
 -lib hscript
 
-#REMEMBER THIS FOR DEBUGGING AND NEVER FORGET
--D fdb
-
 -swf-header 1280:720:30:000000
 -swf-version 11.7
+--no-traces
 
 -resource resource/classpaths.inc@classpaths
 
