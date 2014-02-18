@@ -79,6 +79,10 @@ class Geo
         return null;
     }
 
+    public static function isPointInCircle( circle: { center : Vec2, radius : Float }, point: Vec2 ) : Bool {
+        return point.sub( circle.center ).lengthsq() <= circle.radius * circle.radius;
+    }
+
     // if applicable, returns the point or line of intersection between a line segment and a circle
     public static function lineCircleIntersect( circle : { center : Vec2, radius : Float }, line : { a : Vec2, b : Vec2 } ) : IntersectResult {
         // distance (from line to center of circle) squared

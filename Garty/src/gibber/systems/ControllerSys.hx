@@ -52,7 +52,7 @@ class ControllerSys extends EntitySystem
             }
 
             if ( controller.createBlip ) {
-                entityAssembler.createSonar( pos.sector, pos.pos );
+                entityAssembler.createSonar( e.id, pos.sector, pos.pos );
                 netClient.sendSonarCreationEvent( pos.pos );
                 controller.createBlip = false;
             }

@@ -63,7 +63,9 @@ class RenderTraceSys extends EntitySystem
                 case Point( p ):
                     g.beginFill( render.colour, trace.fadeAcc );
                     g.drawCircle( p.x, p.y, 1 );
-                case None: throw "You should not have a trace of type None! What is going on?";
+                case Mass( p, r ):
+                    g.beginFill( render.colour, trace.fadeAcc );
+                    g.drawCircle( p.x, p.y, r );
             }
         }
     }

@@ -82,7 +82,8 @@ class EntityAssemblySys extends EntitySystem
         var controllerCmp = new ControllerCmp();
         var inventoryCmp = new InventoryCmp();
         var inputCmp = new InputCmp( Keyboard.UP, Keyboard.DOWN, Keyboard.LEFT, Keyboard.RIGHT,
-                                     Keyboard.SPACE, 1 );
+                                     Keyboard.SPACE, 1, Keyboard.Z );
+        var containableCmp = new ContainableCmp( containerMgr, e, sector );
 
         e.addComponent( lookCmp );
         e.addComponent( nameCmp );
@@ -92,6 +93,7 @@ class EntityAssemblySys extends EntitySystem
         e.addComponent( inventoryCmp );
         e.addComponent( inputCmp );
         e.addComponent( syncCmp );
+        e.addComponent( containableCmp );
         e.addComponent( controllerCmp );
 
         world.addEntity( e );
@@ -100,10 +102,10 @@ class EntityAssemblySys extends EntitySystem
     }
 
     // Look into this: I don't care about which sector I'm in when I'm creating a Sonar wave. It should ideally be inferred.
-    public function createSonar( sector : Entity, pos : Vec2 ) : Entity {
+    public function createSonar( id : Int, sector : Entity, pos : Vec2 ) : Entity {
         var e = world.createEntity();
 
-        var sonarCmp = new SonarCmp( 100.0, 100 );
+        var sonarCmp = new SonarCmp( id, 100.0, 100 );
         var posCmp = new PosCmp( sector, pos );
         var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
         var renderCmp = new RenderCmp( 0xffffff );
@@ -147,10 +149,6 @@ class EntityAssemblySys extends EntitySystem
         e.addComponent( posTrackerCmp );
         e.addComponent( renderCmp );
         e.addComponent( bounceCmp );
-
-        trace( bounceCmp );
-
-        trace( e.listComponents() );
 
         world.addEntity( e );
 

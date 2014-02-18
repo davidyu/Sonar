@@ -6,12 +6,15 @@ import com.artemisx.Entity;
 import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
 
+import gibber.components.InputCmp;
+import gibber.components.NetworkPlayerCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
 import gibber.components.SonarCmp;
 import gibber.components.TimedEffectCmp;
 import gibber.components.TraceCmp;
+import gibber.managers.ContainerMgr;
 
 import utils.Geo;
 import utils.Polygon;
@@ -31,6 +34,7 @@ class SonarSys extends EntitySystem
         timedEffectMapper = world.getMapper( TimedEffectCmp );
         sonarMapper       = world.getMapper( SonarCmp );
         regionMapper      = world.getMapper( RegionCmp );
+        containerMgr      = world.getManager( ContainerMgr );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -47,6 +51,7 @@ class SonarSys extends EntitySystem
             sonar = sonarMapper.get( e );
             center = posMapper.get( e ).pos;
 
+            trace( time.processState );
             switch( time.processState ) {
                 case Process( false ):
                     var radius : Float = sonar.growthRate * ( time.internalAcc / 1000.0 );
@@ -56,6 +61,15 @@ class SonarSys extends EntitySystem
 
                     var sector = posMapper.get( e ).sector;
                     var sectorPolys = regionMapper.get( sector ).polys;
+
+                    // check for intersection against player entities
+                    for ( e in containerMgr.getAllEntitiesOfContainer( sector ) ) {
+                        if ( e.id == sonar.playerId ) continue; //skip me
+                        var p : Vec2 = posMapper.get( e ).pos;
+                        if ( Geo.isPointInCircle( { center: center, radius: radius }, p ) ) {
+                            createTrace( posMapper.get( sector ).pos, TT( Mass( p, 3 ) ) );
+                        }
+                    }
 
                     // reveal portions of the sector walls that are "hit" by sonar
                     for ( poly in sectorPolys ) {
@@ -159,7 +173,7 @@ class SonarSys extends EntitySystem
                                         var b = radianToPoint( center, rng.end );
 
                                         if ( a != null && b != null ) {
-                                            createTrace( posMapper.get( sector ).pos, Line( a, b ) );
+                                            createTrace( posMapper.get( sector ).pos, IR( Line( a, b ) ) );
 #if debug
                                         } else {
                                             trace( "this range could not be created" );
@@ -167,7 +181,7 @@ class SonarSys extends EntitySystem
                                         }
                                     }
                                 case Point( _ ):
-                                    createTrace( posMapper.get( sector ).pos, intersect );
+                                    createTrace( posMapper.get( sector ).pos, IR( intersect ) );
                                 default:
                             } // end switch( intersect )
                         } // end for iterating over p.verts
@@ -230,24 +244,24 @@ class SonarSys extends EntitySystem
     }
 
     // creates a beautiful trace entity
-    private function createTrace( pos : Vec2, displayType : IntersectResult ) {
-        if ( displayType != None ) {
-            var e = world.createEntity();
+    private function createTrace( pos : Vec2, traceConstructor : TraceConstructor ) {
+        var e = world.createEntity();
 
-            var renderCmp = new RenderCmp( 0xffffff );
-            var traceCmp = new TraceCmp( 0.8, displayType, pos );
-            var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
+        var renderCmp = new RenderCmp( 0xffffff );
+        var traceCmp = new TraceCmp( 0.8, pos, traceConstructor );
+        var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
 
-            e.addComponent( renderCmp );
-            e.addComponent( traceCmp );
-            e.addComponent( timedEffectCmp );
+        e.addComponent( renderCmp );
+        e.addComponent( traceCmp );
+        e.addComponent( timedEffectCmp );
 
-            world.addEntity( e );
-        }
+        world.addEntity( e );
     }
 
     var timedEffectMapper : ComponentMapper<TimedEffectCmp>;
     var sonarMapper       : ComponentMapper<SonarCmp>;
     var posMapper         : ComponentMapper<PosCmp>;
     var regionMapper      : ComponentMapper<RegionCmp>; // need to extract region polys from sector
+
+    var containerMgr      : ContainerMgr;
 }

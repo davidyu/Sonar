@@ -70,7 +70,7 @@ class TrailSys extends EntitySystem
             var e = world.createEntity();
 
             var renderCmp = new RenderCmp( 0xffffff );
-            var traceCmp = new TraceCmp( 0.8, displayType, pos );
+            var traceCmp = new TraceCmp( 0.8, pos, IR( displayType ) );
             var timedEffectCmp = new TimedEffectCmp( 0, GlobalTickInterval );
 
             e.addComponent( renderCmp );

@@ -59,8 +59,9 @@ class RenderSonarSys extends EntitySystem
         var pos : PosCmp;
         var screenTransform : Vec2;
 
-        if ( actives.size > 0 )
+        if ( actives.size > 0 ) {
             bmd.fillRect( bmd.rect, 0x00000000 );
+        }
 
         for ( i in 0...actives.size ) {
             e = actives.get( i );
