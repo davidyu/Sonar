@@ -33,6 +33,7 @@ import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
 import gibber.components.SonarCmp;
 import gibber.components.SyncCmp;
+import gibber.components.TorpedoCmp;
 import gibber.components.TrailCmp;
 import gibber.components.TimedEffectCmp;
 import gibber.components.TransitRequestCmp;
@@ -98,6 +99,25 @@ class EntityAssemblySys extends EntitySystem
 
         world.addEntity( e );
 
+        return e;
+    }
+
+    public function createTorpedo( id : Int, target : Vec2, sector : Entity, origin : Vec2 ) : Entity {
+        var e = world.createEntity();
+
+        var posCmp = new PosCmp( sector, origin );
+        var torpedoCmp = new TorpedoCmp( id, target, 4, 100 );
+        var renderCmp = new RenderCmp();
+        var bounceCmp = new BounceCmp( 1.0 );
+        var posTrackerCmp = new PosTrackerCmp( LastPos );
+
+        e.addComponent( posCmp );
+        e.addComponent( torpedoCmp );
+        e.addComponent( renderCmp );
+        e.addComponent( bounceCmp );
+        e.addComponent( posTrackerCmp );
+
+        world.addEntity( e );
         return e;
     }
 

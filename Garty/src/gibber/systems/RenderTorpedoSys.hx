@@ -16,17 +16,17 @@ import flash.display.Bitmap;
 import gibber.components.PosCmp;
 import gibber.components.PosTrackerCmp;
 import gibber.components.RenderCmp;
-import gibber.components.TrailCmp;
+import gibber.components.TorpedoCmp;
 
 import utils.Render;
 import utils.Vec2;
 
 using Lambda;
 
-class RenderTrailSys extends EntitySystem
+class RenderTorpedoSys extends EntitySystem
 {
     public function new( root : MovieClip ) {
-        super( Aspect.getAspectForAll( [TrailCmp, RenderCmp] ) );
+        super( Aspect.getAspectForAll( [TorpedoCmp, RenderCmp, PosCmp, PosTrackerCmp] ) );
 
         bmd       = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0x00000000 );
         bitbuf    = new Bitmap( bmd );
@@ -38,8 +38,8 @@ class RenderTrailSys extends EntitySystem
     override public function initialize() : Void {
         posMapper         = world.getMapper( PosCmp );
         posTrackerMapper  = world.getMapper( PosTrackerCmp );
-        trailMapper       = world.getMapper( TrailCmp );
-        fade              = new ColorTransform( 1.0, 1.0, 1.0, 0.9 );
+        torpedoMapper     = world.getMapper( TorpedoCmp );
+        fade              = new ColorTransform( 1.0, 1.0, 1.0, 0.8 );
         compensatingFades = 30;
     }
 
@@ -51,7 +51,7 @@ class RenderTrailSys extends EntitySystem
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
         var e : Entity;
-        var trail : TrailCmp;
+        var torpedo : TorpedoCmp;
         var pos : PosCmp;
         var posTracker : PosTrackerCmp;
         var lastScreenPos : Vec2;
@@ -63,8 +63,8 @@ class RenderTrailSys extends EntitySystem
         }
 
         for ( i in 0...actives.size ) {
-            e   = actives.get( i );
-            trail = trailMapper.get( e );
+            e = actives.get( i );
+            torpedo = torpedoMapper.get( e );
             pos = posMapper.get( e );
             posTracker = posTrackerMapper.get( e );
 
@@ -74,7 +74,7 @@ class RenderTrailSys extends EntitySystem
 
             // pass this into bresenham
             function plotPixelOnBmd( x: Int, y: Int ) {
-                bmd.setPixel32( x, y, 0xffffffff );
+                bmd.setPixel32( x, y, 0xffff0000 );
             }
 
             Render.bresenham( Std.int( lastScreenPos.x ), Std.int( lastScreenPos.y ),
@@ -86,7 +86,7 @@ class RenderTrailSys extends EntitySystem
     }
 
     var renderMapper      : ComponentMapper<RenderCmp>;
-    var trailMapper       : ComponentMapper<TrailCmp>;
+    var torpedoMapper     : ComponentMapper<TorpedoCmp>;
     var posMapper         : ComponentMapper<PosCmp>;
     var posTrackerMapper  : ComponentMapper<PosTrackerCmp>;
 

@@ -9,6 +9,11 @@ enum PingControllerState {
     Ping( mousePos : Vec2 );
 }
 
+enum FireTorpedoState {
+    No;
+    Fire( mousePos : Vec2 );
+}
+
 class ControllerCmp implements Component 
 {
     @:isVar public var moveUp    (default, set): Bool;
@@ -17,11 +22,13 @@ class ControllerCmp implements Component
     @:isVar public var moveRight (default, set): Bool;
     @:isVar public var createBlip : Bool;
     @:isVar public var createPing : PingControllerState;
+    @:isVar public var fireTorpedo : FireTorpedoState;
 
     public function new() {
         moveUp = moveDown = moveLeft = moveRight = false;
         createBlip = false;
         createPing = No;
+        fireTorpedo = No;
     }
 
     public function set_moveUp   ( up )     { return moveUp = up; }

@@ -18,6 +18,7 @@ class Mouse {
         stage.addEventListener( flash.events.MouseEvent.MOUSE_DOWN, onMouse.bind( true ) );
         stage.addEventListener( flash.events.MouseEvent.MOUSE_UP, onMouse.bind( false ) );
         stage.addEventListener( flash.events.MouseEvent.CLICK, onMousePress );
+        stage.addEventListener( flash.events.MouseEvent.MOUSE_MOVE, onMouseMove );
         stage.addEventListener( flash.events.Event.ENTER_FRAME, onEnterFrame );
         initialized = true;
     }
@@ -27,14 +28,21 @@ class Mouse {
         pressed = false; // we don't want the pressed event to span multiple frames in a polling paradigm. Think about it.
     }
 
+    static function onMouseMove( e : flash.events.MouseEvent ) {
+        screenMousePos.x = e.localX;
+        screenMousePos.y = e.localY;
+    }
+
     static function onMouse( down_, e : flash.events.MouseEvent ) {
         down = down_;
-        screenMousePos = new Vec2( e.localX, e.localY );
+        screenMousePos.x = e.localX;
+        screenMousePos.y = e.localY;
     }
 
     static function onMousePress( e : flash.events.MouseEvent ) {
         pressed = true;
-        screenMousePos = new Vec2( e.localX, e.localY );
+        screenMousePos.x = e.localX;
+        screenMousePos.y = e.localY;
     }
 
     public static function isDown() {

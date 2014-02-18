@@ -67,6 +67,15 @@ class ControllerSys extends EntitySystem
                     controller.createPing = No;
                 default:
             }
+
+            switch ( controller.fireTorpedo ) {
+                case Fire( mousePos ):
+                    var sectorPos = posMapper.get( pos.sector ).pos;
+                    var target = mousePos.sub( sectorPos );
+                    entityAssembler.createTorpedo( e.id, target, pos.sector, pos.pos );
+                    controller.fireTorpedo = No;
+                default:
+            }
         }
     }
 
