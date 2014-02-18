@@ -18,7 +18,7 @@ import utils.Vec2;
 class SyncSys extends IntervalEntitySystem
 {
     public function new() {
-#if local
+#if ( local || fdb )
         super( Aspect.getAspectForOne( [ ClientCmp, SyncCmp ] ), 100.0 );
 #else
         super( Aspect.getAspectForOne( [ ClientCmp, SyncCmp ] ), 1000.0 );

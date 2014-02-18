@@ -26,7 +26,7 @@ class ClientSys extends IntervalEntitySystem
 {
     public function new( god : God ) {
         this.god = god;
-#if local
+#if ( local || fdb )
         super( Aspect.getAspectForAll( [ClientCmp] ), 5.0 );
 #else
         super( Aspect.getAspectForAll( [ClientCmp] ), 100.0 );

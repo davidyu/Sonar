@@ -146,7 +146,7 @@ class God
 
         sectors.push( entityAssembler.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
-#if local
+#if ( fdb || local )
         Security.loadPolicyFile( "xmlsocket://localhost:10000" );
         client = entityAssembler.createClient( "localhost", 5000 );
 #else
