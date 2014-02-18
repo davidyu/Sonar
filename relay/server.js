@@ -19,18 +19,17 @@ var gameServer = net.createServer( function ( socket ) {
     var socketJoin = new Buffer( [ 254, socket.id ] );
 
     // broadcast this client's joining to every other client
-    clients.forEach( function( client, clientIndex ) {
+    clients.forEach( function( client ) {
       if ( client == socket ) return;
       client.write( socketJoin );
-      var clientAdd = new Buffer( [ 254, clientIndex ] );
+      var clientAdd = new Buffer( [ 254, client.id ] );
       socket.write( clientAdd );
     } );
   } );
 
   socket.on( 'data', function( data ) {
-    console.log( "|" + data.toString() + "|")
+    //console.log( "data of length " + data.readUInt16BE( 1 ) + ":|" + data.toString() + "|")
     if ( data == '<policy-file-request/>\0' ) {
-      socket.setEncoding( "utf8" );
       socket.write( getCrossDomainPolicy() + '\0' );
     } else {
       relay( data, socket );
@@ -49,13 +48,12 @@ var gameServer = net.createServer( function ( socket ) {
       var posID = new Buffer( [ 253, sender.id ] );
       client.write( posID );
       client.write( data );
-      console.log( posID + " " + data );
+      console.log( posID.toString() + "   |   " + data.length + " | " + data.readUInt16BE(1) + " | " + data.toString() );
     } );
   }
 } ).listen( process.env.PORT || 5000, null );
 
 var policyServer = net.createServer( function ( socket ) {
-  socket.setEncoding( "utf8" );
   socket.on( 'data', function( data ) {
     if ( data == "<policy-file-request/>\0" ) {
       socket.write( getCrossDomainPolicy() + '\0' );
