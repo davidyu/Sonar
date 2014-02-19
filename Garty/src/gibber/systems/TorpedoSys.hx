@@ -10,6 +10,10 @@ import gibber.components.TorpedoCmp;
 import gibber.components.PosCmp;
 import gibber.components.BounceCmp;
 
+import gibber.systems.EntityAssemblySys;
+
+import utils.Math2;
+
 class TorpedoSys extends EntitySystem
 {
     public function new() {
@@ -17,9 +21,10 @@ class TorpedoSys extends EntitySystem
     }
 
     override public function initialize() : Void {
-        torpedoMapper = world.getMapper( TorpedoCmp );
-        posMapper     = world.getMapper( PosCmp );
-        bounceMapper  = world.getMapper( BounceCmp );
+        torpedoMapper   = world.getMapper( TorpedoCmp );
+        posMapper       = world.getMapper( PosCmp );
+        bounceMapper    = world.getMapper( BounceCmp );
+        entityAssembler = world.getSystem( EntityAssemblySys );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -40,16 +45,26 @@ class TorpedoSys extends EntitySystem
                 pos.dp = pos.dp.normalize().mul( torpedo.maxSpeed );
             }
 
+            // destruction conditions
+            // met target
+            if ( pos.pos.sub( torpedo.target ).lengthsq() <= 25.0 ) {
+                world.deleteEntity( e );
+                entityAssembler.createExplosionEffect( pos.sector, pos.pos );
+                return;
+            }
+
             switch ( bounce.lastTouched ) {
                 case Edge( _, _ ):
                     world.deleteEntity( e );
+                    entityAssembler.createExplosionEffect( pos.sector, pos.pos );
                     return;
                 default: 
             }
         }
     }
 
-    var torpedoMapper : ComponentMapper<TorpedoCmp>;
-    var posMapper     : ComponentMapper<PosCmp>;
-    var bounceMapper  : ComponentMapper<BounceCmp>;
+    var torpedoMapper    : ComponentMapper<TorpedoCmp>;
+    var posMapper        : ComponentMapper<PosCmp>;
+    var bounceMapper     : ComponentMapper<BounceCmp>;
+    var entityAssembler  : EntityAssemblySys;
 }

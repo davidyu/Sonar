@@ -7,6 +7,7 @@ import com.artemisx.utils.Bag;
 import flash.display.Graphics;
 import flash.display.MovieClip;
 import flash.display.Sprite;
+import gibber.components.ExplosionCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
@@ -22,7 +23,7 @@ using Lambda;
 class RenderSys extends EntitySystem
 {
     public function new( root : MovieClip ) {
-        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp, TorpedoCmp] ) );
+        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp, TorpedoCmp, ExplosionCmp] ) );
         
         buffer = new Sprite();
         this.root = root;

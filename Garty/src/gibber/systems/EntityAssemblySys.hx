@@ -23,6 +23,7 @@ import gibber.components.ControllerCmp;
 import gibber.components.ClientCmp;
 import gibber.components.InventoryCmp;
 import gibber.components.InputCmp;
+import gibber.components.ExplosionCmp;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
 import gibber.components.NetworkPlayerCmp;
@@ -132,6 +133,35 @@ class EntityAssemblySys extends EntitySystem
 
         e.addComponent( timedEffectCmp );
         e.addComponent( sonarCmp );
+        e.addComponent( posCmp );
+        e.addComponent( renderCmp );
+
+        world.addEntity( e );
+
+        return e;
+    }
+
+    public function createExplosionEffect( sector : Entity, pos : Vec2 ) : List<Entity> {
+        var explosions = new List<Entity>();
+        for ( i in 0...Std.int( Math.random() * 4 ) + 2 ) {
+            var e = createSingleExplosion( sector, pos.add( new Vec2( Math.random() * 30 - 15, Math.random() * 30 - 15 ) ) ) ;
+            explosions.add( e );
+        }
+        return explosions;
+    }
+
+    public function createSingleExplosion( sector : Entity, pos : Vec2 ) : Entity {
+        var e = world.createEntity();
+
+        var explosionCmp = new ExplosionCmp( Math.random() * 15 + 15, Math.random() * 30 + 20 );
+        var staticPosCmp = new StaticPosCmp();
+        var posCmp = new PosCmp( sector, pos );
+        var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
+        var renderCmp = new RenderCmp( 0xffffff );
+
+        e.addComponent( timedEffectCmp );
+        e.addComponent( explosionCmp );
+        e.addComponent( staticPosCmp );
         e.addComponent( posCmp );
         e.addComponent( renderCmp );
 

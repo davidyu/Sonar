@@ -23,10 +23,12 @@ import gibber.managers.WordsMgr;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.ControllerSys;
 import gibber.systems.ClientSys;
+import gibber.systems.ExplosionSys;
 import gibber.systems.EntityAssemblySys;
 import gibber.systems.InputSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.PosTrackerSys;
+import gibber.systems.RenderExplosionSys;
 import gibber.systems.RenderSonarSys;
 import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderSys;
@@ -100,6 +102,8 @@ class God
         world.setSystem( new ControllerSys( this ) ); // this must follow InputSys to apply effects of controller states
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
+        world.setSystem( new ExplosionSys() );
+        world.setSystem( new RenderExplosionSys( root ) );
         world.setSystem( new RenderSectorSys( root ) );
         world.setSystem( new RenderSonarSys( root ) );
         world.setSystem( new RenderTrailSys( root ) );
