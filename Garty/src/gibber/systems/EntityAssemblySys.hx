@@ -84,7 +84,7 @@ class EntityAssemblySys extends EntitySystem
         var controllerCmp = new ControllerCmp();
         var inventoryCmp = new InventoryCmp();
         var inputCmp = new InputCmp( Keyboard.UP, Keyboard.DOWN, Keyboard.LEFT, Keyboard.RIGHT,
-                                     Keyboard.SPACE, 1, Keyboard.Z );
+                                     Keyboard.SPACE, Keyboard.SLASH, 1 );
         var containableCmp = new ContainableCmp( containerMgr, e, sector );
 
         e.addComponent( lookCmp );

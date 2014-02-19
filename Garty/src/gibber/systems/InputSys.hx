@@ -43,12 +43,12 @@ class InputSys extends EntitySystem
                 controller.createBlip = true;
             }
 
-            if ( Key.isToggled( input.fireTorpedoKey ) ) {
-                controller.fireTorpedo = Fire( Mouse.getMouseCoords() );
+            if ( Key.isToggled( input.pingTriggerKey ) ) {
+                controller.createPing = Ping( Mouse.getMouseCoords() );
             }
 
             if ( Mouse.wasPressed() ) {
-                controller.createPing = Ping( Mouse.getMouseCoords() );
+                controller.fireTorpedo = Fire( Mouse.getMouseCoords() );
             }
 
         } // end for ( i in actives.size)
