@@ -56,8 +56,9 @@ class God
     @:isVar public var sf ( default, null ) : ScriptFactory;
     @:isVar public var entityResolver ( default, null ) : EntityResolver;
 
-    public function new( r : MovieClip, screenbuffer : h2d.Sprite ) {
+    public function new( r : MovieClip, q : h2d.Sprite ) {
         root = r;
+        quad = q;
 
         root.stage.addEventListener( flash.events.KeyboardEvent.KEY_DOWN, onEnterKey );
         f = 0;
@@ -90,7 +91,7 @@ class God
         world.setManager( cm );
         world.setManager( new SectorGraphMgr() );
 
-        // don't really need these anymore
+        // don't really need these anymore; take them out
         world.setManager( new SynonymMgr() );
         world.setManager( new WordsMgr() ); // Needs to be last
         world.setManager( new NameRegistry() ); // Needs to be last
@@ -107,7 +108,7 @@ class God
         world.setSystem( new RenderSectorSys( root ) );
         world.setSystem( new RenderSonarSys( root ) );
         world.setSystem( new RenderTrailSys( root ) );
-        world.setSystem( new RenderSys( root ) );
+        world.setSystem( new RenderSys( root, quad ) );
         world.setSystem( new RenderTorpedoSys( root ) );
         world.setSystem( new RenderTraceSys( root ) );
         world.setSystem( new SyncSys() );
@@ -233,6 +234,7 @@ class God
     var f : UInt;
 
     var root : MovieClip;
+    var quad : h2d.Sprite;
     var inputTextfield : TextField;
     var baseTextFormat : TextFormat;
 

@@ -33,6 +33,10 @@ class Main
             spr = new h2d.Sprite( scene );
             spr.x = 0;
             spr.y = 0;
+
+            trace( "Starting up God" );
+            var g = new God( Lib.current, spr );
+
             hxd.System.setLoop( update );
         }
 
@@ -41,8 +45,6 @@ class Main
         stage.scaleMode = StageScaleMode.NO_SCALE;
         stage.align = StageAlign.TOP_LEFT;
         // entry point
-        trace( "Starting up God" );
-        var g = new God( Lib.current, spr );
 #if debug
         stage.addChild( new TheMiner() );
 #end
