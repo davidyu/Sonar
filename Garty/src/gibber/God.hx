@@ -56,7 +56,7 @@ class God
     @:isVar public var sf ( default, null ) : ScriptFactory;
     @:isVar public var entityResolver ( default, null ) : EntityResolver;
 
-    public function new( r : MovieClip ) {
+    public function new( r : MovieClip, screenbuffer : h2d.Sprite ) {
         root = r;
 
         root.stage.addEventListener( flash.events.KeyboardEvent.KEY_DOWN, onEnterKey );

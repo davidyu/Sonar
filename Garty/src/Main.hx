@@ -31,8 +31,8 @@ class Main
 
         engine.onReady = function() {
             spr = new h2d.Sprite( scene );
-            spr.x = engine.width >> 1;
-            spr.y = engine.height >> 1;
+            spr.x = 0;
+            spr.y = 0;
             hxd.System.setLoop( update );
         }
 
@@ -42,7 +42,7 @@ class Main
         stage.align = StageAlign.TOP_LEFT;
         // entry point
         trace( "Starting up God" );
-        //var g = new God( Lib.current );
+        var g = new God( Lib.current, spr );
 #if debug
         stage.addChild( new TheMiner() );
 #end
