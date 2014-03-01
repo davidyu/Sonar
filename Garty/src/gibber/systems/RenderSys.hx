@@ -26,10 +26,9 @@ using Lambda;
 
 class RenderSys extends EntitySystem
 {
-    public function new( root : MovieClip, quad : h2d.Sprite ) {
+    public function new( quad : h2d.Sprite ) {
         super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp, TorpedoCmp, ExplosionCmp] ) );
 
-        this.root = root;
         g2d = new h2d.Graphics( quad );
     }
 
@@ -40,38 +39,35 @@ class RenderSys extends EntitySystem
     }
 
     override public function onInserted( e : Entity ) : Void {
-        var renderCmp = renderMapper.get( e );
-        renderCmp.sprite = new Sprite();
-        root.addChild( renderCmp.sprite );
     }
 
     override public function onRemoved( e : Entity ) : Void {
-        root.removeChild( renderMapper.get( e ).sprite );
     }
 
     override public function onChanged( e : Entity ) : Void {
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
-        var g : Graphics;
         var e : Entity;
         var posCmp : PosCmp;
         var pos : Vec2;
         var sectorPos : Vec2;
 
-        g2d.clear();
+        if ( actives.size > 0 && compensatingClear ) {
+            g2d.clear();
+            compensatingClear = false;
+        }
         
         for ( i in 0...actives.size ) {
+            compensatingClear = true;
             e = actives.get( i );
             var render = renderMapper.get( e );
-            g = render.sprite.graphics;
-            g.clear();
             
             posCmp = posMapper.get( e );
             pos = Util.worldCoords( posCmp.pos, posCmp.sector );
             
             g2d.beginFill( 0xffffff );
-            g2d.drawCircle( pos.x, pos.y, 3, 6 );
+            g2d.drawCircle( pos.x, pos.y, 3 );
             g2d.endFill();
         }
     }
@@ -80,7 +76,6 @@ class RenderSys extends EntitySystem
     var renderMapper : ComponentMapper<RenderCmp>;
     var regionMapper : ComponentMapper<RegionCmp>;
 
-    var root : MovieClip;
-
     private var g2d : h2d.Graphics;
+    private var compensatingClear : Bool;
 }
