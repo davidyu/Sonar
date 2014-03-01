@@ -159,8 +159,8 @@ class God
         Security.loadPolicyFile( "xmlsocket://localhost:10000" );
         client = entityAssembler.createClient( "localhost", 5000 );
 #else
-        Security.loadPolicyFile( "xmlsocket://168.62.40.105:10000" );
-        client = entityAssembler.createClient( "168.62.40.105", 5000 );
+        Security.loadPolicyFile( "xmlsocket://sonargame.cloudapp.net:10000" );
+        client = entityAssembler.createClient( "sonargame.cloudapp.net", 5000 );
 #end
     }
 

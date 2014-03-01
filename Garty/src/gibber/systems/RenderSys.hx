@@ -29,12 +29,8 @@ class RenderSys extends EntitySystem
     public function new( root : MovieClip, quad : h2d.Sprite ) {
         super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp, TorpedoCmp, ExplosionCmp] ) );
 
-        buffer = new Sprite();
         this.root = root;
-        root.addChild( buffer );
-        bmd = new hxd.BitmapData( 1280, 720 );
-        var tile = h2d.Tile.fromBitmap( bmd );
-        bitbuf = new h2d.Bitmap( tile, quad );
+        g2d = new h2d.Graphics( quad );
     }
 
     override public function initialize() : Void {
@@ -63,7 +59,7 @@ class RenderSys extends EntitySystem
         var pos : Vec2;
         var sectorPos : Vec2;
 
-        bmd.clear( 0xff000000 );
+        g2d.clear();
         
         for ( i in 0...actives.size ) {
             e = actives.get( i );
@@ -74,13 +70,9 @@ class RenderSys extends EntitySystem
             posCmp = posMapper.get( e );
             pos = Util.worldCoords( posCmp.pos, posCmp.sector );
             
-            function plotPixelOnBmd( x: Int, y: Int ) {
-                bmd.setPixel( x, y, 0xffffffff );
-            }
-
-            Render.drawArc( pos, 3, 0, 1.0, plotPixelOnBmd );
-
-            bitbuf.tile = Tile.fromBitmap( bmd ); // THIS IS SLOW!
+            g2d.beginFill( 0xffffff );
+            g2d.drawCircle( pos.x, pos.y, 3, 6 );
+            g2d.endFill();
         }
     }
 
@@ -89,8 +81,6 @@ class RenderSys extends EntitySystem
     var regionMapper : ComponentMapper<RegionCmp>;
 
     var root : MovieClip;
-    var buffer : Sprite;
 
-    private var bitbuf : h2d.Bitmap;
-    private var bmd : hxd.BitmapData;
+    private var g2d : h2d.Graphics;
 }

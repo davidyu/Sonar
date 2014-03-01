@@ -21,6 +21,7 @@ class Main
 
     static function update()
     {
+        scene.captureBitmap();
         engine.render( scene );
     }
 
