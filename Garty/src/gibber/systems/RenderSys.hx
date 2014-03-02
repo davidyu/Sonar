@@ -15,6 +15,8 @@ import gibber.components.SonarCmp;
 import gibber.components.StaticPosCmp;
 import gibber.components.TorpedoCmp;
 import gibber.components.TrailCmp;
+import gibber.components.TraceCmp;
+
 import gibber.Util;
 
 import utils.Vec2;
@@ -27,14 +29,13 @@ using Lambda;
 class RenderSys extends EntitySystem
 {
     public function new( quad : h2d.Sprite ) {
-        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp, TorpedoCmp, ExplosionCmp] ) );
+        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp, TraceCmp, TorpedoCmp, ExplosionCmp] ) );
 
         g2d = new h2d.Graphics( quad );
     }
 
     override public function initialize() : Void {
         posMapper = world.getMapper( PosCmp );
-        renderMapper = world.getMapper( RenderCmp );
         regionMapper = world.getMapper( RegionCmp );
     }
 
@@ -57,15 +58,16 @@ class RenderSys extends EntitySystem
             g2d.clear();
             compensatingClear = false;
         }
-        
+
+        trace( actives.size );
+
         for ( i in 0...actives.size ) {
             compensatingClear = true;
             e = actives.get( i );
-            var render = renderMapper.get( e );
-            
+
             posCmp = posMapper.get( e );
             pos = Util.worldCoords( posCmp.pos, posCmp.sector );
-            
+
             g2d.beginFill( 0xffffff );
             g2d.drawCircle( pos.x, pos.y, 3 );
             g2d.endFill();
@@ -73,7 +75,6 @@ class RenderSys extends EntitySystem
     }
 
     var posMapper : ComponentMapper<PosCmp>;
-    var renderMapper : ComponentMapper<RenderCmp>;
     var regionMapper : ComponentMapper<RegionCmp>;
 
     private var g2d : h2d.Graphics;

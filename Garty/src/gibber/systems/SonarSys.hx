@@ -14,7 +14,10 @@ import gibber.components.RenderCmp;
 import gibber.components.SonarCmp;
 import gibber.components.TimedEffectCmp;
 import gibber.components.TraceCmp;
+
 import gibber.managers.ContainerMgr;
+
+import gibber.systems.EntityAssemblySys;
 
 import utils.Geo;
 import utils.Polygon;
@@ -30,11 +33,12 @@ class SonarSys extends EntitySystem
     }
 
     override public function initialize() : Void {
-        posMapper         = world.getMapper( PosCmp );
-        timedEffectMapper = world.getMapper( TimedEffectCmp );
-        sonarMapper       = world.getMapper( SonarCmp );
-        regionMapper      = world.getMapper( RegionCmp );
+        posMapper         = world.getMapper ( PosCmp );
+        timedEffectMapper = world.getMapper ( TimedEffectCmp );
+        sonarMapper       = world.getMapper ( SonarCmp );
+        regionMapper      = world.getMapper ( RegionCmp );
         containerMgr      = world.getManager( ContainerMgr );
+        entityAssembler   = world.getSystem ( EntityAssemblySys );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -51,7 +55,7 @@ class SonarSys extends EntitySystem
             sonar = sonarMapper.get( e );
             center = posMapper.get( e ).pos;
 
-            trace( time.processState );
+            dbgtrace( time.processState );
             switch( time.processState ) {
                 case Process( false ):
                     var radius : Float = sonar.growthRate * ( time.internalAcc / 1000.0 );
@@ -67,7 +71,7 @@ class SonarSys extends EntitySystem
                         if ( e.id == sonar.playerId ) continue; //skip me
                         var p : Vec2 = posMapper.get( e ).pos;
                         if ( Geo.isPointInCircle( { center: center, radius: radius }, p ) ) {
-                            createTrace( posMapper.get( sector ).pos, TT( Mass( p, 3 ) ) );
+                            entityAssembler.createTrace( sector, Mass( p, 3 ) );
                         }
                     }
 
@@ -91,9 +95,9 @@ class SonarSys extends EntitySystem
 
                                     ranges.push( { start: rangeStart, end: rangeEnd } );
 
-                                    trace( "-------starting to cull ranges---------: " );
-                                    trace( "for " + Line( p, q ) );
-                                    trace( "already " + sonar.cullRanges.length + " segments to cull" );
+                                    dbgtrace( "-------starting to cull ranges---------: " );
+                                    dbgtrace( "for " + Line( p, q ) );
+                                    dbgtrace( "already " + sonar.cullRanges.length + " segments to cull" );
                                     var tryAgain = true;
                                     var error: Float = 0.004; // allow 0.25 degree of error
                                     // compute culling for ranges
@@ -115,10 +119,10 @@ class SonarSys extends EntitySystem
                                                     if ( ranges.remove( rng ) ) {
                                                         tryAgain = true;
 #if debug
-                                                        trace( "reconstructed range " + rngToString( rng ) );
-                                                        trace( "new ranges: " + rngToString( { start: rng.start, end: orng.start } ) + " and " + rngToString( { start: orng.end, end: rng.end } ) );
+                                                        dbgtrace( "reconstructed range " + rngToString( rng ) );
+                                                        dbgtrace( "new ranges: " + rngToString( { start: rng.start, end: orng.start } ) + " and " + rngToString( { start: orng.end, end: rng.end } ) );
                                                     } else {
-                                                        trace( "error reconstructing range " + rngToString( rng ) );
+                                                        dbgtrace( "error reconstructing range " + rngToString( rng ) );
 #end
                                                     }
                                                 //rng   ===---
@@ -128,10 +132,10 @@ class SonarSys extends EntitySystem
                                                     if ( ranges.remove( rng ) ) {
                                                         tryAgain = true;
 #if debug
-                                                        trace( "reconstructed range " + rngToString( rng ) );
-                                                        trace( "new range: " + rngToString( { start: orng.end, end: rng.end } ) );
+                                                        dbgtrace( "reconstructed range " + rngToString( rng ) );
+                                                        dbgtrace( "new range: " + rngToString( { start: orng.end, end: rng.end } ) );
                                                     } else {
-                                                        trace( "error reconstructing range " + rngToString( rng ) );
+                                                        dbgtrace( "error reconstructing range " + rngToString( rng ) );
 #end
                                                     }
                                                 //rng  ----===
@@ -141,10 +145,10 @@ class SonarSys extends EntitySystem
                                                     if ( ranges.remove( rng ) ) {
                                                         tryAgain = true;
 #if debug
-                                                        trace( "reconstructed range " + rngToString( rng ) );
-                                                        trace( "new range: " + rngToString( { start: rng.start, end: orng.start } ) );
+                                                        dbgtrace( "reconstructed range " + rngToString( rng ) );
+                                                        dbgtrace( "new range: " + rngToString( { start: rng.start, end: orng.start } ) );
                                                     } else {
-                                                        trace( "error reconstructing range " + rngToString( rng ) );
+                                                        dbgtrace( "error reconstructing range " + rngToString( rng ) );
 #end
                                                     }
                                                 }
@@ -154,11 +158,11 @@ class SonarSys extends EntitySystem
 
                                     sonar.cullRanges = sonar.cullRanges.concat( ranges );
 #if debug
-                                    trace( "-------ranges to draw---------: " );
+                                    dbgtrace( "-------ranges to draw---------: " );
 #end
                                     for ( rng in ranges ) {
 #if debug
-                                        trace( rngToString( rng ) );
+                                        dbgtrace( rngToString( rng ) );
 #end
                                         function radianToPoint( origin, theta, invertedY : Bool = true ) : Vec2 {
                                             var direction = new Vec2( Math.sin( theta ), invertedY ? -Math.cos( theta ) : Math.cos( theta ) );
@@ -173,15 +177,15 @@ class SonarSys extends EntitySystem
                                         var b = radianToPoint( center, rng.end );
 
                                         if ( a != null && b != null ) {
-                                            createTrace( posMapper.get( sector ).pos, IR( Line( a, b ) ) );
+                                            entityAssembler.createTrace( sector, Line( a, b ) );
 #if debug
                                         } else {
-                                            trace( "this range could not be created" );
+                                            dbgtrace( "this range could not be created" );
 #end
                                         }
                                     }
-                                case Point( _ ):
-                                    createTrace( posMapper.get( sector ).pos, IR( intersect ) );
+                                case Point( p ):
+                                    entityAssembler.createTrace( sector, Point( p ) );
                                 default:
                             } // end switch( intersect )
                         } // end for iterating over p.verts
@@ -199,9 +203,9 @@ class SonarSys extends EntitySystem
             } );
 
 #if debug
-            trace("----culled range list----");
+            dbgtrace("----culled range list----");
             for ( s in sonar.cullRanges ) {
-                trace( rngToString( s ) );
+                dbgtrace( rngToString( s ) );
             }
 #end
         }
@@ -243,25 +247,18 @@ class SonarSys extends EntitySystem
         return Std.int( Math2.radToDeg( rng.start ) ) + " to " + Std.int( Math2.radToDeg( rng.end ) );
     }
 
-    // creates a beautiful trace entity
-    private function createTrace( pos : Vec2, traceConstructor : TraceConstructor ) {
-        var e = world.createEntity();
-
-        var renderCmp = new RenderCmp( 0xffffff );
-        var traceCmp = new TraceCmp( 0.8, pos, traceConstructor );
-        var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
-
-        e.addComponent( renderCmp );
-        e.addComponent( traceCmp );
-        e.addComponent( timedEffectCmp );
-
-        world.addEntity( e );
+    private function dbgtrace( str : Dynamic ) {
+        if ( false ) {
+            trace( str );
+        }
     }
 
     var timedEffectMapper : ComponentMapper<TimedEffectCmp>;
     var sonarMapper       : ComponentMapper<SonarCmp>;
     var posMapper         : ComponentMapper<PosCmp>;
     var regionMapper      : ComponentMapper<RegionCmp>; // need to extract region polys from sector
+
+    var entityAssembler   : EntityAssemblySys;
 
     var containerMgr      : ContainerMgr;
 }

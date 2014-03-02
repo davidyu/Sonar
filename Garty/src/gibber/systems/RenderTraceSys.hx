@@ -10,69 +10,79 @@ import flash.display.Graphics;
 import flash.display.MovieClip;
 import flash.display.Sprite;
 
+import gibber.components.PosCmp;
 import gibber.components.RenderCmp;
 import gibber.components.TraceCmp;
 
 class RenderTraceSys extends EntitySystem
 {
-    public function new( root : MovieClip ) {
+    public function new( quad : h2d.Sprite ) {
         super( Aspect.getAspectForAll( [TraceCmp, RenderCmp] ) );
 
-        buffer = new Sprite();
-        this.root = root;
-
-        root.addChild( buffer );
+        g2d = new h2d.Graphics( quad );
     }
 
     override public function initialize() : Void {
         renderMapper = world.getMapper( RenderCmp );
         traceMapper  = world.getMapper( TraceCmp );
+        posMapper    = world.getMapper( PosCmp );
     }
 
     override public function onInserted( e : Entity ) : Void {
-        var renderCmp = renderMapper.get( e );
-        renderCmp.sprite = new Sprite();
-        root.addChild( renderCmp.sprite );
     }
 
     override public function onRemoved( e : Entity ) : Void {
-        root.removeChild( renderMapper.get( e ).sprite );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
         var e : Entity;
         var render : RenderCmp;
         var trace : TraceCmp;
+        var pos : PosCmp;
+
+        if ( actives.size > 0 && compensatingClear ) {
+            g2d.clear();
+        }
 
         for ( i in 0...actives.size ) {
+            compensatingClear = true;
             e = actives.get( i );
             render = renderMapper.get( e );
             trace = traceMapper.get( e );
-
-            render.sprite.x = trace.pos.x;
-            render.sprite.y = trace.pos.y;
-
-            var g = render.sprite.graphics;
-            g.clear();
+            pos = posMapper.get( e );
 
             switch ( trace.traceType ) {
                 case Line( a, b ):
-                    g.lineStyle( 1, render.colour, trace.fadeAcc );
-                    g.moveTo( a.x, a.y );
-                    g.lineTo( b.x, b.y );
+                    g2d.beginFill( render.colour, trace.fadeAcc );
+                    g2d.lineStyle( 0 );
+                    // needs to be fixed!
+                    var aa = Util.worldCoords( a, pos.sector );
+                    var bb = Util.worldCoords( b, pos.sector );
+                    g2d.addPoint( aa.x, aa.y );
+                    g2d.addPoint( bb.x, bb.y );
+                    g2d.addPoint( bb.x + 1, bb.y + 1 );
+                    g2d.addPoint( aa.x + 1, aa.y + 1 );
+                    g2d.endFill();
                 case Point( p ):
-                    g.beginFill( render.colour, trace.fadeAcc );
-                    g.drawCircle( p.x, p.y, 1 );
+                    g2d.beginFill( render.colour, trace.fadeAcc );
+                    g2d.lineStyle( 0 );
+                    var pp = Util.worldCoords( p, pos.sector );
+                    g2d.drawCircle( pp.x, pp.y, 1 );
+                    g2d.endFill();
                 case Mass( p, r ):
-                    g.beginFill( render.colour, trace.fadeAcc );
-                    g.drawCircle( p.x, p.y, r );
+                    g2d.beginFill( render.colour, trace.fadeAcc );
+                    g2d.lineStyle( 0 );
+                    var pp = Util.worldCoords( p, pos.sector );
+                    g2d.drawCircle( pp.x, pp.y, r );
+                    g2d.endFill();
             }
         }
     }
 
     var renderMapper : ComponentMapper<RenderCmp>;
     var traceMapper  : ComponentMapper<TraceCmp>;
+    var posMapper    : ComponentMapper<PosCmp>;
 
-    private var root   : MovieClip;
-    private var buffer : Sprite;
+    private var g2d  : h2d.Graphics;
+    private var compensatingClear : Bool;
 }

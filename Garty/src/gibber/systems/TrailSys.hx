@@ -13,6 +13,7 @@ import gibber.components.RenderCmp;
 import gibber.components.TimedEffectCmp;
 import gibber.components.TrailCmp;
 import gibber.components.TraceCmp;
+import gibber.systems.EntityAssemblySys;
 
 import utils.Geo;
 import utils.Polygon;
@@ -31,6 +32,7 @@ class TrailSys extends EntitySystem
         trailMapper       = world.getMapper( TrailCmp );
         regionMapper      = world.getMapper( RegionCmp );
         bounceMapper      = world.getMapper( BounceCmp );
+        entityAssembler   = world.getSystem( EntityAssemblySys );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -52,7 +54,7 @@ class TrailSys extends EntitySystem
                     switch ( bounce.lastTouched ) {
                         case Edge( a, b ):
                             // create trace
-                            createTrace( posMapper.get( pos.sector ).pos, Line( a, b ) );
+                            entityAssembler.createTrace( pos.sector, Line( a, b ) );
 
                             // reset last touched so we don't create it again
                             bounce.lastTouched = Nothing;
@@ -64,26 +66,11 @@ class TrailSys extends EntitySystem
         }
     }
 
-    // creates a beautiful trace entity
-    private function createTrace( pos : Vec2, displayType : IntersectResult ) {
-        if ( displayType != None ) {
-            var e = world.createEntity();
-
-            var renderCmp = new RenderCmp( 0xffffff );
-            var traceCmp = new TraceCmp( 0.8, pos, IR( displayType ) );
-            var timedEffectCmp = new TimedEffectCmp( 0, GlobalTickInterval );
-
-            e.addComponent( renderCmp );
-            e.addComponent( traceCmp );
-            e.addComponent( timedEffectCmp );
-
-            world.addEntity( e );
-        }
-    }
-
     var timedEffectMapper : ComponentMapper<TimedEffectCmp>;
     var trailMapper       : ComponentMapper<TrailCmp>;
     var posMapper         : ComponentMapper<PosCmp>;
     var bounceMapper      : ComponentMapper<BounceCmp>;
     var regionMapper      : ComponentMapper<RegionCmp>; // need to extract region polys from sector
+
+    var entityAssembler   : EntityAssemblySys;
 }

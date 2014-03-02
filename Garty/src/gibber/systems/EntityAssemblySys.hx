@@ -35,6 +35,7 @@ import gibber.components.RenderCmp;
 import gibber.components.SonarCmp;
 import gibber.components.SyncCmp;
 import gibber.components.TorpedoCmp;
+import gibber.components.TraceCmp;
 import gibber.components.TrailCmp;
 import gibber.components.TimedEffectCmp;
 import gibber.components.TransitRequestCmp;
@@ -205,6 +206,22 @@ class EntityAssemblySys extends EntitySystem
         return e;
     }
 
+    public function createTrace( sector : Entity, traceType : TraceType ) {
+        var e = world.createEntity();
+
+        var renderCmp = new RenderCmp( 0xffffff );
+        var posCmp = new PosCmp( sector, new Vec2( 0, 0 ) );
+        var traceCmp = new TraceCmp( 0.8, traceType );
+        var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
+
+        e.addComponent( renderCmp );
+        e.addComponent( posCmp );
+        e.addComponent( traceCmp );
+        e.addComponent( timedEffectCmp );
+
+        world.addEntity( e );
+    }
+
     // returns a sector without the RenderCmp
     public function createVirtualSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
         var e = createSector( name, pos, polygonAreas ).removeComponent( RenderCmp );
@@ -236,8 +253,7 @@ class EntityAssemblySys extends EntitySystem
         return e;
     }
 
-    public function createEntityWithCmps( cmps : List<Component> )
-    {
+    public function createEntityWithCmps( cmps : List<Component> ) {
         var e = world.createEntity();
 
         for ( cmp in cmps ) {

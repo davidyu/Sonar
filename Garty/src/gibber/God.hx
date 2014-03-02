@@ -110,7 +110,7 @@ class God
         world.setSystem( new RenderTrailSys( root ) );
         world.setSystem( new RenderSys( quad ) );
         world.setSystem( new RenderTorpedoSys( root ) );
-        world.setSystem( new RenderTraceSys( root ) );
+        world.setSystem( new RenderTraceSys( quad ) );
         world.setSystem( new SyncSys() );
         world.setSystem( new SonarSys() );
         world.setSystem( new TorpedoSys() );
