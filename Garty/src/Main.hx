@@ -17,11 +17,14 @@ class Main
 {
     static var engine : h3d.Engine;
     static var scene : h2d.Scene;
-    static var spr : h2d.Sprite;
+    static var backscene : h2d.Scene;
+    static var framebuffer : h2d.Sprite; // accumulator
+    static var bitbuf : h2d.Bitmap; // intermediate
+    static var frame : h2d.Sprite;
 
     static function update()
     {
-        scene.captureBitmap();
+        backscene.captureBitmap( bitbuf.tile );
         engine.render( scene );
     }
 
@@ -29,14 +32,23 @@ class Main
     {
         engine = new h3d.Engine();
         scene = new h2d.Scene();
+        backscene = new h2d.Scene();
 
         engine.onReady = function() {
-            spr = new h2d.Sprite( scene );
-            spr.x = 0;
-            spr.y = 0;
+            frame = new h2d.Sprite( scene );
+            frame.x = 0;
+            frame.y = 0;
+
+            var bmd = new hxd.BitmapData( engine.width, engine.height );
+            var tile = h2d.Tile.fromBitmap( bmd );
+            bitbuf = new h2d.Bitmap( tile, frame );
+
+            framebuffer = new h2d.Sprite( backscene );
+            framebuffer.x = 0;
+            framebuffer.y = 0;
 
             trace( "Starting up God" );
-            var g = new God( Lib.current, spr );
+            var g = new God( Lib.current, framebuffer );
 
             hxd.System.setLoop( update );
         }
