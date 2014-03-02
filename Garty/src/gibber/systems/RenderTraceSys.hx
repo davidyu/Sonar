@@ -40,7 +40,7 @@ class RenderTraceSys extends EntitySystem
         var trace : TraceCmp;
         var pos : PosCmp;
 
-        if ( actives.size > 0 && compensatingClear ) {
+        if ( actives.size > 0 || compensatingClear ) {
             g2d.clear();
         }
 

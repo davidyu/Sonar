@@ -24,6 +24,6 @@ class TraceCmp implements Component
     public function new( fadeMultiplier : Float, traceType : TraceType ) {
         this.fadeMultiplier = fadeMultiplier;
         this.traceType      = traceType;
-        this.fadeAcc        = 0.5;
+        this.fadeAcc        = 0.9;
     }
 }

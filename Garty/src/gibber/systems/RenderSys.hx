@@ -59,8 +59,6 @@ class RenderSys extends EntitySystem
             compensatingClear = false;
         }
 
-        trace( actives.size );
-
         for ( i in 0...actives.size ) {
             compensatingClear = true;
             e = actives.get( i );
