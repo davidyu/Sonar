@@ -4,7 +4,7 @@
 -lib hscript
 -lib h3d
 
--swf-header 1280:720:30:000000
+-swf-header 512:512:30:000000
 -swf-version 11.7
 --no-traces
 

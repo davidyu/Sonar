@@ -45,26 +45,48 @@ class Main
                 return i;
             }
 
-            var prim = new h3d.prim.Plan3D();
+            var pts = new Array<h3d.col.Point>();
+            pts.push( new h3d.col.Point( -1,  1, 0 ) );
+            pts.push( new h3d.col.Point(  1,  1, 0 ) );
+            pts.push( new h3d.col.Point(  1, -1, 0 ) );
+            //pts.push( new h3d.col.Point( -1,  1, 0 ) );
+            //pts.push( new h3d.col.Point(  1, -1, 0 ) );
+            pts.push( new h3d.col.Point( -1, -1, 0 ) );
+
+            var uvs = new Array<h3d.prim.UV>();
+            uvs.push( new h3d.prim.UV( 0, 0 ) );
+            uvs.push( new h3d.prim.UV( 1, 0 ) );
+            uvs.push( new h3d.prim.UV( 1, 1 ) );
+            //uvs.push( new h3d.prim.UV( 0, 0 ) );
+            //uvs.push( new h3d.prim.UV( 0, 1 ) );
+            uvs.push( new h3d.prim.UV( 0, 1 ) );
+
+            var normals = new Array<h3d.col.Point>();
+            normals.push( new h3d.col.Point( 0, 0, 1 ) );
+            normals.push( new h3d.col.Point( 0, 0, 1 ) );
+            normals.push( new h3d.col.Point( 0, 0, 1 ) );
+            //normals.push( new h3d.col.Point( 0, 0, 1 ) );
+            //normals.push( new h3d.col.Point( 0, 0, 1 ) );
+            normals.push( new h3d.col.Point( 0, 0, 1 ) );
+
+            // var prim = new h3d.prim.Quads( pts, uvs, normals );
+            var prim = new h3d.prim.Cube();
+            prim.translate( -0.5, -0.5, -0.5);
+            prim.addUVs();
+            prim.addNormals();
             var bmd = new hxd.BitmapData( p2( engine.width ), p2( engine.height ) );
             renderTarget = h2d.Tile.fromBitmap( bmd );
 
-            // var tex = renderTarget.getTexture();
-            var tex = h3d.mat.Texture.fromColor( 0xffffffff );
-            var mat = new h3d.mat.MeshMaterial( tex );
-            mat.depthWrite = false;
-            mat.culling = None;
+            var tex = renderTarget.getTexture();
 
-            scene.camera.pos.set( 0, 0, -10. );
-            scene.camera.up.set( 0., 1, 0 );
+            // sanity check
+            // var tex = h3d.mat.Texture.fromColor( 0xffffffff );
+            var mat = new h3d.mat.MeshMaterial( tex );
+
+            scene.camera.pos.set( 0, 0, 1.375 ); // ***
+            scene.camera.up.set( 0, -1, 0 );
             scene.camera.target.set( 0, 0, 0 );
             scene.camera.update();
-
-            mat.lightSystem = {
-                ambient : new h3d.Vector(0, 0, 0),
-                dirs : [{ dir : new h3d.Vector(-0.3,-0.5,-1), color : new h3d.Vector(1,1,1) }],
-                points : [{ pos : new h3d.Vector(1.5,0,0), color : new h3d.Vector(3,0,0), att : new h3d.Vector(0,0,1) }],
-            }
 
             obj = new Mesh( prim, mat, scene );
 
