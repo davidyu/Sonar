@@ -45,31 +45,6 @@ class Main
                 return i;
             }
 
-            var pts = new Array<h3d.col.Point>();
-            pts.push( new h3d.col.Point( -1,  1, 0 ) );
-            pts.push( new h3d.col.Point(  1,  1, 0 ) );
-            pts.push( new h3d.col.Point(  1, -1, 0 ) );
-            //pts.push( new h3d.col.Point( -1,  1, 0 ) );
-            //pts.push( new h3d.col.Point(  1, -1, 0 ) );
-            pts.push( new h3d.col.Point( -1, -1, 0 ) );
-
-            var uvs = new Array<h3d.prim.UV>();
-            uvs.push( new h3d.prim.UV( 0, 0 ) );
-            uvs.push( new h3d.prim.UV( 1, 0 ) );
-            uvs.push( new h3d.prim.UV( 1, 1 ) );
-            //uvs.push( new h3d.prim.UV( 0, 0 ) );
-            //uvs.push( new h3d.prim.UV( 0, 1 ) );
-            uvs.push( new h3d.prim.UV( 0, 1 ) );
-
-            var normals = new Array<h3d.col.Point>();
-            normals.push( new h3d.col.Point( 0, 0, 1 ) );
-            normals.push( new h3d.col.Point( 0, 0, 1 ) );
-            normals.push( new h3d.col.Point( 0, 0, 1 ) );
-            //normals.push( new h3d.col.Point( 0, 0, 1 ) );
-            //normals.push( new h3d.col.Point( 0, 0, 1 ) );
-            normals.push( new h3d.col.Point( 0, 0, 1 ) );
-
-            // var prim = new h3d.prim.Quads( pts, uvs, normals );
             var prim = new h3d.prim.Cube();
             prim.translate( -0.5, -0.5, -0.5);
             prim.addUVs();
