@@ -16,32 +16,57 @@ using gibber.Util;
 class Main 
 {
     static var engine : h3d.Engine;
-    static var scene : h2d.Scene;
+    static var scene : h3d.scene.Scene;
     static var backscene : h2d.Scene;
     static var framebuffer : h2d.Sprite; // accumulator
-    static var bitbuf : h2d.Bitmap; // intermediate
-    static var frame : h2d.Sprite;
+    static var renderTarget : h2d.Tile; // intermediate
+	static var time : Float;
+    static var obj : h3d.scene.Mesh;
 
     static function update()
     {
-        backscene.captureBitmap( bitbuf.tile );
+        backscene.captureBitmap( renderTarget );
         engine.render( scene );
     }
 
     static function main()
     {
+		time = 0;
         engine = new h3d.Engine();
-        scene = new h2d.Scene();
+        scene = new h3d.scene.Scene();
         backscene = new h2d.Scene();
 
         engine.onReady = function() {
-            frame = new h2d.Sprite( scene );
-            frame.x = 0;
-            frame.y = 0;
+            function p2( x : Int ) {
+                var i = 1;
+                while ( x > i ) {
+                    i <<= 1;
+                }
+                return i;
+            }
 
-            var bmd = new hxd.BitmapData( engine.width, engine.height );
-            var tile = h2d.Tile.fromBitmap( bmd );
-            bitbuf = new h2d.Bitmap( tile, frame );
+            var prim = new h3d.prim.Plan3D();
+            var bmd = new hxd.BitmapData( p2( engine.width ), p2( engine.height ) );
+            renderTarget = h2d.Tile.fromBitmap( bmd );
+
+            // var tex = renderTarget.getTexture();
+            var tex = h3d.mat.Texture.fromColor( 0xffffffff );
+            var mat = new h3d.mat.MeshMaterial( tex );
+            mat.depthWrite = false;
+            mat.culling = None;
+
+            scene.camera.pos.set( 0, 0, -10. );
+            scene.camera.up.set( 0., 1, 0 );
+            scene.camera.target.set( 0, 0, 0 );
+            scene.camera.update();
+
+            mat.lightSystem = {
+                ambient : new h3d.Vector(0, 0, 0),
+                dirs : [{ dir : new h3d.Vector(-0.3,-0.5,-1), color : new h3d.Vector(1,1,1) }],
+                points : [{ pos : new h3d.Vector(1.5,0,0), color : new h3d.Vector(3,0,0), att : new h3d.Vector(0,0,1) }],
+            }
+
+            obj = new Mesh( prim, mat, scene );
 
             framebuffer = new h2d.Sprite( backscene );
             framebuffer.x = 0;
@@ -53,6 +78,7 @@ class Main
             hxd.System.setLoop( update );
         }
 
+        engine.debug = true;
         engine.init();
         var stage = Lib.current.stage;
         stage.scaleMode = StageScaleMode.NO_SCALE;
