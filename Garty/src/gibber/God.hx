@@ -196,9 +196,8 @@ class God
         inputTextfield.height = 50;
         inputTextfield.y = root.stage.stageHeight - inputTextfield.height;
         inputTextfield.defaultTextFormat = baseTextFormat;
-        inputTextfield.background = true;
-        inputTextfield.backgroundColor = 0x000000;
-        inputTextfield.textColor = 0x000000;
+        inputTextfield.background = false;
+        inputTextfield.textColor = 0xffffff;
 
         root.addChild( inputTextfield );
 
