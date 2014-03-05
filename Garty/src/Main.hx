@@ -23,6 +23,7 @@ class PostEffectsShader extends h3d.impl.Shader {
         };
 
         var tuv : Float2;
+        var time : Float;
 
         function vertex( mproj:Matrix ) {
             out = input.pos.xyzw * mproj;
@@ -50,6 +51,12 @@ class PostEffectsShader extends h3d.impl.Shader {
             return c;
         }
 
+        // make scanlines by subtracting from rgb
+        function scanline( color : Float4, screenspace : Float2 ) {
+            color.rgb -= sin( ( screenspace.y + ( time * 29.0 ) ) ) * 0.02;
+            return color;
+        }
+
         function fragment( tex : Texture ) {
             var uv = crtwarp( tuv, 4.2 );
             var c = rgshift( tex, uv );
@@ -59,6 +66,9 @@ class PostEffectsShader extends h3d.impl.Shader {
             c *= uv.y > 0;
             c *= uv.x < 1;
             c *= uv.y < 1;
+
+            // using screenspace coords forcibly produces a moire pattern, neat!
+            c = scanline( c, uv * [ 512, 512 ] );
             out = c;
         }
     };
@@ -92,13 +102,17 @@ class PostEffectsMaterial extends h3d.mat.Material{
     public var tex : h3d.mat.Texture;
     var pshader : PostEffectsShader;
 
-    public function new(tex) {
+    public function new( tex ) {
         this.tex = tex;
         pshader = new PostEffectsShader();
         depthTest = h3d.mat.Data.Compare.Always;
         culling = None;
 
         super( pshader );
+    }
+
+    public function updateTime( newTime : Float ) {
+        pshader.time = newTime;
     }
 
     override function setup( ctx : h3d.scene.RenderContext ) {
@@ -123,6 +137,10 @@ class Screen extends CustomObject {
         super( prim, sm = new PostEffectsMaterial( tex ), parent );
     }
 
+    public function updateTime( newTime ) {
+        sm.updateTime( newTime );
+    }
+
     function get_tex() {
         return sm.tex;
     }
@@ -139,17 +157,20 @@ class Main
     static var backscene : h2d.Scene;
     static var framebuffer : h2d.Sprite; // accumulator
     static var renderTarget : h2d.Tile; // intermediate
-	static var time : Float;
+    static var time : Float;
+    static var screen : Screen;
 
     static function update()
     {
         backscene.captureBitmap( renderTarget );
         engine.render( scene );
+        screen.updateTime( time );
+        time += 1 / Lib.current.stage.frameRate;
     }
 
     static function main()
     {
-		time = 0;
+        time = 0;
         engine = new h3d.Engine();
         scene = new h3d.scene.Scene();
         backscene = new h2d.Scene();
@@ -170,8 +191,7 @@ class Main
             // var tex = h3d.mat.Texture.fromColor( 0xffffffff );
             var tex = renderTarget.getTexture();
 
-            var screen = new Screen( tex, scene );
-
+            screen = new Screen( tex, scene );
             scene.camera.pos.set( 0, 0, 1. );
 
             // make orthographic camera bounds just at the edges of the cube
