@@ -29,25 +29,30 @@ class PostEffectsShader extends h3d.impl.Shader {
             tuv =  input.uv;
         }
 
-        function crtwarp( uv : Float2, warp : Float ) {
+        // apply fisheye/CRT screen warp to UV coords; at flatness ~= 0, it's a circle.
+        function crtwarp( uv : Float2, flatness : Float ) {
             var coord = ( uv - 0.5 ) * 2.0; // shift coordsys to ( -0.5 , 0.5 )
             coord *= 1.1;
 
-            coord.x *= 1.0 + pow( ( abs( coord.y ) / warp ), 2.0 );
-            coord.y *= 1.0 + pow( ( abs( coord.x ) / warp ), 2.0 );
+            coord.x *= 1.0 + pow( ( abs( coord.y ) / flatness ), 2.0 );
+            coord.y *= 1.0 + pow( ( abs( coord.x ) / flatness ), 2.0 );
 
             coord = ( coord / 2.0 ) + 0.5; // back to ( 0, 1 )
             return coord;
         }
 
-        function fragment( tex : Texture ) {
-            var uv = crtwarp( tuv, 4.2 );
-
-            // sampling trick to get a red-green shift
-            var c : Float4 = [ 0, 0, 0, 1. ];
+        // sampling trick to get a red-green shift
+        function rgshift( tex : Texture, uv : Float2 ) {
+            var c : Float4 = [ 0, 0, 0, 1 ];
             c.r = tex.get([ uv.x - 0.003, uv.y ] ).r;
             c.g = tex.get([ uv.x, uv.y ] ).g;
             c.b = tex.get([ uv.x + 0.003, uv.y ] ).b;
+            return c;
+        }
+
+        function fragment( tex : Texture ) {
+            var uv = crtwarp( tuv, 4.2 );
+            var c = rgshift( tex, uv );
 
             // discard
             c *= uv.x > 0;
