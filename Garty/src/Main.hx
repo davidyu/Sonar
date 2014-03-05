@@ -14,6 +14,7 @@ import com.sociodox.theminer.TheMiner;
 using gibber.Util;
 
 class PostEffectsShader extends h3d.impl.Shader {
+
 #if flash 
     static var SRC = {
         var input : {
@@ -28,11 +29,29 @@ class PostEffectsShader extends h3d.impl.Shader {
             tuv =  input.uv;
         }
 
+        function crtwarp( uv : Float2, warp : Float ) {
+            var coord = ( uv - 0.5 ) * 2.0; // symmetrical coords ( -0.5 , 0.5 )
+            coord *= 1.1;
+
+            coord.x *= 1.0 + pow( ( abs( coord.y ) / warp ), 2.0 );
+            coord.y *= 1.0 + pow( ( abs( coord.x ) / warp ), 2.0 );
+
+            coord = ( coord / 2.0 ) + 0.5;
+            return coord;
+        }
+
         function fragment( tex : Texture ) {
+            var uv = crtwarp( tuv, 4.2 );
             var c : Float4 = [ 0, 0, 0, 1. ];
-            c.r = tex.get([ tuv.x - 0.003, tuv.y ] ).r;
-            c.g = tex.get([ tuv.x, tuv.y ] ).g;
-            c.b = tex.get([ tuv.x + 0.003, tuv.y ] ).b;
+            c.r = tex.get([ uv.x - 0.003, uv.y ] ).r;
+            c.g = tex.get([ uv.x, uv.y ] ).g;
+            c.b = tex.get([ uv.x + 0.003, uv.y ] ).b;
+
+            // discard
+            c *= uv.x > 0;
+            c *= uv.y > 0;
+            c *= uv.x < 1;
+            c *= uv.y < 1;
             out = c;
         }
     };
@@ -144,10 +163,10 @@ class Main
             var bmd = new hxd.BitmapData( p2( engine.width ), p2( engine.height ) );
             renderTarget = h2d.Tile.fromBitmap( bmd );
 
-            var tex = renderTarget.getTexture();
-
             // sanity check
             // var tex = h3d.mat.Texture.fromColor( 0xffffffff );
+            var tex = renderTarget.getTexture();
+
             var screen = new Screen( tex, scene );
 
             scene.camera.pos.set( 0, 0, 1. );
