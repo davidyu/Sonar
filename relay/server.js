@@ -44,9 +44,17 @@ var gameServer = net.createServer( function ( socket ) {
     clients.forEach( function( client ) {
       if ( client == sender ) return;
       var posID = new Buffer( [ 253, sender.id ] );
-      client.write( posID );
-      client.write( data );
-      console.log( posID.toString() + "   |   " + data.length + " | " + data.readUInt16BE(1) + " | " + data.toString() );
+      try {
+        if ( client.writable ) {
+          client.write( posID );
+          client.write( data );
+          console.log( posID.toString() + "   |   " + data.length + " | " + data.readUInt16BE(1) + " | " + data.toString() );
+        } else {
+          console.log( client.id + " is not writable." );
+        }
+      } catch ( err ) {
+        console.log( "cannot send message to " + client.id + ": " + err );
+      }
     } );
   }
 } ).listen( process.env.PORT || 5000, null );
