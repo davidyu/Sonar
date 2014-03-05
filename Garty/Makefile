@@ -7,9 +7,9 @@ fdb: preprocess
 	haxe debug.hxml
 	fdb bin/Engine_debug.swf
 
-fdb-local: preprocess
+local: preprocess
 	haxe local.hxml
-	fdb bin/Engine_local.swf
+	open bin/Engine_local.swf
 
 game: preprocess
 	haxe compile.hxml
