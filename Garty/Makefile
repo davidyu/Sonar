@@ -4,6 +4,10 @@ preprocess:
 	./preprocess.sh > resource/classpaths.inc
 
 fdb: preprocess
+	haxe debug-local.hxml
+	fdb bin/Engine_debug_local.swf
+
+fdb-prod: preprocess
 	haxe debug.hxml
 	fdb bin/Engine_debug.swf
 

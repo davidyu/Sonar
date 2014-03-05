@@ -1,0 +1,19 @@
+-cp src
+-cp libs/artemisx/src
+
+-debug
+-D fdb
+-lib hscript
+-lib h3d
+-swf-lib ./libs/TheMiner_en.swc
+
+-D debug
+-D local
+
+-swf-header 512:512:30:000000
+-swf-version 11.7
+
+-resource resource/classpaths.inc@classpaths
+
+-swf bin/Engine_debug_local.swf
+-main Main
