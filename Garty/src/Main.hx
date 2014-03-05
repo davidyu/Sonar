@@ -25,7 +25,7 @@ class PostEffectsShader extends h3d.impl.Shader {
         var tuv : Float2;
 
         function vertex( mproj:Matrix ) {
-            out = input.pos.xyzw*mproj;
+            out = input.pos.xyzw * mproj;
             tuv =  input.uv;
         }
 
@@ -41,12 +41,12 @@ class PostEffectsShader extends h3d.impl.Shader {
             return coord;
         }
 
-        // sampling trick to get a red-green shift
+        // sampling trick to force a red-green shift on resulting texture
         function rgshift( tex : Texture, uv : Float2 ) {
             var c : Float4 = [ 0, 0, 0, 1 ];
-            c.r = tex.get([ uv.x - 0.003, uv.y ] ).r;
-            c.g = tex.get([ uv.x, uv.y ] ).g;
-            c.b = tex.get([ uv.x + 0.003, uv.y ] ).b;
+            c.r = tex.get( [ uv.x - 0.003, uv.y ] ).r;
+            c.g = tex.get( [ uv.x, uv.y ] ).g;
+            c.b = tex.get( [ uv.x + 0.003, uv.y ] ).b;
             return c;
         }
 
