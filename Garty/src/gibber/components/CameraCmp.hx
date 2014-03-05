@@ -13,9 +13,23 @@ enum CameraTarget {
 @:rtti
 class CameraCmp implements Component
 {
-    var target : CameraTarget;
+    public var target : CameraTarget;
+    public var viewportW : Int;
+    public var viewportH : Int;
 
-    public function new( target ) {
+    public function new( target, ?viewportW, ?viewportH ) {
         this.target = target;
+
+        if ( viewportW == null ) {
+            this.viewportW = flash.Lib.current.stage.stageWidth;
+        } else {
+            this.viewportW = viewportW;
+        }
+
+        if ( viewportH == null ) {
+            this.viewportH = flash.Lib.current.stage.stageHeight;
+        } else {
+            this.viewportH = viewportH;
+        }
     }
 }

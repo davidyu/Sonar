@@ -7,6 +7,7 @@ import com.artemisx.utils.Bag;
 import flash.display.Graphics;
 import flash.display.MovieClip;
 import flash.display.Sprite;
+import gibber.components.CameraCmp;
 import gibber.components.ExplosionCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
@@ -37,9 +38,11 @@ class RenderSys extends EntitySystem
     override public function initialize() : Void {
         posMapper = world.getMapper( PosCmp );
         regionMapper = world.getMapper( RegionCmp );
+        cameraMapper = world.getMapper( CameraCmp );
     }
 
-    override public function onInserted( e : Entity ) : Void {
+    public function setCamera( e : Entity ) : Void {
+        camera = e;
     }
 
     override public function onRemoved( e : Entity ) : Void {
@@ -59,12 +62,19 @@ class RenderSys extends EntitySystem
             compensatingClear = false;
         }
 
+        if ( camera == null ) {
+            trace( "didn't acquire camera! This won't work." );
+        }
+
         for ( i in 0...actives.size ) {
             compensatingClear = true;
             e = actives.get( i );
 
             posCmp = posMapper.get( e );
             pos = Util.worldCoords( posCmp.pos, posCmp.sector );
+
+            // get camera coords
+            pos = pos.sub( posMapper.get( camera ).pos );
 
             g2d.beginFill( 0xffffff );
             g2d.drawCircle( pos.x, pos.y, 3 );
@@ -74,7 +84,9 @@ class RenderSys extends EntitySystem
 
     var posMapper : ComponentMapper<PosCmp>;
     var regionMapper : ComponentMapper<RegionCmp>;
+    var cameraMapper : ComponentMapper<CameraCmp>;
 
     private var g2d : h2d.Graphics;
     private var compensatingClear : Bool;
+    private var camera : Entity;
 }

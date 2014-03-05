@@ -20,9 +20,10 @@ import gibber.managers.NameRegistry;
 import gibber.managers.SectorGraphMgr;
 import gibber.managers.SynonymMgr;
 import gibber.managers.WordsMgr;
+import gibber.systems.CameraSys;
+import gibber.systems.ClientSys;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.ControllerSys;
-import gibber.systems.ClientSys;
 import gibber.systems.ExplosionSys;
 import gibber.systems.EntityAssemblySys;
 import gibber.systems.InputSys;
@@ -98,6 +99,7 @@ class God
 
         entityAssembler = world.setSystem( new EntityAssemblySys() );
         world.setSystem( new PosTrackerSys() ); // should be before anything that explicitly updates PosCmp
+        world.setSystem( new CameraSys() );
         world.setSystem( new ClientSys( this ) );
         world.setSystem( new InputSys() );
         world.setSystem( new ControllerSys( this ) ); // this must follow InputSys to apply effects of controller states
