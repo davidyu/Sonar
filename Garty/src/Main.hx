@@ -163,11 +163,6 @@ class Main
                 return i;
             }
 
-            var prim = new h3d.prim.Cube();
-            prim.translate( -0.5, -0.5, -0.5);
-            prim.addUVs();
-            prim.addNormals();
-
             var bmd = new hxd.BitmapData( p2( engine.width ), p2( engine.height ) );
             renderTarget = h2d.Tile.fromBitmap( bmd );
 
@@ -190,11 +185,6 @@ class Main
             scene.camera.target.set( 0, 0, 0 );
 
             scene.camera.update();
-
-            /*
-            scene.camera.pos.set( 0, 0, 1.375 ); // ***
-            scene.camera.update();
-            */
 
             framebuffer = new h2d.Sprite( backscene );
             framebuffer.x = 0;
