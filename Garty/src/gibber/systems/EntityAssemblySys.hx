@@ -17,6 +17,7 @@ import gibber.gabby.PortalEdge;
 import gibber.gabby.SynTag;
 import gibber.commands.MoveCmd;
 import gibber.components.BounceCmp;
+import gibber.components.CameraCmp;
 import gibber.components.CmdQueue;
 import gibber.components.ContainerCmp;
 import gibber.components.ControllerCmp;
@@ -204,6 +205,17 @@ class EntityAssemblySys extends EntitySystem
         world.addEntity( e );
 
         return e;
+    }
+
+    public function createCamera( sector: Entity, pos: Vec2, ?target : Entity ) {
+        var e = world.createEntity();
+
+        var posCmp = new PosCmp( sector, pos );
+        var camCmp = new CameraCmp( target == null ? StaticTarget( pos, sector ) : DynamicTarget( target ) );
+
+        e.addComponent( posCmp );
+        e.addComponent( camCmp );
+        world.addEntity( e );
     }
 
     public function createTrace( sector : Entity, traceType : TraceType ) {
