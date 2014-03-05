@@ -24,6 +24,7 @@ class PostEffectsShader extends h3d.impl.Shader {
 
         var tuv : Float2;
         var time : Float;
+        var screenres : Float2;
 
         function vertex( mproj:Matrix ) {
             out = input.pos.xyzw * mproj;
@@ -68,7 +69,7 @@ class PostEffectsShader extends h3d.impl.Shader {
             c *= uv.y < 1;
 
             // using screenspace coords forcibly produces a moire pattern, neat!
-            c = scanline( c, uv * [ 512, 512 ] );
+            c = scanline( c, uv * screenres );
             out = c;
         }
     };
@@ -119,6 +120,7 @@ class PostEffectsMaterial extends h3d.mat.Material{
         super.setup(ctx);
         pshader.tex = tex;
         pshader.mproj = ctx.camera.m;
+        pshader.screenres = new h3d.Vector( ctx.engine.width, ctx.engine.height );
     }
 }
 
