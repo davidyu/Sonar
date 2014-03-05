@@ -30,18 +30,20 @@ class PostEffectsShader extends h3d.impl.Shader {
         }
 
         function crtwarp( uv : Float2, warp : Float ) {
-            var coord = ( uv - 0.5 ) * 2.0; // symmetrical coords ( -0.5 , 0.5 )
+            var coord = ( uv - 0.5 ) * 2.0; // shift coordsys to ( -0.5 , 0.5 )
             coord *= 1.1;
 
             coord.x *= 1.0 + pow( ( abs( coord.y ) / warp ), 2.0 );
             coord.y *= 1.0 + pow( ( abs( coord.x ) / warp ), 2.0 );
 
-            coord = ( coord / 2.0 ) + 0.5;
+            coord = ( coord / 2.0 ) + 0.5; // back to ( 0, 1 )
             return coord;
         }
 
         function fragment( tex : Texture ) {
             var uv = crtwarp( tuv, 4.2 );
+
+            // sampling trick to get a red-green shift
             var c : Float4 = [ 0, 0, 0, 1. ];
             c.r = tex.get([ uv.x - 0.003, uv.y ] ).r;
             c.g = tex.get([ uv.x, uv.y ] ).g;
@@ -57,26 +59,27 @@ class PostEffectsShader extends h3d.impl.Shader {
     };
 
 #else
-static var VERTEX = "
-    attribute vec3 pos;
-    uniform mat4 mproj;
-    attribute vec2 uv;
+    // do nothing
+    static var VERTEX = "
+        attribute vec3 pos;
+        uniform mat4 mproj;
+        attribute vec2 uv;
 
-    varying vec2 tuv;
+        varying vec2 tuv;
 
-    void main(void) {
-        gl_Position = vec4(pos,1)*mproj;
-        tuv = uv;
-    }";
+        void main(void) {
+            gl_Position = vec4(pos,1)*mproj;
+            tuv = uv;
+        }";
 
-static var FRAGMENT = "
-    uniform sampler2D tex;
-    varying vec2 tuv;
-    void main(void) {
-        gl_FragColor = texture2D(tex, tuv);
-        //gl_FragColor = vec4(1,1,1,1);
-    }
-";
+    static var FRAGMENT = "
+        uniform sampler2D tex;
+        varying vec2 tuv;
+        void main(void) {
+            gl_FragColor = texture2D(tex, tuv);
+            //gl_FragColor = vec4(1,1,1,1);
+        }
+    ";
 #end
 }
 
