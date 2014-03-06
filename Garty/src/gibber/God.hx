@@ -14,12 +14,9 @@ import gibber.components.CmdQueue;
 import gibber.components.ControllerCmp;
 import gibber.components.PosCmp;
 import gibber.components.TakeCmp;
-import gibber.gabby.SynTag;
 import gibber.managers.ContainerMgr;
 import gibber.managers.NameRegistry;
 import gibber.managers.SectorGraphMgr;
-import gibber.managers.SynonymMgr;
-import gibber.managers.WordsMgr;
 import gibber.systems.CameraSys;
 import gibber.systems.ClientSys;
 import gibber.systems.CmdProcessSys;
@@ -55,7 +52,6 @@ class God
     @:isVar public var entityAssembler ( default, null ): EntityAssemblySys;
     @:isVar public var entityDeserializer ( default, null ) : EntityDeserializer;
     @:isVar public var sf ( default, null ) : ScriptFactory;
-    @:isVar public var entityResolver ( default, null ) : EntityResolver;
 
     public function new( r : MovieClip, q : h2d.Sprite ) {
         root = r;
@@ -70,7 +66,6 @@ class God
         world = new World();
         initializeSystems();
 
-        SynTag.initialize( this );
         Util.init( this );
 
         cf = new CmdFactory( this );
@@ -78,8 +73,6 @@ class God
 
         commander = new Commander( this );
         sf = new ScriptFactory( this );
-        entityResolver = new EntityResolver( this );
-        parser = new AdvancedParser( this );
 
         initializeEntities();
     }
@@ -93,8 +86,6 @@ class God
         world.setManager( new SectorGraphMgr() );
 
         // don't really need these anymore; take them out
-        world.setManager( new SynonymMgr() );
-        world.setManager( new WordsMgr() ); // Needs to be last
         world.setManager( new NameRegistry() ); // Needs to be last
 
         entityAssembler = world.setSystem( new EntityAssemblySys() );
@@ -171,19 +162,6 @@ class God
     }
 
     function onEnterKey( e : flash.events.KeyboardEvent ) : Void {
-        switch ( e.keyCode ) {
-            case Keyboard.ENTER:
-                var line = inputTextfield.text;
-                inputTextfield.text = "";
-                debugPrintln( line, true );
-
-                if ( line != "" ) {
-                    parser.parse( line );
-                }
-
-            case Keyboard.DELETE:
-                debugClear();
-        }
     }
 
     //debugger console methods
@@ -239,7 +217,6 @@ class God
     var inputTextfield : TextField;
     var baseTextFormat : TextFormat;
 
-    var parser : AdvancedParser;
     public var commander : Commander;
     public var outputTextfield : TextField;
     public var sectors : Array<Entity>;
