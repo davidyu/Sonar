@@ -12,9 +12,7 @@ import flash.ui.Keyboard;
 
 import gibber.components.ContainableCmp;
 import gibber.components.StaticPosCmp;
-import gibber.components.TeractNodeCmp;
 import gibber.gabby.PortalEdge;
-import gibber.gabby.SynTag;
 import gibber.commands.MoveCmd;
 import gibber.components.BounceCmp;
 import gibber.components.CameraCmp;
@@ -42,8 +40,6 @@ import gibber.components.TimedEffectCmp;
 import gibber.components.TransitRequestCmp;
 import gibber.managers.ContainerMgr;
 import gibber.scripts.TransitScript;
-import gibber.teracts.LookTeract;
-import gibber.teracts.MoveTeract;
 import utils.Polygon;
 import utils.Vec2;
 
@@ -78,7 +74,7 @@ class EntityAssemblySys extends EntitySystem
     public function createPlayer( name: String, sector: Entity, position: Vec2 ): Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
-        var nameCmp = new NameIdCmp( name, new SynTag( name, ["sub", name], SynType.NOUN ) );
+        var nameCmp = new NameIdCmp( name );
         var posCmp = new PosCmp( sector, position );
         var renderCmp = new RenderCmp();
         var cmdCmp = new CmdQueue();
@@ -242,7 +238,7 @@ class EntityAssemblySys extends EntitySystem
 
     public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
         var e = world.createEntity();
-        var nameCmp = new NameIdCmp( name, new SynTag( name, [name], SynType.NOUN ) );
+        var nameCmp = new NameIdCmp( name );
         var posCmp = new PosCmp( e, pos );
         var staticCmp = new StaticPosCmp();
         var lookCmp = new LookCmp();
