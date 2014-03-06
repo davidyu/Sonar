@@ -35,9 +35,13 @@ var gameServer = net.createServer( function ( socket ) {
   // broadcast this client's joining to every other client
   clients.forEach( function( client ) {
     if ( client == socket ) return;
-    client.write( socketJoin );
-    var clientAdd = new Buffer( [ 254, client.id ] );
-    socket.write( clientAdd );
+    try {
+      client.write( socketJoin );
+      var clientAdd = new Buffer( [ 254, client.id ] );
+      socket.write( clientAdd );
+    } catch( err ) {
+      console.log( "error broadcasting client joining : " + err );
+    }
   } );
 
   function relay( data, sender ) {
