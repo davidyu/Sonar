@@ -15,11 +15,13 @@ import gibber.components.ControllerCmp;
 import gibber.components.PosCmp;
 import gibber.components.TakeCmp;
 import gibber.gabby.SynTag;
+
 import gibber.managers.ContainerMgr;
 import gibber.managers.NameRegistry;
 import gibber.managers.SectorGraphMgr;
 import gibber.managers.SynonymMgr;
 import gibber.managers.WordsMgr;
+
 import gibber.systems.CameraSys;
 import gibber.systems.ClientSys;
 import gibber.systems.CmdProcessSys;
@@ -32,6 +34,7 @@ import gibber.systems.PosTrackerSys;
 import gibber.systems.RenderExplosionSys;
 import gibber.systems.RenderSonarSys;
 import gibber.systems.RenderSectorSys;
+import gibber.systems.RenderGridSys;
 import gibber.systems.RenderSys;
 import gibber.systems.RenderTorpedoSys;
 import gibber.systems.RenderTrailSys;
@@ -107,6 +110,7 @@ class God
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new ExplosionSys() );
         world.setSystem( new RenderExplosionSys( root ) );
+        world.setSystem( new RenderGridSys( quad ) );
         world.setSystem( new RenderSectorSys( root ) );
         world.setSystem( new RenderSonarSys( root ) );
         world.setSystem( new RenderTrailSys( root ) );
@@ -157,7 +161,7 @@ class God
 
         sectors.push( entityAssembler.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
 
-#if ( fdb || local )
+#if ( local )
         Security.loadPolicyFile( "xmlsocket://localhost:10000" );
         client = entityAssembler.createClient( "localhost", 5000 );
 #else
