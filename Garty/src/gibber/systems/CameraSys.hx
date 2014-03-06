@@ -11,6 +11,7 @@ import gibber.components.PosCmp;
 
 import gibber.systems.RenderSys;
 import gibber.systems.RenderTraceSys;
+import gibber.systems.RenderGridSys;
 
 class CameraSys extends EntitySystem
 {
@@ -26,6 +27,7 @@ class CameraSys extends EntitySystem
     override public function onInserted( e : Entity ) : Void {
         world.getSystem( RenderSys ).setCamera( e );
         world.getSystem( RenderTraceSys ).setCamera( e );
+        world.getSystem( RenderGridSys ).setCamera( e );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {

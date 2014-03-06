@@ -24,6 +24,7 @@ import gibber.systems.ControllerSys;
 import gibber.systems.ExplosionSys;
 import gibber.systems.EntityAssemblySys;
 import gibber.systems.InputSys;
+import gibber.systems.GridSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.PosTrackerSys;
 import gibber.systems.RenderExplosionSys;
@@ -95,6 +96,7 @@ class God
         world.setSystem( new ClientSys( this ) );
         world.setSystem( new InputSys() );
         world.setSystem( new ControllerSys( this ) ); // this must follow InputSys to apply effects of controller states
+        world.setSystem( new GridSys() );
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new ExplosionSys() );
@@ -157,6 +159,7 @@ class God
         Security.loadPolicyFile( "xmlsocket://sonargame.cloudapp.net:10000" );
         client = entityAssembler.createClient( "sonargame.cloudapp.net", 5000 );
 #end
+        entityAssembler.createGridReferenceBound( sectors[0], new Vec2( 0, 0 ) );
     }
 
     public function tick( _ ) : Void {

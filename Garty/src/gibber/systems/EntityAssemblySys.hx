@@ -14,6 +14,7 @@ import gibber.components.ContainableCmp;
 import gibber.components.StaticPosCmp;
 import gibber.gabby.PortalEdge;
 import gibber.commands.MoveCmd;
+import gibber.components.BoundCmp;
 import gibber.components.BounceCmp;
 import gibber.components.CameraCmp;
 import gibber.components.CmdQueue;
@@ -211,6 +212,20 @@ class EntityAssemblySys extends EntitySystem
 
         e.addComponent( posCmp );
         e.addComponent( camCmp );
+        world.addEntity( e );
+    }
+
+    public function createGridReferenceBound( sector : Entity, pos : Vec2 ) {
+        var e = world.createEntity();
+
+        var renderCmp = new RenderCmp( 0x34608D );
+        var posCmp = new PosCmp( sector, pos );
+        var boundCmp = new BoundCmp( Rect( 20, 20 ) );
+
+        e.addComponent( renderCmp );
+        e.addComponent( posCmp );
+        e.addComponent( boundCmp );
+
         world.addEntity( e );
     }
 

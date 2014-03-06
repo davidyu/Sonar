@@ -7,6 +7,7 @@ import com.artemisx.utils.Bag;
 import flash.display.Graphics;
 import flash.display.MovieClip;
 import flash.display.Sprite;
+import gibber.components.BoundCmp;
 import gibber.components.CameraCmp;
 import gibber.components.ExplosionCmp;
 import gibber.components.PosCmp;
@@ -30,7 +31,7 @@ using Lambda;
 class RenderSys extends EntitySystem
 {
     public function new( quad : h2d.Sprite ) {
-        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp, TraceCmp, TorpedoCmp, ExplosionCmp] ) );
+        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp, TraceCmp, TorpedoCmp, ExplosionCmp, BoundCmp] ) );
 
         g2d = new h2d.Graphics( quad );
     }
@@ -62,9 +63,7 @@ class RenderSys extends EntitySystem
             compensatingClear = false;
         }
 
-        if ( camera == null ) {
-            trace( "didn't acquire camera! This won't work." );
-        }
+        if ( camera == null ) return;
 
         for ( i in 0...actives.size ) {
             compensatingClear = true;
