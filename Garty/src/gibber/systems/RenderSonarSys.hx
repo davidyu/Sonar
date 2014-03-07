@@ -13,6 +13,7 @@ import flash.display.Graphics;
 import flash.display.MovieClip;
 import flash.display.Sprite;
 
+import gibber.components.CameraCmp;
 import gibber.components.PosCmp;
 import gibber.components.RenderCmp;
 import gibber.components.SonarCmp;
@@ -24,14 +25,12 @@ import utils.Vec2;
 
 class RenderSonarSys extends EntitySystem
 {
-    public function new( root : MovieClip ) {
+    public function new( quad : h2d.Sprite ) {
         super( Aspect.getAspectForAll( [SonarCmp, RenderCmp] ) );
 
-        bmd    = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0x00000000 );
-        bitbuf = new Bitmap( bmd );
-        this.root = root;
-
-        root.addChild( bitbuf );
+        bmd    = new hxd.BitmapData( flash.Lib.current.stage.stageWidth, flash.Lib.current.stage.stageHeight );
+        tile   = h2d.Tile.fromBitmap( bmd );
+        bitbuf = new h2d.Bitmap( tile, quad );
     }
 
     override public function initialize() : Void {
@@ -41,14 +40,8 @@ class RenderSonarSys extends EntitySystem
         renderMapper      = world.getMapper( RenderCmp );
     }
 
-    override public function onInserted( e : Entity ) : Void {
-        var renderCmp = renderMapper.get( e );
-        renderCmp.sprite = new Sprite();
-        root.addChild( renderCmp.sprite );
-    }
-
-    override public function onRemoved( e : Entity ) : Void {
-        root.removeChild( renderMapper.get( e ).sprite );
+    public function setCamera( e : Entity ) : Void {
+        camera = e;
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -60,8 +53,10 @@ class RenderSonarSys extends EntitySystem
         var screenTransform : Vec2;
 
         if ( actives.size > 0 ) {
-            bmd.fillRect( bmd.rect, 0x00000000 );
+            bmd.fill( 0, 0, bmd.width, bmd.height, 0x00000000 ); //clear
         }
+
+        if ( camera == null ) return;
 
         for ( i in 0...actives.size ) {
             e = actives.get( i );
@@ -76,7 +71,10 @@ class RenderSonarSys extends EntitySystem
 
             function plotPixelOnBmd( x: Int, y: Int ) {
                 var alpha = Std.int( ( 1.0 - time.internalAcc / time.duration ) * 255 ) << 24;
-                bmd.setPixel32( x, y, 0xffffff | alpha );
+                var cameraPos = posMapper.get( camera ).pos;
+                var screenx = Std.int( x - cameraPos.x );
+                var screeny = Std.int( y - cameraPos.y );
+                bmd.setPixel( screenx, screeny, 0xffffff | alpha );
             }
 
             if ( sonar.cullRanges.length == 0 ) {
@@ -92,6 +90,8 @@ class RenderSonarSys extends EntitySystem
                 }
             }
         }
+
+        tile.getTexture().uploadBitmap( bmd );
     }
 
     var renderMapper      : ComponentMapper<RenderCmp>;
@@ -99,7 +99,9 @@ class RenderSonarSys extends EntitySystem
     var posMapper         : ComponentMapper<PosCmp>;
     var timedEffectMapper : ComponentMapper<TimedEffectCmp>;
 
-    private var root   : MovieClip;
-    private var bmd    : BitmapData;
-    private var bitbuf : Bitmap;
+    private var bmd    : hxd.BitmapData;
+    private var tile   : h2d.Tile;
+    private var bitbuf : h2d.Bitmap;
+
+    private var camera : Entity;
 }
