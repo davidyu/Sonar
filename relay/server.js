@@ -36,9 +36,17 @@ var gameServer = net.createServer( function ( socket ) {
   clients.forEach( function( client ) {
     if ( client == socket ) return;
     try {
-      client.write( socketJoin );
+      if ( client.writable ) {
+        client.write( socketJoin );
+      } else {
+        console.log( client.id + " is not writable." );
+      }
       var clientAdd = new Buffer( [ 254, client.id ] );
-      socket.write( clientAdd );
+      if ( socket.writable ) {
+        socket.write( clientAdd );
+      } else {
+        console.log( socket.id + " is not writable." );
+      }
     } catch( err ) {
       console.log( "error broadcasting client joining : " + err );
     }
