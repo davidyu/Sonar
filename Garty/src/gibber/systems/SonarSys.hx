@@ -41,6 +41,14 @@ class SonarSys extends EntitySystem
         entityAssembler   = world.getSystem ( EntityAssemblySys );
     }
 
+    override public function onInserted( e : Entity ) : Void {
+        trace( "now we have " + actives.size + " active sonars." );
+    }
+
+    override public function onRemoved( e : Entity ) : Void {
+        trace( "now we have " + actives.size + " active sonars." );
+    }
+
     override public function processEntities( entities : Bag<Entity> ) : Void  {
         var e : Entity;
 
