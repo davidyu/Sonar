@@ -20,6 +20,15 @@ class Util
     public static function worldCoords( pos : Vec2, sector : Entity ) : Vec2 {
         return pos.add( posMapper.get( sector ).pos );
     }
+
+    // if @sector is passed into screenCoords, we'll do a conversion into world space before
+    // turning it into screen space
+    public static function screenCoords( pos : Vec2, camera : Entity, ?sector : Entity ) : Vec2 {
+        if ( sector != null ) {
+            pos = worldCoords( pos, sector );
+        }
+        return pos.sub( posMapper.get( camera ).pos );
+    }
     
     public static function sectorCoords( pos : Vec2, ref : Entity, tar : Entity ) : Vec2 {
         return localCoords( worldCoords( pos, ref ), tar );

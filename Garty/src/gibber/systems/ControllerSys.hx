@@ -24,6 +24,10 @@ class ControllerSys extends EntitySystem
         netClient = world.getSystem( ClientSys );
     }
 
+    public function setCamera( e : Entity ) : Void {
+        camera = e;
+    }
+
     override public function processEntities( entities : Bag<Entity> ) : Void  {
         var e : Entity;
         var controller : ControllerCmp;
@@ -59,12 +63,13 @@ class ControllerSys extends EntitySystem
 
             switch ( controller.createPing ) {
                 case Ping( mousePos ):
-                    var origin = pos.pos;
-                    var sectorPos = posMapper.get( pos.sector ).pos;
-                    var direction = mousePos.sub( sectorPos ).sub( origin ); // wow
-                    entityAssembler.createSonarBeam( pos.sector, origin, direction );
-                    netClient.sendSonarBeamCreationEvent( origin, direction  );
-                    controller.createPing = No;
+                    if ( camera != null ) {
+                        var origin = Util.screenCoords( pos.pos, camera, pos.sector );
+                        var direction = mousePos.sub( origin );
+                        entityAssembler.createSonarBeam( pos.sector, pos.pos, direction );
+                        netClient.sendSonarBeamCreationEvent( pos.pos, direction  );
+                        controller.createPing = No;
+                    }
                 default:
             }
 
@@ -83,6 +88,7 @@ class ControllerSys extends EntitySystem
     var posMapper : ComponentMapper<PosCmp>;
     var entityAssembler : EntityAssemblySys;
     var netClient : ClientSys;
+    var camera : Entity;
 
     var god : God;
 }
