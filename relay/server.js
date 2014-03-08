@@ -45,6 +45,7 @@ var gameServer = net.createServer( function ( socket ) {
       if ( socket.writable ) {
         socket.write( clientAdd );
       } else {
+        clients.splice( clients.indexOf( socket ), 1 );
         console.log( socket.id + " is not writable." );
       }
     } catch( err ) {
@@ -62,6 +63,7 @@ var gameServer = net.createServer( function ( socket ) {
           client.write( data );
           console.log( posID.toString() + "   |   " + data.length + " | " + data.readUInt16BE(1) + " | " + data.toString() );
         } else {
+          clients.splice( clients.indexOf( client ), 1 );
           console.log( client.id + " is not writable." );
         }
       } catch ( err ) {
