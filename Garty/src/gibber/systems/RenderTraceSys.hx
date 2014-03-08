@@ -30,12 +30,6 @@ class RenderTraceSys extends EntitySystem
         posMapper    = world.getMapper( PosCmp );
     }
 
-    override public function onInserted( e : Entity ) : Void {
-    }
-
-    override public function onRemoved( e : Entity ) : Void {
-    }
-
     public function setCamera( e : Entity ) : Void {
         camera = e;
     }

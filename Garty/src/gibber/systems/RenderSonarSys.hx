@@ -91,7 +91,9 @@ class RenderSonarSys extends EntitySystem
             }
         }
 
-        tile.getTexture().uploadBitmap( bmd );
+        if ( actives.size > 0 ) {
+            tile.getTexture().uploadBitmap( bmd );
+        }
     }
 
     var renderMapper      : ComponentMapper<RenderCmp>;
