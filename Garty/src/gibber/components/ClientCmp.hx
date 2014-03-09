@@ -27,11 +27,13 @@ class ClientCmp implements Component
         this.port = port;
         this.cache = { serverOpcode : 0, peerOpcode : 0, len : 0, id : 0 };
         socket = new Socket( host, port );
+        socket.timeout = 5000;
         socket.addEventListener( Event.CONNECT, function( event: Event) {
             trace( "Connected to server " + host + ":" + port );
         } );
         socket.addEventListener( Event.CLOSE, function( event: Event ) {
-            trace( "Disconnected from server" );
+            trace( "Disconnected from server..trying to reconnect..." );
+            socket.connect( host, port );
         } );
 
         // rubbish flash events that pause the FDB if we don't handle them

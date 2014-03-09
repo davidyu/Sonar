@@ -144,8 +144,7 @@ class ClientSys extends IntervalEntitySystem
             d.cache = { serverOpcode : 0, peerOpcode : 0, id : 0, len : 0 };
 
             if ( !d.socket.connected ) { //retry connection
-                trace("disconnected...trying to reconnect...");
-                d.socket.connect( d.host, d.port );
+                trace("ClientSys detects that socket is not connected...");
             }
         }
     }
