@@ -74,13 +74,50 @@ class RenderTrailSys extends EntitySystem
             lastScreenPos = Util.screenCoords( posTracker.getLastPosition(), camera, pos.sector );
             curScreenPos = Util.screenCoords( pos.pos, camera, pos.sector );
 
-            g2d.beginFill( 0xffffff );
-            g2d.lineStyle( 0 );
-            g2d.addPoint( lastScreenPos.x, lastScreenPos.y );
-            g2d.addPoint( curScreenPos.x, curScreenPos.y );
-            g2d.addPoint( curScreenPos.x + 1, curScreenPos.y + 1 );
-            g2d.addPoint( lastScreenPos.x + 1, lastScreenPos.y + 1 );
-            g2d.endFill();
+            function drawLine( p1, p2, dx = 1, dy = 1 ) {
+                g2d.beginFill( 0xffffff );
+                g2d.lineStyle( 0 );
+                g2d.addPoint( p1.x, p1.y );
+                g2d.addPoint( p2.x, p2.y );
+                g2d.addPoint( p2.x + dx, p2.y + dy );
+                g2d.addPoint( p1.x + dx, p1.y + dy );
+                g2d.endFill();
+            }
+
+            // place lastScreenPos in center, use curScreenPos to categorize into octants
+            if ( curScreenPos.x > lastScreenPos.x ) { // right hemisphere
+                var dy = Math.abs( curScreenPos.y - lastScreenPos.y ),
+                    dx = Math.abs( curScreenPos.x - lastScreenPos.x );
+                if ( curScreenPos.y < lastScreenPos.y ) { // top right quadrant
+                    if ( dy > dx ) { // top octant
+                        drawLine( curScreenPos, lastScreenPos, 1, 0 );
+                    } else { // bottom octant
+                        drawLine( curScreenPos, lastScreenPos, 0, 1 );
+                    }
+                } else { // bottom right quadrant
+                    if ( dy > dx ) { // bottom octant
+                        drawLine( curScreenPos, lastScreenPos, 1, 0 );
+                    } else { // top octant
+                        drawLine( curScreenPos, lastScreenPos, 0, 1 );
+                    }
+                }
+            } else { // left hemisphere
+                var dy = Math.abs( curScreenPos.y - lastScreenPos.y ),
+                    dx = Math.abs( curScreenPos.x - lastScreenPos.x );
+                if ( curScreenPos.y < lastScreenPos.y ) { // top left quadrant
+                    if ( dy > dx ) { // top octant
+                        drawLine( curScreenPos, lastScreenPos, -1, 0 );
+                    } else { // bottom octant
+                        drawLine( curScreenPos, lastScreenPos, 0, -1 );
+                    }
+                } else { // bottom left quadrant
+                    if ( dy > dx ) { // bottom octant
+                        drawLine( curScreenPos, lastScreenPos, -1, 0 );
+                    } else { // top octant
+                        drawLine( curScreenPos, lastScreenPos, 0, -1 );
+                    }
+                }
+            }
 
             compensatingFades = 30; // in case this is the final active entity; force the system to apply a few more fades before short-circuiting
         }

@@ -57,16 +57,57 @@ class RenderTraceSys extends EntitySystem
 
             switch ( trace.traceType ) {
                 case Line( a, b ):
-                    g2d.beginFill( render.colour, trace.fadeAcc );
-                    g2d.lineStyle( 0 );
-                    // needs to be fixed!
+                    function drawLine( p1, p2, dx = 1, dy = 1 ) {
+                        g2d.beginFill( render.colour, trace.fadeAcc );
+                        g2d.lineStyle( 0 );
+                        g2d.addPoint( p1.x, p1.y );
+                        g2d.addPoint( p2.x, p2.y );
+                        g2d.addPoint( p2.x + dx, p2.y + dy );
+                        g2d.addPoint( p1.x + dx, p1.y + dy );
+                        g2d.endFill();
+                    }
+
                     var aa = Util.worldCoords( a, pos.sector ).sub( posMapper.get( camera ).pos );
                     var bb = Util.worldCoords( b, pos.sector ).sub( posMapper.get( camera ).pos );
+
+                    if ( aa.x > bb.x ) { // right hemisphere
+                        var dy = Math.abs( aa.y - bb.y ),
+                            dx = Math.abs( aa.x - bb.x );
+                        if ( aa.y < bb.y ) { // top right quadrant
+                            if ( dy > dx ) { // top octant
+                                drawLine( aa, bb, 1, 0 );
+                            } else { // bottom octant
+                                drawLine( aa, bb, 0, 1 );
+                            }
+                        } else { // bottom right quadrant
+                            if ( dy > dx ) { // bottom octant
+                                drawLine( aa, bb, 1, 0 );
+                            } else { // top octant
+                                drawLine( aa, bb, 0, 1 );
+                            }
+                        }
+                    } else { // left hemisphere
+                        var dy = Math.abs( aa.y - bb.y ),
+                            dx = Math.abs( aa.x - bb.x );
+                        if ( aa.y < bb.y ) { // top left quadrant
+                            if ( dy > dx ) { // top octant
+                                drawLine( aa, bb, -1, 0 );
+                            } else { // bottom octant
+                                drawLine( aa, bb, 0, -1 );
+                            }
+                        } else { // bottom left quadrant
+                            if ( dy > dx ) { // bottom octant
+                                drawLine( aa, bb, -1, 0 );
+                            } else { // top octant
+                                drawLine( aa, bb, 0, -1 );
+                            }
+                        }
+                    }
+
                     g2d.addPoint( aa.x, aa.y );
                     g2d.addPoint( bb.x, bb.y );
                     g2d.addPoint( bb.x + 1, bb.y + 1 );
                     g2d.addPoint( aa.x + 1, aa.y + 1 );
-                    g2d.endFill();
                 case Point( p ):
                     g2d.beginFill( render.colour, trace.fadeAcc );
                     g2d.lineStyle( 0 );
