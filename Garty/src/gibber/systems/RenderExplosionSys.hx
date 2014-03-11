@@ -25,28 +25,21 @@ import utils.Vec2;
 
 class RenderExplosionSys extends EntitySystem
 {
-    public function new( root : MovieClip ) {
+    public function new( quad : h2d.Sprite ) {
         super( Aspect.getAspectForAll( [ExplosionCmp, RenderCmp] ) );
 
-        bmd    = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0x000000ff );
-        bitbuf = new Bitmap( bmd );
-        this.root = root;
-
-        root.addChild( bitbuf );
+        g2d = new h2d.Graphics( quad );
     }
 
     override public function initialize() : Void {
-        fade              = new ColorTransform( 1.0, 1.0, 1.0, 0.9 );
         posMapper         = world.getMapper( PosCmp );
         explosionMapper   = world.getMapper( ExplosionCmp );
         timedEffectMapper = world.getMapper( TimedEffectCmp );
-        compensatingFades = 30;
+        compensatingClear = true;
     }
 
-    override public function onInserted( e : Entity ) : Void {
-    }
-
-    override public function onRemoved( e : Entity ) : Void {
+    public function setCamera( e : Entity ) : Void {
+        camera = e;
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -56,34 +49,26 @@ class RenderExplosionSys extends EntitySystem
         var pos : PosCmp;
         var screenTransform : Vec2;
 
-        if ( actives.size == 0 ) {
-            bmd.colorTransform( bmd.rect, fade ); // fade out every update
-        } else {
-            bmd.fillRect( bmd.rect, 0x000000ff ); // fade out every update
+        if ( actives.size > 0 || compensatingClear ) {
+            g2d.clear();
+            compensatingClear = false;
         }
 
+        if ( camera == null ) return;
+
         for ( i in 0...actives.size ) {
+            compensatingClear = true;
             e = actives.get( i );
             explosion = explosionMapper.get( e );
             time = timedEffectMapper.get( e );
             pos = posMapper.get( e );
 
             var radius : Float = explosion.growthRate * ( time.internalAcc / 1000.0 );
+            var center = Util.screenCoords( pos.pos, camera, pos.sector );
 
-            screenTransform = posMapper.get( pos.sector ).pos;
-
-            function plotPixelOnBmd( x: Int, y: Int ) {
-                bmd.setPixel32( x, y, 0xffffffff );
-            }
-
-            var centerOnScreen : Vec2 = pos.pos.add( screenTransform );
-
-            // draw circle outline
-            Render.drawArc( centerOnScreen, radius, 0, 1.0, plotPixelOnBmd );
-            // fill it
-            if ( radius > 1 ) {
-                bmd.floodFill( Std.int( centerOnScreen.x ), Std.int( centerOnScreen.y ), 0xffffffff );
-            }
+            g2d.beginFill( 0xffffff );
+            g2d.drawCircle( center.x, center.y, radius );
+            g2d.endFill();
         }
     }
 
@@ -91,9 +76,7 @@ class RenderExplosionSys extends EntitySystem
     var posMapper         : ComponentMapper<PosCmp>;
     var timedEffectMapper : ComponentMapper<TimedEffectCmp>;
 
-    private var root   : MovieClip;
-    private var bmd    : BitmapData;
-    private var bitbuf : Bitmap;
-    private var fade   : ColorTransform;
-    private var compensatingFades : Int;
+    private var g2d : h2d.Graphics;
+    private var compensatingClear : Bool;
+    private var camera : Entity;
 }

@@ -46,12 +46,6 @@ class RenderSys extends EntitySystem
         camera = e;
     }
 
-    override public function onRemoved( e : Entity ) : Void {
-    }
-
-    override public function onChanged( e : Entity ) : Void {
-    }
-
     override public function processEntities( entities : Bag<Entity> ) : Void  {
         var e : Entity;
         var posCmp : PosCmp;
@@ -70,10 +64,7 @@ class RenderSys extends EntitySystem
             e = actives.get( i );
 
             posCmp = posMapper.get( e );
-            pos = Util.worldCoords( posCmp.pos, posCmp.sector );
-
-            // get camera coords
-            pos = pos.sub( posMapper.get( camera ).pos );
+            pos = Util.screenCoords( posCmp.pos, camera, posCmp.sector );
 
             g2d.beginFill( 0xffffff );
             g2d.drawCircle( pos.x, pos.y, 3 );
