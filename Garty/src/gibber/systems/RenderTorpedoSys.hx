@@ -25,28 +25,20 @@ using Lambda;
 
 class RenderTorpedoSys extends EntitySystem
 {
-    public function new( root : MovieClip ) {
+    public function new( quad : h2d.Sprite ) {
         super( Aspect.getAspectForAll( [TorpedoCmp, RenderCmp, PosCmp, PosTrackerCmp] ) );
-
-        bmd       = new BitmapData( root.stage.stageWidth, root.stage.stageHeight, true, 0x00000000 );
-        bitbuf    = new Bitmap( bmd );
-        this.root = root;
-
-        root.addChild( bitbuf );
+        g2d = new h2d.Graphics( quad );
     }
 
     override public function initialize() : Void {
         posMapper         = world.getMapper( PosCmp );
         posTrackerMapper  = world.getMapper( PosTrackerCmp );
         torpedoMapper     = world.getMapper( TorpedoCmp );
-        fade              = new ColorTransform( 1.0, 1.0, 1.0, 0.8 );
         compensatingFades = 30;
     }
 
-    override public function onInserted( e : Entity ) : Void {
-    }
-
-    override public function onRemoved( e : Entity ) : Void {
+    public function setCamera( e : Entity ) : Void {
+        camera = e;
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -58,9 +50,11 @@ class RenderTorpedoSys extends EntitySystem
         var curScreenPos : Vec2;
 
         if ( actives.size > 0 || compensatingFades > 0 ) {
-            bmd.colorTransform( bmd.rect, fade ); // fade out every update
+            g2d.clear();
             compensatingFades--;
         }
+
+        if ( camera == null ) return;
 
         for ( i in 0...actives.size ) {
             e = actives.get( i );
@@ -68,18 +62,52 @@ class RenderTorpedoSys extends EntitySystem
             pos = posMapper.get( e );
             posTracker = posTrackerMapper.get( e );
 
-            // there should be a helper function (maybe it exists already) to get abs coords of a posCmp
-            lastScreenPos = posTracker.getLastPosition().add( posMapper.get( pos.sector ).pos );
-            curScreenPos = pos.pos.add( posMapper.get( pos.sector ).pos );
+            lastScreenPos = Util.screenCoords( posTracker.getLastPosition(), camera, pos.sector );
+            curScreenPos = Util.screenCoords( pos.pos, camera, pos.sector );
 
-            // pass this into bresenham
-            function plotPixelOnBmd( x: Int, y: Int ) {
-                bmd.setPixel32( x, y, 0xffff0000 );
+            function drawLine( p1, p2, dx = 1, dy = 1 ) {
+                g2d.beginFill( 0xff0000 );
+                g2d.lineStyle( 0 );
+                g2d.addPoint( p1.x, p1.y );
+                g2d.addPoint( p2.x, p2.y );
+                g2d.addPoint( p2.x + dx, p2.y + dy );
+                g2d.addPoint( p1.x + dx, p1.y + dy );
+                g2d.endFill();
             }
 
-            Render.bresenham( Std.int( lastScreenPos.x ), Std.int( lastScreenPos.y ),
-                              Std.int( curScreenPos.x ) , Std.int( curScreenPos.y ) ,
-                              plotPixelOnBmd );
+            if ( curScreenPos.x > lastScreenPos.x ) { // right hemisphere
+                var dy = Math.abs( curScreenPos.y - lastScreenPos.y ),
+                    dx = Math.abs( curScreenPos.x - lastScreenPos.x );
+                if ( curScreenPos.y < lastScreenPos.y ) { // top right quadrant
+                    if ( dy > dx ) { // top octant
+                        drawLine( curScreenPos, lastScreenPos, 1, 0 );
+                    } else { // bottom octant
+                        drawLine( curScreenPos, lastScreenPos, 0, 1 );
+                    }
+                } else { // bottom right quadrant
+                    if ( dy > dx ) { // bottom octant
+                        drawLine( curScreenPos, lastScreenPos, 1, 0 );
+                    } else { // top octant
+                        drawLine( curScreenPos, lastScreenPos, 0, 1 );
+                    }
+                }
+            } else { // left hemisphere
+                var dy = Math.abs( curScreenPos.y - lastScreenPos.y ),
+                    dx = Math.abs( curScreenPos.x - lastScreenPos.x );
+                if ( curScreenPos.y < lastScreenPos.y ) { // top left quadrant
+                    if ( dy > dx ) { // top octant
+                        drawLine( curScreenPos, lastScreenPos, -1, 0 );
+                    } else { // bottom octant
+                        drawLine( curScreenPos, lastScreenPos, 0, -1 );
+                    }
+                } else { // bottom left quadrant
+                    if ( dy > dx ) { // bottom octant
+                        drawLine( curScreenPos, lastScreenPos, -1, 0 );
+                    } else { // top octant
+                        drawLine( curScreenPos, lastScreenPos, 0, -1 );
+                    }
+                }
+            }
 
             compensatingFades = 30; // in case this is the final active entity; force the system to apply a few more fades before short-circuiting
         }
@@ -90,9 +118,8 @@ class RenderTorpedoSys extends EntitySystem
     var posMapper         : ComponentMapper<PosCmp>;
     var posTrackerMapper  : ComponentMapper<PosTrackerCmp>;
 
-    private var root   : MovieClip;
-    private var bitbuf : Bitmap;
-    private var bmd    : BitmapData;
-    private var fade   : ColorTransform;
     private var compensatingFades : Int;
+    private var g2d    : h2d.Graphics;
+
+    private var camera : Entity;
 }

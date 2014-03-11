@@ -105,8 +105,10 @@ class EntityAssemblySys extends EntitySystem
     public function createTorpedo( id : Int, target : Vec2, sector : Entity, origin : Vec2 ) : Entity {
         var e = world.createEntity();
 
+        trace( "torpedo: " + origin );
+
         var posCmp = new PosCmp( sector, origin );
-        var torpedoCmp = new TorpedoCmp( id, target, 4, 100 );
+        var torpedoCmp = new TorpedoCmp( id, target, 2, 100 );
         var renderCmp = new RenderCmp();
         var bounceCmp = new BounceCmp( 1.0 );
         var posTrackerCmp = new PosTrackerCmp( LastPos );
@@ -183,6 +185,8 @@ class EntityAssemblySys extends EntitySystem
     // ugh: bad parameters again; see above.
     public function createSonarBeam( sector : Entity, pos: Vec2, direction : Vec2 ) : Entity {
         var e = world.createEntity();
+
+        trace( "ping: " + pos );
 
         var posCmp = new PosCmp( sector, pos, true );
         var posTrackerCmp = new PosTrackerCmp( LastPos );

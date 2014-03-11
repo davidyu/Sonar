@@ -75,8 +75,7 @@ class ControllerSys extends EntitySystem
 
             switch ( controller.fireTorpedo ) {
                 case Fire( mousePos ):
-                    var sectorPos = posMapper.get( pos.sector ).pos;
-                    var target = mousePos.sub( sectorPos );
+                    var target = mousePos;
                     entityAssembler.createTorpedo( e.id, target, pos.sector, pos.pos );
                     controller.fireTorpedo = No;
                 default:
