@@ -67,18 +67,17 @@ class RenderSonarSys extends EntitySystem
 
             var radius : Float = sonar.growthRate * ( time.internalAcc / 1000.0 );
 
-            screenTransform = posMapper.get( pos.sector ).pos;
-
             function plotPixelOnBmd( x: Int, y: Int ) {
                 var alpha = Std.int( ( 1.0 - time.internalAcc / time.duration ) * 255 ) << 24;
-                var cameraPos = posMapper.get( camera ).pos;
-                var screenx = Std.int( x - cameraPos.x );
-                var screeny = Std.int( y - cameraPos.y );
+                var screenx = Std.int( x );
+                var screeny = Std.int( y );
                 bmd.setPixel( screenx, screeny, 0xffffff | alpha );
             }
 
+            var center = Util.screenCoords( pos.pos, camera, pos.sector );
+
             if ( sonar.cullRanges.length == 0 ) {
-                Render.drawArc( pos.pos.add( screenTransform ), radius, 0, 1.0, plotPixelOnBmd ); //just draw circle
+                Render.drawArc( center, radius, 0, 1.0, plotPixelOnBmd ); //just draw circle
             } else {
                 for ( i in 0...sonar.cullRanges.length ) {
                     var r1 = sonar.cullRanges[i];
@@ -86,7 +85,7 @@ class RenderSonarSys extends EntitySystem
                     var diff = r2.start - r1.end; // invariant: r2.start comes after (clockwise) r1.end
                     if ( diff < 0 ) diff += 2 * Math.PI;
                     if ( diff > 2 * Math.PI ) diff -= 2 * Math.PI;
-                    Render.drawArc( pos.pos.add( screenTransform ), radius, r1.end / ( 2 * Math.PI ), diff / ( 2 * Math.PI ), plotPixelOnBmd );
+                    Render.drawArc( center, radius, r1.end / ( 2 * Math.PI ), diff / ( 2 * Math.PI ), plotPixelOnBmd );
                 }
             }
         }

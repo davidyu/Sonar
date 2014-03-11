@@ -67,8 +67,8 @@ class RenderTraceSys extends EntitySystem
                         g2d.endFill();
                     }
 
-                    var aa = Util.worldCoords( a, pos.sector ).sub( posMapper.get( camera ).pos );
-                    var bb = Util.worldCoords( b, pos.sector ).sub( posMapper.get( camera ).pos );
+                    var aa = Util.screenCoords( a, camera, pos.sector );
+                    var bb = Util.screenCoords( b, camera, pos.sector );
 
                     if ( aa.x > bb.x ) { // right hemisphere
                         var dy = Math.abs( aa.y - bb.y ),
