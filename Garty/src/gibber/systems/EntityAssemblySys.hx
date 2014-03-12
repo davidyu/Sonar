@@ -102,7 +102,7 @@ class EntityAssemblySys extends EntitySystem
         return e;
     }
 
-    public function createTorpedo( id : Int, target : Vec2, sector : Entity, origin : Vec2 ) : Entity {
+    public function createTorpedo( id : Int, target : TorpedoTarget, sector : Entity, origin : Vec2 ) : Entity {
         var e = world.createEntity();
 
         var posCmp = new PosCmp( sector, origin );
@@ -142,17 +142,19 @@ class EntityAssemblySys extends EntitySystem
 
     public function createExplosionEffect( sector : Entity, pos : Vec2 ) : List<Entity> {
         var explosions = new List<Entity>();
-        for ( i in 0...Std.int( Math.random() * 4 ) + 2 ) {
-            var e = createSingleExplosion( sector, pos.add( new Vec2( Math.random() * 30 - 15, Math.random() * 30 - 15 ) ) ) ;
+        var mainExplosion = createSingleExplosion( sector, pos, 20, Math.random() * 30 + 20 ) ;
+        explosions.add( mainExplosion );
+        for ( i in 0...Std.int( Math.random() * 4 ) ) {
+            var e = createSingleExplosion( sector, pos.add( new Vec2( Math.random() * 40 - 20, Math.random() * 40 - 20 ) ), 7, Math.random() * 5 + 5 ) ;
             explosions.add( e );
         }
         return explosions;
     }
 
-    public function createSingleExplosion( sector : Entity, pos : Vec2 ) : Entity {
+    public function createSingleExplosion( sector : Entity, pos : Vec2, ?growthRate : Float, ?size : Float ) : Entity {
         var e = world.createEntity();
 
-        var explosionCmp = new ExplosionCmp( Math.random() * 15 + 15, Math.random() * 30 + 20 );
+        var explosionCmp = new ExplosionCmp( growthRate == null ? Math.random() * 15 + 15 : growthRate, size == null ? Math.random() * 30 + 20 : size );
         var staticPosCmp = new StaticPosCmp();
         var posCmp = new PosCmp( sector, pos );
         var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );

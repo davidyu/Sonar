@@ -13,6 +13,7 @@ import gibber.components.BounceCmp;
 import gibber.systems.EntityAssemblySys;
 
 import utils.Math2;
+import utils.Vec2;
 
 class TorpedoSys extends EntitySystem
 {
@@ -39,7 +40,12 @@ class TorpedoSys extends EntitySystem
             pos = posMapper.get( e );
             bounce = bounceMapper.get( e );
 
-            pos.dp = pos.dp.add( torpedo.target.sub( pos.pos ).normalize().mul( torpedo.accel ) ); // need to tweak tweak tweak
+            var target : Vec2 = switch ( torpedo.target ) {
+                case StaticTarget( t ) : t;
+                case DynamicTarget( e ) : posMapper.get( e ).pos;
+            }
+
+            pos.dp = pos.dp.add( target.sub( pos.pos ).normalize().mul( torpedo.accel ) ); // need to tweak tweak tweak
 
             if ( pos.dp.lengthsq() > torpedo.maxSpeed * torpedo.maxSpeed ) {
                 pos.dp = pos.dp.normalize().mul( torpedo.maxSpeed );
@@ -47,7 +53,7 @@ class TorpedoSys extends EntitySystem
 
             // destruction conditions
             // met target
-            if ( pos.pos.sub( torpedo.target ).lengthsq() <= 25.0 ) {
+            if ( pos.pos.sub( target ).lengthsq() <= 25.0 ) {
                 world.deleteEntity( e );
                 entityAssembler.createExplosionEffect( pos.sector, pos.pos );
                 return;

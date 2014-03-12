@@ -64,6 +64,9 @@ class RenderExplosionSys extends EntitySystem
             pos = posMapper.get( e );
 
             var radius : Float = explosion.growthRate * ( time.internalAcc / 1000.0 );
+            if ( radius > explosion.maxRadius ) {
+                radius = explosion.maxRadius;
+            }
             var center = Util.screenCoords( pos.pos, camera, pos.sector );
 
             g2d.beginFill( 0xffffff );
