@@ -9,6 +9,12 @@ import utils.Vec2;
 
 using Lambda;
 
+enum Coordinates {
+    ScreenCoordinates   ( p : Vec2 );
+    WorldCoordinates    ( p : Vec2 );
+    SectorCoordinates   ( p : Vec2 );
+}
+
 @:access(hscript)
 class Util
 {
@@ -24,10 +30,11 @@ class Util
     // if @sector is passed into screenCoords, we'll do a conversion into world space before
     // turning it into screen space
     public static function screenCoords( pos : Vec2, camera : Entity, ?sector : Entity ) : Vec2 {
-        if ( sector != null ) {
-            pos = worldCoords( pos, sector );
+        var p = pos.sub( posMapper.get( camera ).pos );
+        if ( sector != null && sector != posMapper.get( camera ).sector ) {
+            p = worldCoords( p, sector );
         }
-        return pos.sub( posMapper.get( camera ).pos );
+        return p;
     }
     
     public static function sectorCoords( pos : Vec2, ref : Entity, tar : Entity ) : Vec2 {

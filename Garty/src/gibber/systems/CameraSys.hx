@@ -50,8 +50,8 @@ class CameraSys extends EntitySystem
                 case DynamicTarget( t ):
                     var tpos = posMapper.get( t );
                     if ( tpos != null ) {
-                        camPos.pos.x = tpos.pos.x;
-                        camPos.pos.y = tpos.pos.y;
+                        camPos.pos.x = tpos.pos.x - camera.viewportW / 2;
+                        camPos.pos.y = tpos.pos.y - camera.viewportH / 2;
                     } else {
                         throw "can't track a target without a posCmp!";
                     }

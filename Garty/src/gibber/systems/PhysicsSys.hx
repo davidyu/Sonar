@@ -4,7 +4,9 @@ import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
+import gibber.components.BoundCmp;
 import gibber.components.BounceCmp;
+import gibber.components.CameraCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.StaticPosCmp;
@@ -19,7 +21,7 @@ using utils.Math2;
 class PhysicsSys extends EntitySystem
 {
     public function new() {
-        super( Aspect.getAspectForAll( [PosCmp] ).exclude( [StaticPosCmp] ) );
+        super( Aspect.getAspectForAll( [PosCmp] ).exclude( [StaticPosCmp, CameraCmp, BoundCmp] ) );
     }
 
     override public function initialize() : Void {
