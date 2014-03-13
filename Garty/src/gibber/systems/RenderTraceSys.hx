@@ -111,13 +111,13 @@ class RenderTraceSys extends EntitySystem
                 case Point( p ):
                     g2d.beginFill( render.colour, trace.fadeAcc );
                     g2d.lineStyle( 0 );
-                    var pp = Util.worldCoords( p, pos.sector ).sub( posMapper.get( camera ).pos );
+                    var pp = Util.screenCoords( p, camera, pos.sector );
                     g2d.drawCircle( pp.x, pp.y, 1 );
                     g2d.endFill();
                 case Mass( p, r ):
                     g2d.beginFill( render.colour, trace.fadeAcc );
                     g2d.lineStyle( 0 );
-                    var pp = Util.worldCoords( p, pos.sector ).sub( posMapper.get( camera ).pos );
+                    var pp = Util.screenCoords( p, camera, pos.sector );
                     g2d.drawCircle( pp.x, pp.y, r );
                     g2d.endFill();
             }

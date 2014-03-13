@@ -126,8 +126,11 @@ class ClientSys extends IntervalEntitySystem
                             case 4: // directional sonar
                                 var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
                                 var direction : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
-
                                 entityAssembler.createSonarBeam( netPlayer.getComponent( PosCmp ).sector, origin, direction );
+                            case 5: // torpedo
+                                var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
+                                var target : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
+                                entityAssembler.createTorpedo( netPlayer.id, StaticTarget( target ), netPlayer.getComponent( PosCmp ).sector, origin );
 
                             default: trace( "unknown peer opcode: " + peerOpcode );
                                      return;
@@ -146,6 +149,20 @@ class ClientSys extends IntervalEntitySystem
             if ( !d.socket.connected ) { //retry connection
                 trace("ClientSys detects that socket is not connected...");
             }
+        }
+    }
+
+    public function sendFireTorpedoEvent( pos : Vec2, target : Vec2 ) {
+        var socket = god.client.getComponent( ClientCmp ).socket;
+        var posSerialized : String = haxe.Serializer.run( pos );
+        var targetSerialized : String = haxe.Serializer.run( target );
+        if ( socket.connected ) {
+            socket.writeByte( 5 );
+            socket.writeShort( posSerialized.length );
+            socket.writeUTFBytes( posSerialized );
+            socket.writeShort( targetSerialized.length );
+            socket.writeUTFBytes( targetSerialized );
+            socket.flush();
         }
     }
 
