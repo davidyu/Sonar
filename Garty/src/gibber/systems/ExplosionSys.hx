@@ -6,6 +6,7 @@ import com.artemisx.Entity;
 import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
 
+import gibber.components.DestructibleCmp;
 import gibber.components.InputCmp;
 import gibber.components.NetworkPlayerCmp;
 import gibber.components.PosCmp;
@@ -26,11 +27,12 @@ class ExplosionSys extends EntitySystem
     }
 
     override public function initialize() : Void {
-        posMapper         = world.getMapper( PosCmp );
-        timedEffectMapper = world.getMapper( TimedEffectCmp );
-        explosionMapper   = world.getMapper( ExplosionCmp );
-        regionMapper      = world.getMapper( RegionCmp );
-        containerMgr      = world.getManager( ContainerMgr );
+        destructibleMapper = world.getMapper( DestructibleCmp );
+        posMapper          = world.getMapper( PosCmp );
+        timedEffectMapper  = world.getMapper( TimedEffectCmp );
+        explosionMapper    = world.getMapper( ExplosionCmp );
+        regionMapper       = world.getMapper( RegionCmp );
+        containerMgr       = world.getManager( ContainerMgr );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -56,11 +58,17 @@ class ExplosionSys extends EntitySystem
 
                     var sector = posMapper.get( e ).sector;
 
-                    // check for intersection against player entities
+                    // check for collision against player entities
                     for ( e in containerMgr.getAllEntitiesOfContainer( sector ) ) {
                         var p : Vec2 = posMapper.get( e ).pos;
                         if ( Geo.isPointInCircle( { center: center, radius: radius }, p ) ) {
-                            // die
+                            var d = destructibleMapper.get( e );
+                            if ( d != null ) {
+                                switch ( d.state ) {
+                                    case Normal( _ ) : d.state = Destroyed;
+                                    default:
+                                }
+                            }
                         }
                     }
 
@@ -72,10 +80,11 @@ class ExplosionSys extends EntitySystem
         }
     }
 
-    var timedEffectMapper : ComponentMapper<TimedEffectCmp>;
-    var explosionMapper   : ComponentMapper<ExplosionCmp>;
-    var posMapper         : ComponentMapper<PosCmp>;
-    var regionMapper      : ComponentMapper<RegionCmp>; // need to extract region polys from sector
+    var timedEffectMapper  : ComponentMapper<TimedEffectCmp>;
+    var explosionMapper    : ComponentMapper<ExplosionCmp>;
+    var posMapper          : ComponentMapper<PosCmp>;
+    var regionMapper       : ComponentMapper<RegionCmp>; // need to extract region polys from sector
+    var destructibleMapper : ComponentMapper<DestructibleCmp>; // need to extract region polys from sector
 
     var containerMgr      : ContainerMgr;
 }

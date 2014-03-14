@@ -9,6 +9,7 @@ import flash.display.MovieClip;
 import flash.display.Sprite;
 import gibber.components.BoundCmp;
 import gibber.components.CameraCmp;
+import gibber.components.DestructibleCmp;
 import gibber.components.ExplosionCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
@@ -37,6 +38,7 @@ class RenderSys extends EntitySystem
     }
 
     override public function initialize() : Void {
+        destructibleMapper = world.getMapper( DestructibleCmp );
         posMapper = world.getMapper( PosCmp );
         regionMapper = world.getMapper( RegionCmp );
         cameraMapper = world.getMapper( CameraCmp );
@@ -66,6 +68,13 @@ class RenderSys extends EntitySystem
             posCmp = posMapper.get( e );
             pos = Util.screenCoords( posCmp.pos, camera, posCmp.sector );
 
+            if ( destructibleMapper.get( e ) != null ) {
+                var d = destructibleMapper.get( e );
+                switch ( d.state ) {
+                    case Respawning( n ): if ( n % 4 == 0 ) continue; // don't draw / flicker
+                    default:
+                }
+            }
             g2d.beginFill( 0xffffff );
             g2d.drawCircle( pos.x, pos.y, 3 );
             g2d.endFill();
@@ -75,6 +84,7 @@ class RenderSys extends EntitySystem
     var posMapper : ComponentMapper<PosCmp>;
     var regionMapper : ComponentMapper<RegionCmp>;
     var cameraMapper : ComponentMapper<CameraCmp>;
+    var destructibleMapper : ComponentMapper<DestructibleCmp>;
 
     private var g2d : h2d.Graphics;
     private var compensatingClear : Bool;

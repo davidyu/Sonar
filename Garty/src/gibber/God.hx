@@ -21,6 +21,7 @@ import gibber.systems.CameraSys;
 import gibber.systems.ClientSys;
 import gibber.systems.CmdProcessSys;
 import gibber.systems.ControllerSys;
+import gibber.systems.DestructionSys;
 import gibber.systems.ExplosionSys;
 import gibber.systems.EntityAssemblySys;
 import gibber.systems.InputSys;
@@ -96,6 +97,7 @@ class God
         world.setSystem( new ClientSys( this ) );
         world.setSystem( new InputSys() );
         world.setSystem( new ControllerSys( this ) ); // this must follow InputSys to apply effects of controller states
+        world.setSystem( new DestructionSys() );
         world.setSystem( new GridSys() );
         world.setSystem( new PhysicsSys() );
         world.setSystem( new CmdProcessSys() );

@@ -21,6 +21,7 @@ import gibber.components.CmdQueue;
 import gibber.components.ContainerCmp;
 import gibber.components.ControllerCmp;
 import gibber.components.ClientCmp;
+import gibber.components.DestructibleCmp;
 import gibber.components.InventoryCmp;
 import gibber.components.InputCmp;
 import gibber.components.ExplosionCmp;
@@ -85,6 +86,7 @@ class EntityAssemblySys extends EntitySystem
         var inputCmp = new InputCmp( Keyboard.UP, Keyboard.DOWN, Keyboard.LEFT, Keyboard.RIGHT,
                                      Keyboard.SPACE, Keyboard.SLASH, 1 );
         var containableCmp = new ContainableCmp( containerMgr, e, sector );
+        var destructibleCmp = new DestructibleCmp( 1 );
 
         e.addComponent( lookCmp );
         e.addComponent( nameCmp );
@@ -96,6 +98,7 @@ class EntityAssemblySys extends EntitySystem
         e.addComponent( syncCmp );
         e.addComponent( containableCmp );
         e.addComponent( controllerCmp );
+        e.addComponent( destructibleCmp );
 
         world.addEntity( e );
 
