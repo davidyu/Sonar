@@ -152,7 +152,7 @@ class Screen extends CustomObject {
     }
 }
 
-class Main 
+class Main extends flash.display.Sprite
 {
     static var engine : h3d.Engine;
     static var scene : h3d.scene.Scene;
