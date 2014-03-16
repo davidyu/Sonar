@@ -43,7 +43,7 @@ class PhysicsSys extends EntitySystem
             e = actives.get( i );
             posCmp = posMapper.get( e );
             if ( !posCmp.noDamping )
-                posCmp.dp = posCmp.dp.scale( 0.8 );
+                posCmp.dp = posCmp.dp.scale( 0.9 );
             newPos = posCmp.pos.add( posCmp.dp );
 
             // If entity is in an adjacent and nested region to the sector, add this region to player pos
