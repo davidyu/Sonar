@@ -38,6 +38,7 @@ class DestructionSys extends EntitySystem
 
             switch( d.state ) {
                 case Destroyed:
+                    d.deaths++;
                     posMapper.get( e ).pos = new Vec2( 0, 0 );
                     d.state = Respawning( 60 );
                 case Respawning( n ):

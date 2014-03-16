@@ -55,10 +55,16 @@ class ControllerSys extends EntitySystem
                 pos.dp.x = speed;
             }
 
-            if ( controller.createBlip ) {
-                entityAssembler.createSonar( e.id, pos.sector, pos.pos );
-                netClient.sendSonarCreationEvent( pos.pos );
-                controller.createBlip = false;
+            switch ( controller.createBlip ) {
+                case Blip:
+                    entityAssembler.createSonar( e.id, pos.sector, pos.pos );
+                    netClient.sendSonarCreationEvent( pos.pos );
+                    controller.createBlip = Cooldown( controller.blipCooldown );
+                case Cooldown( 0 ):
+                    controller.createBlip = No;
+                case Cooldown( n ): // n  > 0
+                    controller.createBlip = Cooldown( n - 1 );
+                default:
             }
 
             switch ( controller.createPing ) {
@@ -68,8 +74,12 @@ class ControllerSys extends EntitySystem
                         var direction = mousePos.sub( origin );
                         entityAssembler.createSonarBeam( pos.sector, pos.pos, direction );
                         netClient.sendSonarBeamCreationEvent( pos.pos, direction  );
-                        controller.createPing = No;
+                        controller.createPing = Cooldown( controller.pingCooldown );
                     }
+                case Cooldown( 0 ):
+                    controller.createPing = No;
+                case Cooldown( n ): // n > 0
+                    controller.createPing = Cooldown( n - 1 );
                 default:
             }
 
@@ -78,7 +88,11 @@ class ControllerSys extends EntitySystem
                     var target = mousePos.add( posMapper.get( camera ).pos );
                     entityAssembler.createTorpedo( e.id, StaticTarget( target ), pos.sector, pos.pos );
                     netClient.sendFireTorpedoEvent( pos.pos, target );
+                    controller.fireTorpedo = Cooldown( controller.torpedoCooldown );
+                case Cooldown( 0 ):
                     controller.fireTorpedo = No;
+                case Cooldown( n ): // n > 0
+                    controller.fireTorpedo = Cooldown( n - 1 );
                 default:
             }
         }

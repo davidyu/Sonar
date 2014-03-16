@@ -6,12 +6,20 @@ import utils.Vec2;
 
 enum PingControllerState {
     No;
+    Cooldown( n : UInt );
     Ping( mousePos : Vec2 );
 }
 
 enum FireTorpedoState {
     No;
+    Cooldown( n : UInt );
     Fire( mousePos : Vec2 );
+}
+
+enum BlipControllerState {
+    No;
+    Cooldown( n : UInt );
+    Blip;
 }
 
 class ControllerCmp implements Component 
@@ -20,15 +28,23 @@ class ControllerCmp implements Component
     @:isVar public var moveDown  (default, set): Bool;
     @:isVar public var moveLeft  (default, set): Bool;
     @:isVar public var moveRight (default, set): Bool;
-    @:isVar public var createBlip : Bool;
+    @:isVar public var createBlip : BlipControllerState;
     @:isVar public var createPing : PingControllerState;
     @:isVar public var fireTorpedo : FireTorpedoState;
 
+    @:isVar public var blipCooldown : UInt;
+    @:isVar public var pingCooldown : UInt;
+    @:isVar public var torpedoCooldown : UInt;
+
     public function new() {
         moveUp = moveDown = moveLeft = moveRight = false;
-        createBlip = false;
+        createBlip = No;
         createPing = No;
         fireTorpedo = No;
+
+        blipCooldown = 20;
+        pingCooldown = 20;
+        torpedoCooldown = 60;
     }
 
     public function set_moveUp   ( up )     { return moveUp = up; }

@@ -39,15 +39,15 @@ class InputSys extends EntitySystem
             controller.moveLeft = Key.isDown( input.leftKey );
             controller.moveRight = Key.isDown( input.rightKey );
 
-            if ( Key.isToggled( input.blipTriggerKey ) ) {
-                controller.createBlip = true;
+            if ( Key.isToggled( input.blipTriggerKey ) && controller.createBlip == No ) {
+                controller.createBlip = Blip;
             }
 
-            if ( Key.isToggled( input.pingTriggerKey ) ) {
+            if ( Key.isToggled( input.pingTriggerKey ) && controller.createPing == No ) {
                 controller.createPing = Ping( Mouse.getMouseCoords() );
             }
 
-            if ( Mouse.wasPressed() ) {
+            if ( Mouse.wasPressed() && controller.fireTorpedo == No ) {
                 controller.fireTorpedo = Fire( Mouse.getMouseCoords() );
             }
 
