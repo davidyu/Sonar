@@ -1,12 +1,23 @@
 net = require( 'net' );
 
-var clients = [];
+var MAX_INSTANCES = 10;
+var instances = [ [] ];
 
 var gameServer = net.createServer( function ( socket ) {
   socket.setTimeout( 60 * 1000 ); // 1 minute timeout
   socket.setNoDelay( true );
   socket.name = socket.remoteAddress + ":" + socket.remotePort;
-  socket.id = clients.length + 1; // start ids at 1
+
+  var instance = instances[ instances.length - 1 ];
+  socket.id = instance.length + 1; // start ids at 1
+
+  if ( socket.id > 4 ) { // create new instance
+    instances.push( [] );
+    instance = instances[ instances.length - 1 ];
+    socket.id = 1;
+  }
+
+  socket.instanceId = instances.length - 1;
 
   // set up some listeners for this socket
   socket.on( 'data', function( data ) {
@@ -19,13 +30,14 @@ var gameServer = net.createServer( function ( socket ) {
   } );
 
   socket.on( 'end', function() {
-    clients.splice( clients.indexOf( socket ), 1 );
+    var instance = instances[ socket.instanceId ];
+    instance.splice( instance.indexOf( socket ), 1 );
     // relay leave event
     console.log( "client " + socket.name + " left the game." );
   } );
 
   // acknowledge this socket's connection
-  clients.push( socket );
+  instances[ socket.instanceId ].push( socket );
   console.log( "connected to client " + socket.name );
 
   var clientID = new Buffer( [ 255, socket.id ] );
@@ -33,7 +45,7 @@ var gameServer = net.createServer( function ( socket ) {
   var socketJoin = new Buffer( [ 254, socket.id ] );
 
   // broadcast this client's joining to every other client
-  clients.forEach( function( client ) {
+  instance.forEach( function( client ) {
     if ( client == socket ) return;
     try {
       if ( client.writable ) {
@@ -45,7 +57,7 @@ var gameServer = net.createServer( function ( socket ) {
       if ( socket.writable ) {
         socket.write( clientAdd );
       } else {
-        clients.splice( clients.indexOf( socket ), 1 );
+        instance.splice( instance.indexOf( socket ), 1 );
         console.log( socket.id + " is not writable." );
       }
     } catch( err ) {
@@ -54,7 +66,8 @@ var gameServer = net.createServer( function ( socket ) {
   } );
 
   function relay( data, sender ) {
-    clients.forEach( function( client ) {
+    var instance = instances[ sender.instanceId ];
+    instance.forEach( function( client ) {
       if ( client == sender ) return;
       var posID = new Buffer( [ 253, sender.id ] );
       try {
@@ -63,7 +76,7 @@ var gameServer = net.createServer( function ( socket ) {
           client.write( data );
           console.log( posID.toString() + "   |   " + data.length + " | " + data.readUInt16BE(1) + " | " + data.toString() );
         } else {
-          clients.splice( clients.indexOf( client ), 1 );
+          instance.splice( instance.indexOf( client ), 1 );
           console.log( client.id + " is not writable." );
         }
       } catch ( err ) {
