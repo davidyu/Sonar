@@ -14,14 +14,14 @@ class Preloader extends Sprite
         var bytesLoaded = Lib.current.stage.loaderInfo.bytesLoaded;
         var bytesTotal = Lib.current.stage.loaderInfo.bytesTotal;
         var percentLoaded = bytesLoaded / bytesTotal;
+        trace( "WTF" );
         trace( Std.int( percentLoaded * 100 ) + "%" );
         if ( percentLoaded == 1 )
         {
             removeEventListener( Event.ENTER_FRAME, onLoadProgress );
             Lib.current.removeChild( this );
-            var clazz = Type.resolveClass( "Main" );
-            var game = Type.createInstance( clazz, [] );
-            Lib.current.addChild( game );
+            // startup hook
+            Main.main();
         }
     }
     public static function main()
