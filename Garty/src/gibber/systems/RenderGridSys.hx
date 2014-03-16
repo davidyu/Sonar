@@ -65,14 +65,14 @@ class RenderGridSys extends EntitySystem
             // horizontal gridlines
             for ( h in -2...Std.int( screenH / bound.h ) + 2 ) {
                 g2d.beginFill( render.colour );
-                g2d.drawRect( offset.x, h * bound.h + offset.y, screenW + 4 * bound.w, 1 );
+                g2d.drawRect( offset.x, h * bound.h + offset.y, screenW + 4 * bound.w, 2 );
                 g2d.endFill();
             }
 
             // vertical gridlines
             for ( v in -2...Std.int( screenW / bound.w ) + 2 ) {
                 g2d.beginFill( render.colour );
-                g2d.drawRect( v * bound.w + offset.x, offset.y, 1, screenH + 4 * bound.h );
+                g2d.drawRect( v * bound.w + offset.x, offset.y, 2, screenH + 4 * bound.h );
                 g2d.endFill();
             }
         }

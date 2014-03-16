@@ -58,6 +58,13 @@ class PostEffectsShader extends h3d.impl.Shader {
             return color;
         }
 
+        // darken corners
+        function darken( color : Float4, screenspace : Float2 ) {
+            var threshold : Float2 = min( screenspace, screenres - screenspace );
+            color.rgb -= pow( length( screenres ) / length( threshold ), 0.3 ) * [ 0.11, 0.11, 0.11 ];
+            return color;
+        }
+
         function fragment( tex : Texture ) {
             var uv = crtwarp( tuv, 4.2 );
             var c = rgshift( tex, uv );
@@ -69,6 +76,7 @@ class PostEffectsShader extends h3d.impl.Shader {
             c *= uv.y < 1;
 
             // using screenspace coords forcibly produces a moire pattern, neat!
+            c = darken( c, uv * screenres );
             c = scanline( c, uv * screenres );
             out = c;
         }
