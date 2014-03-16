@@ -52,9 +52,22 @@ class TrailSys extends EntitySystem
             switch( time.processState ) {
                 case Process( _ ):
                     switch ( bounce.lastTouched ) {
-                        case Edge( a, b ):
+                        case Edge( a, b, collisionPt ):
                             // create trace
-                            entityAssembler.createTrace( pos.sector, Line( a, b ) );
+                            var toA = a.sub( collisionPt ).normalize();
+                            var toB = b.sub( collisionPt ).normalize();
+                            var traceLen = 40.0;
+
+                            var aa = collisionPt.add( toA.mul( traceLen / 2 ) );
+                            var bb = collisionPt.add( toB.mul( traceLen / 2 ) );
+
+                            // bb overshot
+                            if ( b.sub( aa ).lengthsq() < bb.sub( aa ).lengthsq() ) bb = b;
+
+                            // aa overshot
+                            if ( a.sub( bb ).lengthsq() < aa.sub( bb ).lengthsq() ) aa = a;
+
+                            entityAssembler.createTrace( pos.sector, Line( aa, bb ) );
 
                             // reset last touched so we don't create it again
                             bounce.lastTouched = Nothing;
