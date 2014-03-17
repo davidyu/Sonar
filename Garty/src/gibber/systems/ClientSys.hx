@@ -56,7 +56,7 @@ class ClientSys extends IntervalEntitySystem
                         if ( d.id > 1 ) {
                             god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 1080, 250 ) );
                         } else {
-                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 100, 250 ) );
+                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 180, 250 ) );
                         }
                         entityAssembler.createCamera( god.sectors[0], new Vec2( 0, 0 ), god.player );
                     case 254: //join
@@ -65,7 +65,7 @@ class ClientSys extends IntervalEntitySystem
                         if ( newClientID > 1 ) {
                             god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 1080, 250 ), newClientID ) );
                         } else {
-                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 100, 250 ), newClientID ) );
+                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 180, 250 ), newClientID ) );
                         }
                     case 253: //relay data
                         var id : UInt, peerOpcode : UInt;
