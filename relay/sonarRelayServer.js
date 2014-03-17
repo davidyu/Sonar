@@ -12,6 +12,7 @@ var gameServer = net.createServer( function ( socket ) {
   socket.id = instance.length + 1; // start ids at 1
 
   if ( socket.id > 4 ) { // create new instance
+    console.log( "NEW INSTANCE" );
     instances.push( [] );
     instance = instances[ instances.length - 1 ];
     socket.id = 1;
@@ -31,8 +32,11 @@ var gameServer = net.createServer( function ( socket ) {
 
   socket.on( 'end', function() {
     var instance = instances[ socket.instanceId ];
-    instance.splice( instance.indexOf( socket ), 1 );
+    if ( socket.instanceId != 0 ) {
+      instance.splice( instance.indexOf( socket ), 1 );
+    }
     // relay leave event
+    if ( instance.length == 0 ) instances.splice( instances.indexOf( instance ), 1 );
     console.log( "client " + socket.name + " left the game." );
   } );
 
@@ -74,7 +78,7 @@ var gameServer = net.createServer( function ( socket ) {
         if ( client.writable ) {
           client.write( posID );
           client.write( data );
-          console.log( posID.toString() + "   |   " + data.length + " | " + data.readUInt16BE(1) + " | " + data.toString() );
+          // console.log( posID.toString() + "   |   " + data.length + " | " + data.readUInt16BE(1) + " | " + data.toString() );
         } else {
           instance.splice( instance.indexOf( client ), 1 );
           console.log( client.id + " is not writable." );
