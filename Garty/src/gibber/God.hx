@@ -29,6 +29,7 @@ import gibber.systems.GridSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.PosTrackerSys;
 import gibber.systems.RenderExplosionSys;
+import gibber.systems.RenderHUDSys;
 import gibber.systems.RenderSonarSys;
 import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderGridSys;
@@ -110,6 +111,7 @@ class God
         world.setSystem( new RenderSys( quad ) );
         world.setSystem( new RenderTorpedoSys( quad ) );
         world.setSystem( new RenderTraceSys( quad ) );
+        world.setSystem( new RenderHUDSys( this, quad ) );
         world.setSystem( new SyncSys() );
         world.setSystem( new SonarSys() );
         world.setSystem( new TorpedoSys() );
