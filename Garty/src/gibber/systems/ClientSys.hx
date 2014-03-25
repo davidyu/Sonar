@@ -54,18 +54,18 @@ class ClientSys extends IntervalEntitySystem
                         d.id = d.socket.readUnsignedByte();
                         trace( "my ID is " + d.id );
                         if ( d.id > 1 ) {
-                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 1080, 250 ) );
+                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 500, 500 ) );
                         } else {
-                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 180, 250 ) );
+                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 250, 250 ) );
                         }
                         entityAssembler.createCamera( god.sectors[0], new Vec2( 0, 0 ), god.player );
                     case 254: //join
                         var newClientID = d.socket.readUnsignedByte();
                         trace( "another client with ID " + newClientID + " joined this game." );
                         if ( newClientID > 1 ) {
-                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 1080, 250 ), newClientID ) );
+                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 500, 500 ), newClientID ) );
                         } else {
-                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 180, 250 ), newClientID ) );
+                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 250, 250 ), newClientID ) );
                         }
                     case 253: //relay data
                         var id : UInt, peerOpcode : UInt;

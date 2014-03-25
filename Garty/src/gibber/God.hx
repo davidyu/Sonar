@@ -128,33 +128,35 @@ class God
         netPlayers = new Array();
 
         /*
-         * map: the Hammer
-
-            x    x   x   xxx   xxx    x   x    x
-           144  256 426              854 1024 1136
-                         500    780
-                        448      832
-            0----1         4----5         8----9   y: 144
-            |        2----3      6----7        |   y: 225
-            |                                  |
-            |       17-----16 13-----12        |   y: 279
-           19---18          | |           11---10  y: 360
-                            | |
-                            | |
-                            | |
-                           15-14                   y: 576
-
-                            x x
-                          640-+20
+         * map: square
+         *           +-------+
+         *           |       |
+         * +---+     |       |     +---+
+         * |   |-----|       |-----|   |
+         * +---+     |       |     +---+
+         *           |       |
+         *           +-------+
         */
 
-        var s1 = Vec2.getVecArray( [ 144, 144, 256, 144, /* p2 */ 426, 225, 448, 225, 500, 144,
+        var hammer = Vec2.getVecArray( [ 144, 144, 256, 144, /* p2 */ 426, 225, 448, 225, 500, 144,
                                     /* p5 */ 780, 144, 832, 225, 854, 225, /* p8 */ 1024, 144, 1136, 144,
                                     /* p10 */ 1136, 360, 1024, 360, 854, 279, /* p13 */ 660, 279,
                                     /* p14 */ 660, 576, 620, 576, 620, 279, /* p17 */ 426, 279,
                                     /* p18 */ 256, 360, 144, 360, 144, 144 ] );
 
-        sectors.push( entityAssembler.createVirtualSector( "sector0", new Vec2( 0, 0 ), [new Polygon( s1 )] ) );
+        var baseSquare = Vec2.getVecArray( [ 144, 144,
+                                             744, 144,
+                                             744, 744,
+                                             144, 744,
+                                             144, 144 ] );
+
+        var innerSquare = Vec2.getVecArray( [ 600, 600,
+                                              650, 600,
+                                              650, 650,
+                                              600, 650,
+                                              600, 600 ] );
+
+        sectors.push( entityAssembler.createVirtualSector( "sector0", new Vec2( 0, 0 ), [ new Polygon( baseSquare ), new Polygon( baseSquare ) ] ) );
 
 #if ( local )
         Security.loadPolicyFile( "xmlsocket://localhost:10000" );

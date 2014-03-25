@@ -103,7 +103,7 @@ class PhysicsSys extends EntitySystem
                     if ( !isColl ) { break; } // I wish haxe had a goto
                 }
                 if ( !isColl ) { break; }
-            }
+            } // END Check if entity is in an adjacent region to its nested region (i.e. new sector)
 
             // Check for collisions within local sector
             if ( isColl ) {
