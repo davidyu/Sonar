@@ -25,8 +25,8 @@ class PosCmp implements Component
     }
 
     function hxSerialize( s : haxe.Serializer ) {
-        s.serialize(pos);
-        s.serialize(dp);
+        s.serialize( pos );
+        s.serialize( dp );
     }
 
     function hxUnserialize( s : haxe.Unserializer ) {
