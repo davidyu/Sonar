@@ -58,8 +58,10 @@ class TrailSys extends EntitySystem
                     for ( e in containerMgr.getAllEntitiesOfContainer( sector ) ) {
                         if ( e.id == trail.playerId ) continue; //skip me
                         var p : Vec2 = posMapper.get( e ).pos;
-                        if ( Geo.isPointInCircle( { center: p, radius: 10 }, pos.pos ) ) {
+                        if ( Geo.isPointInCircle( { center: p, radius: 6 }, pos.pos ) ) {
                             entityAssembler.createTrace( sector, Mass( p, 3 ) );
+                            // bounce back
+                            pos.dp = pos.dp.mul( -1 );
                         }
                     }
 
