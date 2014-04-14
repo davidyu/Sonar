@@ -134,7 +134,7 @@ class ClientSys extends IntervalEntitySystem
                             case 4: // directional sonar
                                 var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
                                 var direction : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
-                                entityAssembler.createSonarBeam( netPlayer.getComponent( PosCmp ).sector, origin, direction );
+                                entityAssembler.createSonarBeam( netPlayer.id, netPlayer.getComponent( PosCmp ).sector, origin, direction );
                             case 5: // torpedo
                                 var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
                                 var target : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );

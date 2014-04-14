@@ -13,6 +13,7 @@ import gibber.components.RenderCmp;
 import gibber.components.TimedEffectCmp;
 import gibber.components.TrailCmp;
 import gibber.components.TraceCmp;
+import gibber.managers.ContainerMgr;
 import gibber.systems.EntityAssemblySys;
 
 import utils.Geo;
@@ -33,6 +34,7 @@ class TrailSys extends EntitySystem
         regionMapper      = world.getMapper( RegionCmp );
         bounceMapper      = world.getMapper( BounceCmp );
         entityAssembler   = world.getSystem( EntityAssemblySys );
+        containerMgr      = world.getManager( ContainerMgr );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {
@@ -41,6 +43,7 @@ class TrailSys extends EntitySystem
         var trail : TrailCmp;
         var pos : PosCmp;
         var bounce : BounceCmp;
+        var sector : Entity;
 
         for ( i in 0...actives.size ) {
             e   = actives.get( i );
@@ -48,9 +51,18 @@ class TrailSys extends EntitySystem
             trail = trailMapper.get( e );
             pos = posMapper.get( e );
             bounce = bounceMapper.get( e );
+            sector = posMapper.get( e ).sector;
 
             switch( time.processState ) {
                 case Process( _ ):
+                    for ( e in containerMgr.getAllEntitiesOfContainer( sector ) ) {
+                        if ( e.id == trail.playerId ) continue; //skip me
+                        var p : Vec2 = posMapper.get( e ).pos;
+                        if ( Geo.isPointInCircle( { center: p, radius: 10 }, pos.pos ) ) {
+                            entityAssembler.createTrace( sector, Mass( p, 3 ) );
+                        }
+                    }
+
                     switch ( bounce.lastTouched ) {
                         case Edge( a, b, collisionPt ):
                             // create trace
@@ -86,4 +98,6 @@ class TrailSys extends EntitySystem
     var regionMapper      : ComponentMapper<RegionCmp>; // need to extract region polys from sector
 
     var entityAssembler   : EntityAssemblySys;
+
+    var containerMgr      : ContainerMgr;
 }

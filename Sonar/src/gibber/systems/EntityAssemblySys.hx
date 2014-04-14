@@ -186,13 +186,13 @@ class EntityAssemblySys extends EntitySystem
     }
 
     // ugh: bad parameters again; see above.
-    public function createSonarBeam( sector : Entity, pos: Vec2, direction : Vec2 ) : Entity {
+    public function createSonarBeam( id : Int, sector : Entity, pos: Vec2, direction : Vec2 ) : Entity {
         var e = world.createEntity();
 
         var posCmp = new PosCmp( sector, pos, true );
         var posTrackerCmp = new PosTrackerCmp( LastPos );
         posCmp.dp = direction.normalize().mul( 9.0 );
-        var trailCmp = new TrailCmp( direction );
+        var trailCmp = new TrailCmp( id, direction );
         var timedEffectCmp = new TimedEffectCmp( 2000, GlobalTickInterval );
         var renderCmp = new RenderCmp( 0xffffff );
         var bounceCmp = new BounceCmp( 1.0 );
