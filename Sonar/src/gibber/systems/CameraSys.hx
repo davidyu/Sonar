@@ -13,6 +13,8 @@ import gibber.systems.RenderSys;
 import gibber.systems.RenderTraceSys;
 import gibber.systems.RenderGridSys;
 
+import utils.Vec2;
+
 class CameraSys extends EntitySystem
 {
     public function new() {
@@ -51,8 +53,8 @@ class CameraSys extends EntitySystem
                 case DynamicTarget( t ):
                     var tpos = posMapper.get( t );
                     if ( tpos != null ) {
-                        camPos.pos.x = tpos.pos.x - camera.viewportW / 2;
-                        camPos.pos.y = tpos.pos.y - camera.viewportH / 2;
+                        var fudgeCenterOffset = new Vec2( camera.viewportW/2, camera.viewportH/2 ); // centers target
+                        camPos.pos = Util.toWorld( SectorCoordinates( tpos.pos, tpos.sector ) ).sub( fudgeCenterOffset );
                     } else {
                         throw "can't track a target without a posCmp!";
                     }
