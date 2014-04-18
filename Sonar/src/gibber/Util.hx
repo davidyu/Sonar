@@ -36,8 +36,14 @@ class Util
         }
         return p;
     }
+
+    // reverses screenCoords
+    public static function screenToWorld( pos : Vec2, camera : Entity ) : Vec2 {
+        var p = pos.add( posMapper.get( camera ).pos );
+        return p;
+    }
     
-    public static function sectorCoords( pos : Vec2, ref : Entity, tar : Entity ) : Vec2 {
+    public static function sectorCoords( pos : Vec2, ref : Entity, tar : Entity, ?camera : Entity ) : Vec2 {
         return localCoords( worldCoords( pos, ref ), tar );
     }
     

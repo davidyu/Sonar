@@ -33,6 +33,7 @@ class CameraSys extends EntitySystem
         world.getSystem( RenderTraceSys ).setCamera( e );
         world.getSystem( RenderTrailSys ).setCamera( e );
         world.getSystem( ControllerSys ).setCamera( e );
+        world.getSystem( ReticuleSys ).setCamera( e );
     }
 
     override public function processEntities( entities : Bag<Entity> ) : Void  {

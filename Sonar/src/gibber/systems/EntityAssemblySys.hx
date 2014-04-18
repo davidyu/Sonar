@@ -33,6 +33,7 @@ import gibber.components.PosCmp;
 import gibber.components.PosTrackerCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
+import gibber.components.ReticuleCmp;
 import gibber.components.SonarCmp;
 import gibber.components.SyncCmp;
 import gibber.components.TorpedoCmp;
@@ -101,6 +102,20 @@ class EntityAssemblySys extends EntitySystem
         e.addComponent( destructibleCmp );
 
         world.addEntity( e );
+
+        return e;
+    }
+
+    public function createReticule( sector : Entity, start : Vec2 ) {
+        var e = world.createEntity();
+        var posCmp = new PosCmp( sector, start );
+        var reticuleCmp = new ReticuleCmp();
+        var renderCmp = new RenderCmp();
+
+        world.addEntity( e );
+        e.addComponent( posCmp );
+        e.addComponent( reticuleCmp );
+        e.addComponent( renderCmp );
 
         return e;
     }

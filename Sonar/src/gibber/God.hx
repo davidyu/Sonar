@@ -28,6 +28,7 @@ import gibber.systems.InputSys;
 import gibber.systems.GridSys;
 import gibber.systems.PhysicsSys;
 import gibber.systems.PosTrackerSys;
+import gibber.systems.ReticuleSys;
 import gibber.systems.RenderExplosionSys;
 import gibber.systems.RenderHUDSys;
 import gibber.systems.RenderSonarSys;
@@ -104,6 +105,7 @@ class God
         world.setSystem( new CmdProcessSys() );
         world.setSystem( new ExplosionSys() );
         world.setSystem( new RenderGridSys( quad ) );
+        world.setSystem( new ReticuleSys() );
         world.setSystem( new RenderExplosionSys( quad ) );
         world.setSystem( new RenderSectorSys( root ) );
         world.setSystem( new RenderSonarSys( quad ) );
@@ -166,6 +168,7 @@ class God
         client = entityAssembler.createClient( "sonargame.cloudapp.net", 5000 );
 #end
         entityAssembler.createGridReferenceBound( sectors[0], new Vec2( 0, 0 ) );
+        entityAssembler.createReticule( sectors[0], new Vec2( 0, 0 ) );
     }
 
     public function tick( _ ) : Void {
