@@ -62,8 +62,8 @@ class RenderTorpedoSys extends EntitySystem
             pos = posMapper.get( e );
             posTracker = posTrackerMapper.get( e );
 
-            lastScreenPos = Util.screenCoords( posTracker.getLastPosition(), camera, pos.sector );
-            curScreenPos = Util.screenCoords( pos.pos, camera, pos.sector );
+            lastScreenPos = Util.toScreen( SectorCoordinates( posTracker.getLastPosition(), pos.sector ), camera );
+            curScreenPos = Util.toScreen( SectorCoordinates( pos.pos, pos.sector ), camera );
 
             function drawLine( p1, p2, dx = 1, dy = 1 ) {
                 g2d.beginFill( 0xff0000 );

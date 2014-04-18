@@ -23,10 +23,7 @@ class Util
         posMapper = god.world.getMapper( PosCmp );
     }
     
-    public static function worldCoords( pos : Vec2, sector : Entity ) : Vec2 {
-        return pos.add( posMapper.get( sector ).pos );
-    }
-
+    // remember that the camera also has a sector (DUH - DOY)
     public static function toScreen( coords : Coordinates, camera : Entity ) : Vec2 {
         switch ( coords ) {
             case ScreenCoordinates( p, camera_ ): // translates from camera_ to camera
@@ -64,31 +61,6 @@ class Util
         }
     }
 
-    // if @sector is passed into screenCoords, we'll do a conversion into world space before
-    // turning it into screen space
-    public static function screenCoords( pos : Vec2, camera : Entity, ?sector : Entity ) : Vec2 {
-        var p = pos.sub( posMapper.get( camera ).pos );
-        if ( sector != null && sector != posMapper.get( camera ).sector ) {
-            p = worldCoords( p, sector );
-        }
-        return p;
-    }
-
-    // reverses screenCoords
-    public static function screenToWorld( pos : Vec2, camera : Entity ) : Vec2 {
-        var p = pos.add( posMapper.get( camera ).pos );
-        return p;
-    }
-    
-    public static function sectorCoords( pos : Vec2, ref : Entity, tar : Entity, ?camera : Entity ) : Vec2 {
-        return localCoords( worldCoords( pos, ref ), tar );
-    }
-    
-    public static function localCoords( pos : Vec2, local : Entity ) : Vec2 {
-        var p = posMapper.get( local );
-        return pos.sub( posMapper.get( local ).pos );
-    }
-    
     // Dunno how to do with generic...
     public static inline function realInsert<T>( a : Array<T>, i : Int, v : T ) : Void {
         while ( i >= a.length ) {

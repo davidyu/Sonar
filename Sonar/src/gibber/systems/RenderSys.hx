@@ -66,7 +66,7 @@ class RenderSys extends EntitySystem
             e = actives.get( i );
 
             posCmp = posMapper.get( e );
-            pos = Util.screenCoords( posCmp.pos, camera, posCmp.sector );
+            pos = Util.toScreen( SectorCoordinates( posCmp.pos, posCmp.sector ), camera );
 
             if ( destructibleMapper.get( e ) != null ) {
                 var d = destructibleMapper.get( e );

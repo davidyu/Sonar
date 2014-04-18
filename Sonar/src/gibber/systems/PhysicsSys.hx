@@ -52,7 +52,8 @@ class PhysicsSys extends EntitySystem
                 var adjRegionCmp = regionMapper.get( re );
                 var polys = adjRegionCmp.polys;
                 for ( p in polys ) {
-                    if ( !posCmp.regionsIn.exists( function( v ) { return re.id == v.id; } ) && p.isPointinPolygon( Util.sectorCoords( posCmp.pos, posCmp.sector, re ) ) ) {
+                    if ( !posCmp.regionsIn.exists( function( v ) { return re.id == v.id; } ) &&
+                         p.isPointinPolygon( Util.toSector( SectorCoordinates( posCmp.pos, posCmp.sector ), re ) ) ) {
                         posCmp.regionsIn.push( re );
                         adjRegionCmp.onEnter( e, posCmp.sector );
                     }
@@ -81,7 +82,7 @@ class PhysicsSys extends EntitySystem
                     var polys = adjRegionCmp.polys;
 
                     for ( p in polys ) {
-                        minVec = Util.sectorCoords( newPos, posCmp.sector, adj );
+                        minVec = Util.toSector( SectorCoordinates( newPos, adj ), posCmp.sector );
                         if ( p.isPointinPolygon( minVec ) ) {
                             isColl = false;
                             minSector = adj;
@@ -89,13 +90,13 @@ class PhysicsSys extends EntitySystem
                             break;
                         } else {
                             // Get distance between newPos and closest polygon for determining closest sector
-                            var np = Util.sectorCoords( newPos, posCmp.sector, adj );
+                            var np = Util.toSector( SectorCoordinates( newPos, adj ), posCmp.sector );
                             collPoint = p.getClosestPoint( np );
                             dist = collPoint.sub( np ).lengthsq();
 
                             if ( dist < minDist ) {
                                 minDist = dist;
-                                minVec = Util.sectorCoords( collPoint, posCmp.sector, adj );
+                                minVec = Util.toSector( SectorCoordinates( collPoint, adj ), posCmp.sector );
                                 minSector = adj;
                             }
                         }
@@ -143,7 +144,7 @@ class PhysicsSys extends EntitySystem
 
             // Handle new sector transition
             if ( minSector != posCmp.sector ) {
-                minVec = Util.sectorCoords( newPos, posCmp.sector, minSector );
+                minVec = Util.toSector( SectorCoordinates( newPos, minSector ), posCmp.sector );
                 posCmp.sector = minSector;
                 while ( !posCmp.regionsIn.isEmpty() ) {
                     regionMapper.get( posCmp.regionsIn.pop() ).onExit( e, posCmp.sector );
@@ -159,7 +160,7 @@ class PhysicsSys extends EntitySystem
                 var polys = regionCmp.polys;
 
                 for ( p in polys ) {
-                    if ( !p.isPointinPolygon( Util.localCoords( posCmp.pos, re ) ) ) {
+                    if ( !p.isPointinPolygon( Util.toSector( WorldCoordinates( posCmp.pos ), re ) ) ) {
                         regionCmp.onExit( e, posCmp.sector );
                         posCmp.regionsIn.remove( re );
                     }

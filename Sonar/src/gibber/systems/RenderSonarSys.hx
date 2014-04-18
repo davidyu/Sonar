@@ -74,7 +74,7 @@ class RenderSonarSys extends EntitySystem
                 bmd.setPixel( screenx, screeny, 0xffffff | alpha );
             }
 
-            var center = Util.screenCoords( pos.pos, camera, pos.sector );
+            var center = Util.toScreen( SectorCoordinates( pos.pos, pos.sector ), camera );
 
             if ( sonar.cullRanges.length == 0 ) {
                 Render.drawArc( center, radius, 0, 1.0, plotPixelOnBmd ); //just draw circle

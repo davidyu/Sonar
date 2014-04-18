@@ -59,7 +59,7 @@ class RenderSectorSys extends EntitySystem
             var posCmp = posMapper.get( e );
             var pos : Vec2 = posCmp.pos.clone();
             if ( posCmp.sector != null && posCmp.sector != e ) {
-                pos = Util.worldCoords( posCmp.pos, posCmp.sector );
+                pos = Util.toWorld( SectorCoordinates( posCmp.pos, posCmp.sector ) );
             }
             render.sprite.x = pos.x;
             render.sprite.y = pos.y;

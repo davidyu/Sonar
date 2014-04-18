@@ -13,7 +13,6 @@ import flash.ui.Keyboard;
 import gibber.components.ContainableCmp;
 import gibber.components.StaticPosCmp;
 import gibber.gabby.PortalEdge;
-import gibber.commands.MoveCmd;
 import gibber.components.BoundCmp;
 import gibber.components.BounceCmp;
 import gibber.components.CameraCmp;

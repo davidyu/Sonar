@@ -67,7 +67,7 @@ class RenderExplosionSys extends EntitySystem
             if ( radius > explosion.maxRadius ) {
                 radius = explosion.maxRadius;
             }
-            var center = Util.screenCoords( pos.pos, camera, pos.sector );
+            var center = Util.toScreen( SectorCoordinates( pos.pos, pos.sector ), camera );
 
             g2d.beginFill( 0xffffff );
             g2d.drawCircle( center.x, center.y, radius );

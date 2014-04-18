@@ -39,7 +39,7 @@ class ReticuleSys extends EntitySystem
             p = posMapper.get( e );
 
             if ( camera != null )
-                p.pos = Util.screenToWorld( Mouse.getMouseCoords(), camera );
+                p.pos = Util.toWorld( ScreenCoordinates( Mouse.getMouseCoords(), camera ) );
         }
     }
 

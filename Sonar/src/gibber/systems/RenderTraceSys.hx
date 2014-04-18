@@ -67,8 +67,8 @@ class RenderTraceSys extends EntitySystem
                         g2d.endFill();
                     }
 
-                    var aa = Util.screenCoords( a, camera, pos.sector );
-                    var bb = Util.screenCoords( b, camera, pos.sector );
+                    var aa = Util.toScreen( SectorCoordinates( a, pos.sector ), camera );
+                    var bb = Util.toScreen( SectorCoordinates( b, pos.sector ), camera );
 
                     if ( aa.x > bb.x ) { // right hemisphere
                         var dy = Math.abs( aa.y - bb.y ),
@@ -111,13 +111,13 @@ class RenderTraceSys extends EntitySystem
                 case Point( p ):
                     g2d.beginFill( render.colour, trace.fadeAcc );
                     g2d.lineStyle( 0 );
-                    var pp = Util.screenCoords( p, camera, pos.sector );
+                    var pp = Util.toScreen( SectorCoordinates( p, pos.sector ), camera );
                     g2d.drawCircle( pp.x, pp.y, 1 );
                     g2d.endFill();
                 case Mass( p, r ):
                     g2d.beginFill( render.colour, trace.fadeAcc );
                     g2d.lineStyle( 0 );
-                    var pp = Util.screenCoords( p, camera, pos.sector );
+                    var pp = Util.toScreen( SectorCoordinates( p, pos.sector ), camera );
                     g2d.drawCircle( pp.x, pp.y, r );
                     g2d.endFill();
             }

@@ -1,6 +1,5 @@
 package gibber;
 import gibber.commands.Command;
-import gibber.commands.MoveCmd;
 import gibber.commands.TransitCmd;
 import gibber.commands.TakeCmd;
 
@@ -16,7 +15,7 @@ class CmdFactory
     public function createCmd( commandName : String, args : Array<Dynamic> ) : Command {
         switch ( commandName ) {
             case "move":
-                return new MoveCmd( this, args[0], args[1], args[2] );
+                return null;
             case "transit":
                 return new TransitCmd( args[0], args[1] );
             case "take":

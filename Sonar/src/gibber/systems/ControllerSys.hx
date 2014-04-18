@@ -74,7 +74,7 @@ class ControllerSys extends EntitySystem
             switch ( controller.createPing ) {
                 case Ping( mousePos ):
                     if ( camera != null ) {
-                        var origin = Util.screenCoords( pos.pos, camera, pos.sector );
+                        var origin = Util.toScreen( SectorCoordinates( pos.pos, pos.sector ), camera );
                         var direction = mousePos.sub( origin );
                         entityAssembler.createSonarBeam( e.id, pos.sector, pos.pos, direction );
                         netClient.sendSonarBeamCreationEvent( pos.pos, direction  );
