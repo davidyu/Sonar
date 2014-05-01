@@ -31,6 +31,7 @@ class CameraSys extends EntitySystem
         world.getSystem( RenderSonarSys ).setCamera( e );
         world.getSystem( RenderExplosionSys ).setCamera( e );
         world.getSystem( RenderGridSys ).setCamera( e );
+        world.getSystem( RenderReticuleSys ).setCamera( e );
         world.getSystem( RenderTorpedoSys ).setCamera( e );
         world.getSystem( RenderTraceSys ).setCamera( e );
         world.getSystem( RenderTrailSys ).setCamera( e );
