@@ -46,8 +46,24 @@ class RenderReticuleSys extends EntitySystem
             posCmp = posMapper.get( e );
             pos = Util.toScreen( SectorCoordinates( posCmp.pos, posCmp.sector ), camera );
 
+            // top line
             g2d.beginFill( 0xffffff );
-            g2d.drawRect( pos.x - 5, pos.y - 5, 10, 10 );
+            g2d.drawRect( pos.x - 5, pos.y - 5, 10, 1 );
+            g2d.endFill();
+
+            // bottom line
+            g2d.beginFill( 0xffffff );
+            g2d.drawRect( pos.x - 5, pos.y + 5, 10, 1 );
+            g2d.endFill();
+
+            // left line
+            g2d.beginFill( 0xffffff );
+            g2d.drawRect( pos.x - 5, pos.y - 5, 1, 10 );
+            g2d.endFill();
+
+            // right line
+            g2d.beginFill( 0xffffff );
+            g2d.drawRect( pos.x + 5, pos.y - 5, 1, 10 );
             g2d.endFill();
         }
     }

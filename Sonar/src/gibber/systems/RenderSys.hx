@@ -14,6 +14,7 @@ import gibber.components.ExplosionCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.RenderCmp;
+import gibber.components.ReticuleCmp;
 import gibber.components.SonarCmp;
 import gibber.components.StaticPosCmp;
 import gibber.components.TorpedoCmp;
@@ -32,7 +33,7 @@ using Lambda;
 class RenderSys extends EntitySystem
 {
     public function new( quad : h2d.Sprite ) {
-        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp, TraceCmp, TorpedoCmp, ExplosionCmp, BoundCmp] ) );
+        super( Aspect.getAspectForAll( [PosCmp, RenderCmp] ).exclude( [RegionCmp, SonarCmp, TrailCmp, TraceCmp, TorpedoCmp, ExplosionCmp, BoundCmp, ReticuleCmp] ) );
 
         g2d = new h2d.Graphics( quad );
     }
