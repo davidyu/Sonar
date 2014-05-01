@@ -34,6 +34,7 @@ import gibber.systems.RenderHUDSys;
 import gibber.systems.RenderSonarSys;
 import gibber.systems.RenderSectorSys;
 import gibber.systems.RenderGridSys;
+import gibber.systems.RenderReticuleSys;
 import gibber.systems.RenderSys;
 import gibber.systems.RenderTorpedoSys;
 import gibber.systems.RenderTrailSys;
@@ -113,6 +114,7 @@ class God
         world.setSystem( new RenderSys( quad ) );
         world.setSystem( new RenderTorpedoSys( quad ) );
         world.setSystem( new RenderTraceSys( quad ) );
+        world.setSystem( new RenderReticuleSys( quad ) );
         world.setSystem( new RenderHUDSys( this, quad ) );
         world.setSystem( new SyncSys() );
         world.setSystem( new SonarSys() );
