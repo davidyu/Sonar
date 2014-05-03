@@ -38,8 +38,10 @@ class ReticuleSys extends EntitySystem
             r = reticuleMapper.get( e );
             p = posMapper.get( e );
 
-            if ( camera != null )
-                p.pos = Util.toSector( ScreenCoordinates( Mouse.getMouseCoords(), camera ), p.sector );
+            if ( camera != null ) {
+                var targetPos = Util.toSector( ScreenCoordinates( Mouse.getMouseCoords(), camera ), p.sector );
+                p.dp = targetPos.sub( p.pos ).div( 10 ); // shitty way
+            }
         }
     }
 
