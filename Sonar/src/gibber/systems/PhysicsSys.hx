@@ -9,7 +9,9 @@ import gibber.components.BounceCmp;
 import gibber.components.CameraCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
+import gibber.components.ReticuleCmp;
 import gibber.components.StaticPosCmp;
+import gibber.components.UICmp;
 import utils.Polygon;
 import utils.Vec2;
 
@@ -21,7 +23,7 @@ using utils.Math2;
 class PhysicsSys extends EntitySystem
 {
     public function new() {
-        super( Aspect.getAspectForAll( [PosCmp] ).exclude( [StaticPosCmp, CameraCmp, BoundCmp] ) );
+        super( Aspect.getAspectForAll( [PosCmp] ).exclude( [StaticPosCmp, CameraCmp, BoundCmp, UICmp] ) );
     }
 
     override public function initialize() : Void {

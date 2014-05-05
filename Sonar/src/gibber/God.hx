@@ -46,6 +46,7 @@ import gibber.systems.TorpedoSys;
 import gibber.systems.TraceSys;
 import gibber.systems.TrailSys;
 import gibber.systems.TransitRequestSys;
+import gibber.systems.UIPhysicsSys;
 import utils.Key;
 import utils.Math2;
 import utils.Polygon;
@@ -122,6 +123,7 @@ class God
         world.setSystem( new TimedEffectSys() );
         world.setSystem( new TraceSys() );
         world.setSystem( new TrailSys() );
+        world.setSystem( new UIPhysicsSys() );
 
         world.delta = 1000 / ( root.stage.frameRate ); //this is gross!
         world.initialize();

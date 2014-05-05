@@ -40,6 +40,7 @@ import gibber.components.TraceCmp;
 import gibber.components.TrailCmp;
 import gibber.components.TimedEffectCmp;
 import gibber.components.TransitRequestCmp;
+import gibber.components.UICmp;
 import gibber.managers.ContainerMgr;
 import gibber.scripts.TransitScript;
 import utils.Polygon;
@@ -110,11 +111,13 @@ class EntityAssemblySys extends EntitySystem
         var posCmp = new PosCmp( sector, start );
         var reticuleCmp = new ReticuleCmp();
         var renderCmp = new RenderCmp();
+        var uiCmp = new UICmp();
 
         world.addEntity( e );
         e.addComponent( posCmp );
         e.addComponent( reticuleCmp );
         e.addComponent( renderCmp );
+        e.addComponent( uiCmp );
 
         return e;
     }
