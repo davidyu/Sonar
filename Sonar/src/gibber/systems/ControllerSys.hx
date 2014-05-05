@@ -5,8 +5,11 @@ import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
+
+import gibber.managers.ContainerMgr;
 import gibber.components.ControllerCmp;
 import gibber.components.PosCmp;
+import gibber.components.ReticuleCmp;
 import gibber.systems.EntityAssemblySys;
 import gibber.systems.ClientSys;
 import gibber.systems.RenderHUDSys;
@@ -24,6 +27,7 @@ class ControllerSys extends EntitySystem
         entityAssembler = world.getSystem( EntityAssemblySys );
         netClient = world.getSystem( ClientSys );
         hudSys = world.getSystem( RenderHUDSys );
+        containerMgr = world.getManager( ContainerMgr );
     }
 
     public function setCamera( e : Entity ) : Void {
@@ -91,11 +95,19 @@ class ControllerSys extends EntitySystem
 
             switch ( controller.fireTorpedo ) {
                 case Fire( mousePos ):
-                    var target = Util.toSector( ScreenCoordinates( mousePos, camera ), pos.sector );
-                    entityAssembler.createTorpedo( e.id, StaticTarget( target ), pos.sector, pos.pos );
-                    netClient.sendFireTorpedoEvent( pos.pos, target );
-                    controller.fireTorpedo = Cooldown( controller.torpedoCooldown );
-                    hudSys.torpedoCoolingDown = true;
+                    // first, find reticule...this ought to be cached somewhere, because we only have 1 instance of the reticule
+                    var target = null;
+                    for ( e in containerMgr.getAllEntitiesOfContainer( pos.sector ) ) {
+                        if ( e.getComponent( ReticuleCmp ) != null ) {
+                            target = e;
+                        }
+                    }
+                    if ( target != null ) {
+                        entityAssembler.createTorpedo( e.id, DynamicTarget( target ), pos.sector, pos.pos );
+                        // netClient.sendFireTorpedoEvent( pos.pos, target );
+                        controller.fireTorpedo = Cooldown( controller.torpedoCooldown );
+                        hudSys.torpedoCoolingDown = true;
+                    }
                 case Cooldown( 0 ):
                     controller.fireTorpedo = No;
                     hudSys.torpedoCoolingDown = false;
@@ -112,6 +124,7 @@ class ControllerSys extends EntitySystem
     var hudSys : RenderHUDSys;
     var netClient : ClientSys;
     var camera : Entity;
+    var containerMgr : ContainerMgr;
 
     var god : God;
 }

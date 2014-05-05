@@ -109,15 +109,20 @@ class EntityAssemblySys extends EntitySystem
     public function createReticule( sector : Entity, start : Vec2 ) {
         var e = world.createEntity();
         var posCmp = new PosCmp( sector, start );
+        var nameCmp = new NameIdCmp( "reticle" );
         var reticuleCmp = new ReticuleCmp();
         var renderCmp = new RenderCmp();
         var uiCmp = new UICmp();
+        var containableCmp = new ContainableCmp( containerMgr, e, sector );
 
-        world.addEntity( e );
         e.addComponent( posCmp );
         e.addComponent( reticuleCmp );
         e.addComponent( renderCmp );
         e.addComponent( uiCmp );
+        e.addComponent( nameCmp );
+        e.addComponent( containableCmp );
+
+        world.addEntity( e );
 
         return e;
     }
