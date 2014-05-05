@@ -34,7 +34,7 @@ class ContainerMgr extends Manager
     override public function onAdded( e : Entity ) : Void {
         var containerSig = Aspect.getAspectForAll( [NameIdCmp, ContainerCmp] );
         var objSig       = Aspect.getAspectForAll( [NameIdCmp, ContainableCmp] );
-        
+
         if ( Aspect.matches( containerSig, e.componentBits ) ) {
             var eName = nameMapper.get( e ).name;
             var entities = containerEntities.get( e.id );

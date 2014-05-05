@@ -13,6 +13,7 @@ import gibber.components.ClientCmp;
 import gibber.components.CmdQueue;
 import gibber.components.ControllerCmp;
 import gibber.components.PosCmp;
+import gibber.components.ReticuleCmp;
 import gibber.components.TakeCmp;
 import gibber.managers.ContainerMgr;
 import gibber.managers.NameRegistry;
@@ -88,6 +89,7 @@ class God
         var cm = new ContainerMgr();
         cm.registerAspect( "item", Aspect.getAspectForAll( [TakeCmp] ) );
         cm.registerAspect( "char", Aspect.getAspectForAll( [CmdQueue, PosCmp] ) );
+        cm.registerAspect( "ret", Aspect.getAspectForAll( [ReticuleCmp] ) );
 
         world.setManager( cm );
         world.setManager( new SectorGraphMgr() );
@@ -172,7 +174,7 @@ class God
         client = entityAssembler.createClient( "sonargame.cloudapp.net", 5000 );
 #end
         entityAssembler.createGridReferenceBound( sectors[0], new Vec2( 0, 0 ) );
-        entityAssembler.createReticule( sectors[0], new Vec2( 0, 0 ) );
+        var ret = entityAssembler.createReticule( sectors[0], new Vec2( 0, 0 ) );
     }
 
     public function tick( _ ) : Void {
