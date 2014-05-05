@@ -91,7 +91,7 @@ class ControllerSys extends EntitySystem
 
             switch ( controller.fireTorpedo ) {
                 case Fire( mousePos ):
-                    var target = mousePos.add( posMapper.get( camera ).pos );
+                    var target = Util.toSector( ScreenCoordinates( mousePos, camera ), pos.sector );
                     entityAssembler.createTorpedo( e.id, StaticTarget( target ), pos.sector, pos.pos );
                     netClient.sendFireTorpedoEvent( pos.pos, target );
                     controller.fireTorpedo = Cooldown( controller.torpedoCooldown );
