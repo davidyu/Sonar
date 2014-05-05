@@ -4,6 +4,9 @@ import com.artemisx.Component;
 
 class ReticuleCmp implements Component
 {
-    public function new() {
+    @:isVar public var maxSpeed : Float;
+
+    public function new( ?maxSpeed : Float = 10 ) {
+        this.maxSpeed = maxSpeed;
     }
 }

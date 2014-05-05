@@ -41,6 +41,11 @@ class ReticuleSys extends EntitySystem
             if ( camera != null ) {
                 var targetPos = Util.toSector( ScreenCoordinates( Mouse.getMouseCoords(), camera ), p.sector );
                 p.dp = targetPos.sub( p.pos ).div( 10 ); // shitty way
+
+                // clamp
+                if ( p.dp.lengthsq() > r.maxSpeed ) {
+                    p.dp.mul( r.maxSpeed / p.dp.length() );
+                }
             }
         }
     }
