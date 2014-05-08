@@ -11,8 +11,9 @@ enum PingControllerState {
 }
 
 enum FireTorpedoState {
-    No;
+    Unloaded;
     Cooldown( n : UInt );
+    Loaded;
     Fire( mousePos : Vec2 );
 }
 
@@ -30,7 +31,7 @@ class ControllerCmp implements Component
     @:isVar public var moveRight (default, set): Bool;
     @:isVar public var createBlip : BlipControllerState;
     @:isVar public var createPing : PingControllerState;
-    @:isVar public var fireTorpedo : FireTorpedoState;
+    @:isVar public var torpedo : FireTorpedoState;
 
     @:isVar public var blipCooldown : UInt;
     @:isVar public var pingCooldown : UInt;
@@ -40,7 +41,7 @@ class ControllerCmp implements Component
         moveUp = moveDown = moveLeft = moveRight = false;
         createBlip = No;
         createPing = No;
-        fireTorpedo = No;
+        torpedo = Unloaded;
 
         blipCooldown = 20;
         pingCooldown = 20;

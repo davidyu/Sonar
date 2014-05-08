@@ -93,7 +93,7 @@ class ControllerSys extends EntitySystem
                 default:
             }
 
-            switch ( controller.fireTorpedo ) {
+            switch ( controller.torpedo ) {
                 case Fire( mousePos ):
                     // first, find reticule...this ought to be cached somewhere, because we only have 1 instance of the reticule
                     var target = null;
@@ -105,14 +105,14 @@ class ControllerSys extends EntitySystem
                     if ( target != null ) {
                         entityAssembler.createTorpedo( e.id, DynamicTarget( target ), pos.sector, pos.pos );
                         // netClient.sendFireTorpedoEvent( pos.pos, target );
-                        controller.fireTorpedo = Cooldown( controller.torpedoCooldown );
+                        controller.torpedo = Cooldown( controller.torpedoCooldown );
                         hudSys.torpedoCoolingDown = true;
                     }
                 case Cooldown( 0 ):
-                    controller.fireTorpedo = No;
+                    controller.torpedo = Unloaded;
                     hudSys.torpedoCoolingDown = false;
                 case Cooldown( n ): // n > 0
-                    controller.fireTorpedo = Cooldown( n - 1 );
+                    controller.torpedo = Cooldown( n - 1 );
                 default:
             }
         }
