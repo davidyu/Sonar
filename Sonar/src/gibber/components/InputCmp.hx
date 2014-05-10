@@ -25,5 +25,6 @@ class InputCmp implements Component
         this.blipTriggerKey = blipTriggerKey;
         this.pingTriggerKey = pingTriggerKey;
         this.fireTorpedoKey = fireTorpedoKey;
+        this.loadTorpedoKey = loadTorpedoKey;
     }
 }
