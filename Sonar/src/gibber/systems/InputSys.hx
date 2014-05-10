@@ -51,7 +51,7 @@ class InputSys extends EntitySystem
                 }
             }
 
-            if ( Mouse.wasPressed() && controller.torpedo == Loaded ) {
+            if ( Mouse.wasPressed() ) {
                 if ( controller.torpedo == Loaded ) {
                     controller.torpedo = Fire( Mouse.getMouseCoords() );
                 } else if ( controller.torpedo == Unloaded && controller.createPing == No ) {
