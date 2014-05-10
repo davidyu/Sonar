@@ -12,6 +12,7 @@ enum PingControllerState {
 
 enum FireTorpedoState {
     Unloaded;
+    Guiding;
     Cooldown( n : UInt );
     Loaded;
     Fire( mousePos : Vec2 );

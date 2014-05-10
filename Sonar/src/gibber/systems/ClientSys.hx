@@ -63,6 +63,7 @@ class ClientSys extends IntervalEntitySystem
                             god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 700, 400 ) );
                         }
                         entityAssembler.createCamera( god.sectors[0], new Vec2( 0, 0 ), god.player );
+                        entityAssembler.createReticule( god.sectors[0], god.player, new Vec2( 0, 0 ) );
                     case 254: //join
                         var newClientID = d.socket.readUnsignedByte();
                         trace( "another client with ID " + newClientID + " joined this game." );
