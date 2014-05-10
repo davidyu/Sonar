@@ -11,6 +11,7 @@ import gibber.components.RenderCmp;
 
 import gibber.Util;
 
+import utils.Mouse;
 import utils.Render;
 
 using Lambda;
@@ -26,6 +27,7 @@ class RenderHUDSys extends VoidEntitySystem
         super();
         this.quad = quad;
         this.god = god;
+        g2d = new h2d.Graphics( quad );
     }
 
     override public function initialize() : Void {
@@ -49,6 +51,19 @@ class RenderHUDSys extends VoidEntitySystem
         hudReloadStatus.text = "Torpedo: " + ( torpedoCoolingDown ? "reloading..." : "READY" ) + "\n" +
                                "Sonar  : " + ( blipCoolingDown ? "cooling..." : "READY" ) + "\n" +
                                "Ping   : " + ( pingCoolingDown ? "cooling..." : "READY" );
+
+        // draw crosshair
+        g2d.clear();
+        var screenW = flash.Lib.current.stage.stageWidth;
+        var screenH = flash.Lib.current.stage.stageHeight;
+
+        g2d.beginFill( 0x18CAE6, 0.8 );
+        g2d.drawRect( 0, Mouse.getMouseCoords().y, screenW, 2 );
+        g2d.endFill();
+
+        g2d.beginFill( 0x18CAE6, 0.8 );
+        g2d.drawRect( Mouse.getMouseCoords().x, 0, 2, screenH );
+        g2d.endFill();
     }
 
     var hudProggyFont : h2d.Font;
@@ -57,4 +72,6 @@ class RenderHUDSys extends VoidEntitySystem
     var hudPlayersConnected : h2d.Text;
     var hudReloadStatus : h2d.Text;
     var god : God;
+
+    private var g2d : h2d.Graphics;
 }
