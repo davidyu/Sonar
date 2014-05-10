@@ -9,6 +9,7 @@ import com.artemisx.utils.Bag;
 import gibber.components.PosCmp;
 import gibber.components.RenderCmp;
 import gibber.components.ReticuleCmp;
+import gibber.components.ControllerCmp;
 
 import utils.Vec2;
 
@@ -23,6 +24,8 @@ class RenderReticuleSys extends EntitySystem
     override public function initialize() : Void {
         posMapper = world.getMapper( PosCmp );
         renderMapper = world.getMapper( RenderCmp );
+        reticuleMapper = world.getMapper( ReticuleCmp );
+        controllerMapper = world.getMapper( ControllerCmp );
     }
 
     public function setCamera( e : Entity ) : Void {
@@ -32,6 +35,7 @@ class RenderReticuleSys extends EntitySystem
     override public function processEntities( entities : Bag<Entity> ) : Void  {
         var e : Entity;
         var render : RenderCmp;
+        var reticule : ReticuleCmp;
         var posCmp : PosCmp;
         var pos : Vec2;
 
@@ -42,8 +46,12 @@ class RenderReticuleSys extends EntitySystem
         for ( i in 0...actives.size ) {
             e = actives.get( i );
             render = renderMapper.get( e );
-
+            reticule = reticuleMapper.get( e );
             posCmp = posMapper.get( e );
+            controller = 
+
+            if ( controllerMapper.get( reticule.player ).torpedo != Guiding ) return;
+
             pos = Util.toScreen( SectorCoordinates( posCmp.pos, posCmp.sector ), camera );
 
             // top line
@@ -68,6 +76,8 @@ class RenderReticuleSys extends EntitySystem
         }
     }
 
+    var reticuleMapper : ComponentMapper<ReticuleCmp>;
+    var controllerMapper : ComponentMapper<ControllerCmp>;
     var posMapper : ComponentMapper<PosCmp>;
     var renderMapper : ComponentMapper<RenderCmp>;
 

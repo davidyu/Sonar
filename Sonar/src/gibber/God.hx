@@ -174,7 +174,6 @@ class God
         client = entityAssembler.createClient( "sonargame.cloudapp.net", 5000 );
 #end
         entityAssembler.createGridReferenceBound( sectors[0], new Vec2( 0, 0 ) );
-        var ret = entityAssembler.createReticule( sectors[0], new Vec2( 0, 0 ) );
     }
 
     public function tick( _ ) : Void {

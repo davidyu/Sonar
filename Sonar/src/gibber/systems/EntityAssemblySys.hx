@@ -106,11 +106,11 @@ class EntityAssemblySys extends EntitySystem
         return e;
     }
 
-    public function createReticule( sector : Entity, start : Vec2 ) {
+    public function createReticule( sector: Entity, player: Entity, start : Vec2 ) {
         var e = world.createEntity();
         var posCmp = new PosCmp( sector, start );
         var nameCmp = new NameIdCmp( "reticle" );
-        var reticuleCmp = new ReticuleCmp();
+        var reticuleCmp = new ReticuleCmp( player );
         var renderCmp = new RenderCmp();
         var uiCmp = new UICmp();
         var containableCmp = new ContainableCmp( containerMgr, e, sector );
