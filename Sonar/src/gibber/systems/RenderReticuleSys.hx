@@ -48,7 +48,6 @@ class RenderReticuleSys extends EntitySystem
             render = renderMapper.get( e );
             reticule = reticuleMapper.get( e );
             posCmp = posMapper.get( e );
-            controller = 
 
             if ( controllerMapper.get( reticule.player ).torpedo != Guiding ) return;
 

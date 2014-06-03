@@ -51,11 +51,23 @@ class InputSys extends EntitySystem
                 }
             }
 
+            if ( Mouse.isDown() ) {
+                switch ( controller.torpedo ) {
+                    case Loaded:
+                        controller.torpedo = Fire( Mouse.getMouseCoords() );
+                    default:
+                }
+            }
+
             if ( Mouse.wasPressed() ) {
-                if ( controller.torpedo == Loaded ) {
-                    controller.torpedo = Fire( Mouse.getMouseCoords() );
-                } else if ( controller.torpedo == Unloaded && controller.createPing == No ) {
-                    controller.createPing = Ping( Mouse.getMouseCoords() );
+                switch ( controller.torpedo ) {
+                    case Guiding:
+                        controller.torpedo = Cooldown( controller.torpedoCooldown );
+                    case Unloaded:
+                        if ( controller.createPing == No ) {
+                            controller.createPing = Ping( Mouse.getMouseCoords() );
+                        }
+                    default:
                 }
             }
 
