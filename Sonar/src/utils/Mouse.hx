@@ -29,20 +29,20 @@ class Mouse {
     }
 
     static function onMouseMove( e : flash.events.MouseEvent ) {
-        screenMousePos.x = e.localX;
-        screenMousePos.y = e.localY;
+        screenMousePos.x = e.stageX;
+        screenMousePos.y = e.stageY;
     }
 
     static function onMouse( down_, e : flash.events.MouseEvent ) {
         down = down_;
-        screenMousePos.x = e.localX;
-        screenMousePos.y = e.localY;
+        screenMousePos.x = e.stageX;
+        screenMousePos.y = e.stageY;
     }
 
     static function onMousePress( e : flash.events.MouseEvent ) {
         pressed = true;
-        screenMousePos.x = e.localX;
-        screenMousePos.y = e.localY;
+        screenMousePos.x = e.stageX;
+        screenMousePos.y = e.stageY;
     }
 
     public static function isDown() {
