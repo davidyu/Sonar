@@ -1,9 +1,11 @@
 package gibber.systems;
+
 import com.artemisx.Aspect;
 import com.artemisx.ComponentMapper;
 import com.artemisx.Entity;
 import com.artemisx.EntitySystem;
 import com.artemisx.utils.Bag;
+
 import gibber.components.BoundCmp;
 import gibber.components.BounceCmp;
 import gibber.components.CameraCmp;
@@ -12,6 +14,7 @@ import gibber.components.RegionCmp;
 import gibber.components.ReticuleCmp;
 import gibber.components.StaticPosCmp;
 import gibber.components.UICmp;
+
 import utils.Polygon;
 import utils.Vec2;
 
