@@ -13,6 +13,7 @@ import gibber.components.RenderCmp;
 import gibber.components.TimedEffectCmp;
 import gibber.components.TrailCmp;
 import gibber.components.TraceCmp;
+import gibber.components.UICmp;
 import gibber.managers.ContainerMgr;
 import gibber.systems.EntityAssemblySys;
 
@@ -57,6 +58,7 @@ class TrailSys extends EntitySystem
                 case Process( _ ):
                     for ( e in containerMgr.getAllEntitiesOfContainer( sector ) ) {
                         if ( e.id == trail.playerId ) continue; //skip me
+                        if ( e.getComponent( UICmp ) != null ) continue; // skip UI components
                         var p : Vec2 = posMapper.get( e ).pos;
                         if ( Geo.isPointInCircle( { center: p, radius: 6 }, pos.pos ) ) {
                             entityAssembler.createTrace( sector, Mass( p, 3 ) );
