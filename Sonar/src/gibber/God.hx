@@ -58,7 +58,6 @@ class God
     @:isVar public var world ( default, null ) : World;
     @:isVar public var entityAssembler ( default, null ): EntityAssemblySys;
     @:isVar public var entityDeserializer ( default, null ) : EntityDeserializer;
-    @:isVar public var sf ( default, null ) : ScriptFactory;
 
     public function new( r : MovieClip, q : h2d.Sprite ) {
         root = r;
@@ -78,7 +77,6 @@ class God
         entityDeserializer = new EntityDeserializer( this );
 
         commander = new Commander( this );
-        sf = new ScriptFactory( this );
 
         initializeEntities();
     }
