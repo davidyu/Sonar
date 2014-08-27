@@ -56,7 +56,6 @@ import utils.Vec2;
 class God
 {
     @:isVar public var world ( default, null ) : World;
-    @:isVar public var cf ( default, null ) : CmdFactory;
     @:isVar public var entityAssembler ( default, null ): EntityAssemblySys;
     @:isVar public var entityDeserializer ( default, null ) : EntityDeserializer;
     @:isVar public var sf ( default, null ) : ScriptFactory;
@@ -76,7 +75,6 @@ class God
 
         Util.init( this );
 
-        cf = new CmdFactory( this );
         entityDeserializer = new EntityDeserializer( this );
 
         commander = new Commander( this );
