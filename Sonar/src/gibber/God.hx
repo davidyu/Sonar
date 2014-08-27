@@ -76,8 +76,6 @@ class God
 
         entityDeserializer = new EntityDeserializer( this );
 
-        commander = new Commander( this );
-
         initializeEntities();
     }
 
@@ -232,7 +230,6 @@ class God
     var inputTextfield : TextField;
     var baseTextFormat : TextFormat;
 
-    public var commander : Commander;
     public var outputTextfield : TextField;
     public var sectors : Array<Entity>;
     public var player : Entity;
