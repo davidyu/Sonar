@@ -56,10 +56,8 @@ import utils.Vec2;
 class God
 {
     @:isVar public var world ( default, null ) : World;
-    @:isVar public var cf ( default, null ) : CmdFactory;
     @:isVar public var entityAssembler ( default, null ): EntityAssemblySys;
     @:isVar public var entityDeserializer ( default, null ) : EntityDeserializer;
-    @:isVar public var sf ( default, null ) : ScriptFactory;
 
     public function new( r : MovieClip, q : h2d.Sprite ) {
         root = r;
@@ -76,11 +74,7 @@ class God
 
         Util.init( this );
 
-        cf = new CmdFactory( this );
         entityDeserializer = new EntityDeserializer( this );
-
-        commander = new Commander( this );
-        sf = new ScriptFactory( this );
 
         initializeEntities();
     }
@@ -236,7 +230,6 @@ class God
     var inputTextfield : TextField;
     var baseTextFormat : TextFormat;
 
-    public var commander : Commander;
     public var outputTextfield : TextField;
     public var sectors : Array<Entity>;
     public var player : Entity;

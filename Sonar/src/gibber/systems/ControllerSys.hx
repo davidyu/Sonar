@@ -105,7 +105,7 @@ class ControllerSys extends EntitySystem
                     if ( target != null ) {
                         entityAssembler.createTorpedo( e.id, DynamicTarget( target ), pos.sector, pos.pos );
                         // netClient.sendFireTorpedoEvent( pos.pos, target );
-                        controller.torpedo = Cooldown( controller.torpedoCooldown );
+                        controller.torpedo = Guiding;
                         hudSys.torpedoCoolingDown = true;
                     }
                 case Cooldown( 0 ):

@@ -1,7 +1,4 @@
 Check Check
-Cfg gibber.Cfg
-CmdFactory gibber.CmdFactory
-Commander gibber.Commander
 Command gibber.commands.Command
 TakeCmd gibber.commands.TakeCmd
 TransitCmd gibber.commands.TransitCmd
@@ -39,6 +36,7 @@ TorpedoCmp gibber.components.TorpedoCmp
 TraceCmp gibber.components.TraceCmp
 TrailCmp gibber.components.TrailCmp
 TransitRequestCmp gibber.components.TransitRequestCmp
+UICmp gibber.components.UICmp
 UsageCmp gibber.components.UsageCmp
 EntityDeserializer gibber.EntityDeserializer
 PortalEdge gibber.gabby.PortalEdge
@@ -46,7 +44,6 @@ God gibber.God
 ContainerMgr gibber.managers.ContainerMgr
 NameRegistry gibber.managers.NameRegistry
 SectorGraphMgr gibber.managers.SectorGraphMgr
-ScriptFactory gibber.ScriptFactory
 GenericScript gibber.scripts.GenericScript
 Script gibber.scripts.Script
 TransitScript gibber.scripts.TransitScript
@@ -66,6 +63,7 @@ PosTrackerSys gibber.systems.PosTrackerSys
 RenderExplosionSys gibber.systems.RenderExplosionSys
 RenderGridSys gibber.systems.RenderGridSys
 RenderHUDSys gibber.systems.RenderHUDSys
+RenderReticuleSys gibber.systems.RenderReticuleSys
 RenderSectorSys gibber.systems.RenderSectorSys
 RenderSonarSys gibber.systems.RenderSonarSys
 RenderSys gibber.systems.RenderSys
@@ -81,6 +79,7 @@ TorpedoSys gibber.systems.TorpedoSys
 TraceSys gibber.systems.TraceSys
 TrailSys gibber.systems.TrailSys
 TransitRequestSys gibber.systems.TransitRequestSys
+UIPhysicsSys gibber.systems.UIPhysicsSys
 Util gibber.Util
 Main Main
 Geo utils.Geo
