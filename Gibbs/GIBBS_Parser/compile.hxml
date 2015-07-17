@@ -1,9 +1,0 @@
-# test builds for parser
-
--debug
-#REMEMBER THIS FOR DEBUGGING AND NEVER FORGET
--D fdb
-
--main gcc.test.TestParser
-gcc.Lexer
--swf bin\TestParser.swf
