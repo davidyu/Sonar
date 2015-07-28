@@ -1,3 +1,6 @@
 [submodule "Sonar/libs/artemisx"]
 	path = Sonar/libs/artemisx
 	url = git@github.com:desktop/artemisx.git
+[submodule "lib/heaps"]
+	path = lib/heaps
+	url = https://github.com/ncannasse/heaps.git
