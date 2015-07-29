@@ -13,26 +13,26 @@ import com.sociodox.theminer.TheMiner;
 
 using gibber.Util;
 
-class PostEffectsShader extends h3d.impl.Shader {
+class PostEffectsShader extends hxsl.Shader {
 
 #if flash 
     static var SRC = {
-        var input : {
-            pos : Float3,
-            uv : Float2,
+        @input var input : {
+            pos : Vec3,
+            uv : Vec2,
         };
 
-        var tuv : Float2;
+        var tuv : Vec2;
         var time : Float;
-        var screenres : Float2;
+        var screenres : Vec2;
 
-        function vertex( mproj:Matrix ) {
+        function vertex() {
             out = input.pos.xyzw * mproj;
             tuv =  input.uv;
         }
 
         // apply fisheye/CRT screen warp to UV coords; at flatness ~= 0, it's a circle.
-        function crtwarp( uv : Float2, flatness : Float ) {
+        function crtwarp( uv : Vec2, flatness : Float ) {
             var coord = ( uv - 0.5 ) * 2.0; // shift coordsys to ( -0.5 , 0.5 )
             coord *= 1.1;
 
@@ -44,8 +44,8 @@ class PostEffectsShader extends h3d.impl.Shader {
         }
 
         // sampling trick to force a red-green shift on resulting texture
-        function rgshift( tex : Texture, uv : Float2 ) {
-            var c : Float4 = [ 0, 0, 0, 1 ];
+        function rgshift( tex : Sampler2D, uv : Vec2 ) {
+            var c : Vec4 = [ 0, 0, 0, 1 ];
             c.r = tex.get( [ uv.x - 0.003, uv.y ] ).r;
             c.g = tex.get( [ uv.x, uv.y ] ).g;
             c.b = tex.get( [ uv.x + 0.003, uv.y ] ).b;
@@ -53,19 +53,19 @@ class PostEffectsShader extends h3d.impl.Shader {
         }
 
         // make scanlines by subtracting from rgb
-        function scanline( color : Float4, screenspace : Float2 ) {
+        function scanline( color : Vec4, screenspace : Vec2 ) {
             color.rgb -= sin( ( screenspace.y + ( time * 29.0 ) ) ) * 0.02;
             return color;
         }
 
         // darken corners
-        function darken( color : Float4, screenspace : Float2 ) {
-            var threshold : Float2 = min( screenspace, screenres - screenspace );
+        function darken( color : Vec4, screenspace : Vec2 ) {
+            var threshold : Vec2 = min( screenspace, screenres - screenspace );
             color.rgb -= pow( length( screenres ) / length( threshold ), 0.3 ) * [ 0.11, 0.11, 0.11 ];
             return color;
         }
 
-        function fragment( tex : Texture ) {
+        function fragment( tex : Sampler2D ) {
             var uv = crtwarp( tuv, 4.2 );
             var c = rgshift( tex, uv );
 
