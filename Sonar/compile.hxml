@@ -1,8 +1,8 @@
 -cp src
 -cp libs/artemisx/src
+-cp libs/heaps
 
 -lib hscript
--lib h3d
 
 -swf-header 512:512:30:000000
 -swf-version 11.7
