@@ -22,17 +22,27 @@ class PostEffectsShader extends hxsl.Shader {
             uv : Vec2,
         };
 
+        @global var camera : {
+            var proj : Mat4;
+        };
+
+        var output : {
+            var position : Vec4;
+            var color : Vec4;
+        };
+
         var tuv : Vec2;
         var time : Float;
         var screenres : Vec2;
+        @param var tex : Sampler2D;
 
         function vertex() {
-            out = input.pos.xyzw * mproj;
+            output.position = vec4( input.pos.xyz, 1 ) * camera.proj;
             tuv =  input.uv;
         }
 
         // apply fisheye/CRT screen warp to UV coords; at flatness ~= 0, it's a circle.
-        function crtwarp( uv : Vec2, flatness : Float ) {
+        function crtwarp( uv : Vec2, flatness : Float ): Vec2 {
             var coord = ( uv - 0.5 ) * 2.0; // shift coordsys to ( -0.5 , 0.5 )
             coord *= 1.1;
 
@@ -44,41 +54,41 @@ class PostEffectsShader extends hxsl.Shader {
         }
 
         // sampling trick to force a red-green shift on resulting texture
-        function rgshift( tex : Sampler2D, uv : Vec2 ) {
-            var c : Vec4 = [ 0, 0, 0, 1 ];
-            c.r = tex.get( [ uv.x - 0.003, uv.y ] ).r;
-            c.g = tex.get( [ uv.x, uv.y ] ).g;
-            c.b = tex.get( [ uv.x + 0.003, uv.y ] ).b;
+        function rgshift( tex : Sampler2D, uv : Vec2 ): Vec4 {
+            var c : Vec4 = vec4( 0, 0, 0, 1 );
+            c.r = tex.get( uv - vec2( 0.003, 0 ) ).r;
+            c.g = tex.get( uv ).g;
+            c.b = tex.get( uv + vec2( 0.003, 0 ) ).b;
             return c;
         }
 
         // make scanlines by subtracting from rgb
-        function scanline( color : Vec4, screenspace : Vec2 ) {
+        function scanline( color : Vec4, screenspace : Vec2 ): Vec4 {
             color.rgb -= sin( ( screenspace.y + ( time * 29.0 ) ) ) * 0.02;
             return color;
         }
 
         // darken corners
-        function darken( color : Vec4, screenspace : Vec2 ) {
+        function darken( color : Vec4, screenspace : Vec2 ): Vec4 {
             var threshold : Vec2 = min( screenspace, screenres - screenspace );
-            color.rgb -= pow( length( screenres ) / length( threshold ), 0.3 ) * [ 0.11, 0.11, 0.11 ];
+            color.rgb -= pow( length( screenres ) / length( threshold ), 0.3 ) * vec3( 0.11, 0.11, 0.11 );
             return color;
         }
 
-        function fragment( tex : Sampler2D ) {
+        function fragment() {
             var uv = crtwarp( tuv, 4.2 );
             var c = rgshift( tex, uv );
 
             // discard
-            c *= uv.x > 0;
-            c *= uv.y > 0;
-            c *= uv.x < 1;
-            c *= uv.y < 1;
+            c *= uv.x > 0 ? 1 : 0;
+            c *= uv.y > 0 ? 1 : 0;
+            c *= uv.x < 1 ? 1 : 0;
+            c *= uv.y < 1 ? 1 : 0;
 
             // using screenspace coords forcibly produces a moire pattern, neat!
             c = darken( c, uv * screenres );
             c = scanline( c, uv * screenres );
-            out = c;
+            output.color = c;
         }
     };
 
