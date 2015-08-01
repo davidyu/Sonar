@@ -31,7 +31,7 @@ class RenderHUDSys extends VoidEntitySystem
     }
 
     override public function initialize() : Void {
-        hxd.Res.loader = new hxd.res.Loader( hxd.res.EmbedFileSystem.create() );
+        hxd.Res.loader = new hxd.res.Loader( hxd.fs.EmbedFileSystem.create() );
 
         hudProggyFont = hxd.Res.ProggyTinySZ.build( 15, { antiAliasing: false } );
         hudPressStartFont = hxd.Res.PressStart2P.build( 8, { antiAliasing: false } );
@@ -44,7 +44,6 @@ class RenderHUDSys extends VoidEntitySystem
         hudReloadStatus.x = 350;
         hudReloadStatus.y = 20;
     }
-
 
     override public function processSystem() : Void  {
         hudPlayersConnected.text = "Players connected: " + ( god.netPlayers.length + 1 );
