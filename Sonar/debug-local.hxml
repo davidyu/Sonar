@@ -1,6 +1,7 @@
 -cp src
 -cp libs/artemisx/src
 -cp libs/heaps
+-cp libs/format
 
 -debug
 -D fdb

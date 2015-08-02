@@ -4,3 +4,6 @@
 [submodule "Sonar/libs/heaps"]
 	path = Sonar/libs/heaps
 	url = https://github.com/ncannasse/heaps.git
+[submodule "Sonar/libs/format"]
+	path = Sonar/libs/format
+	url = https://github.com/HaxeFoundation/format.git
