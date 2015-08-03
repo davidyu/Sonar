@@ -124,9 +124,8 @@ class PostEffectsMaterial extends h3d.mat.Material{
     public function new( tex ) {
         this.tex = tex;
         pshader = new PostEffectsShader();
-        depthTest = h3d.mat.Data.Compare.Always;
-        culling = None;
-
+        mainPass.culling = None;
+        mainPass.blend(SrcAlpha, OneMinusSrcAlpha);
         super( pshader );
     }
 
