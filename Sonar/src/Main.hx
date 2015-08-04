@@ -6,6 +6,7 @@ import flash.Lib;
 import gibber.God;
 
 import h3d.scene.*;
+import h3d.mat.Pass;
 
 #if debug
 import com.sociodox.theminer.TheMiner;
@@ -124,6 +125,7 @@ class PostEffectsMaterial extends h3d.mat.Material{
     public function new( tex ) {
         this.tex = tex;
         pshader = new PostEffectsShader();
+        addPass( new Pass( "default", null ) ).addShader( pshader );
         mainPass.culling = None;
         mainPass.blend(SrcAlpha, OneMinusSrcAlpha);
         super( pshader );
