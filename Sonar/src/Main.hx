@@ -32,7 +32,7 @@ class PostEffectsShader extends hxsl.Shader {
         };
 
         var tuv : Vec2;
-        var time : Float;
+        @param var time : Float;
         var screenres : Vec2;
         @param var tex : Sampler2D;
 
@@ -133,12 +133,14 @@ class PostEffectsMaterial extends h3d.mat.Material{
         pshader.time = newTime;
     }
 
+    /*
     override function setup( ctx : h3d.scene.RenderContext ) {
         super.setup(ctx);
         pshader.tex = tex;
         pshader.mproj = ctx.camera.m;
         pshader.screenres = new h3d.Vector( ctx.engine.width, ctx.engine.height );
     }
+    */
 }
 
 class Screen extends CustomObject {
