@@ -7,6 +7,7 @@ import gibber.God;
 
 import h3d.scene.*;
 import h3d.mat.Pass;
+import h3d.Matrix;
 
 #if debug
 import com.sociodox.theminer.TheMiner;
@@ -23,7 +24,7 @@ class PostEffectsShader extends hxsl.Shader {
             uv : Vec2,
         };
 
-        @global var camera : {
+        @param var camera : {
             var proj : Mat4;
         };
 
@@ -34,7 +35,7 @@ class PostEffectsShader extends hxsl.Shader {
 
         var tuv : Vec2;
         @param var time : Float;
-        var screenres : Vec2;
+        @param var screenres : Vec2;
         @param var tex : Sampler2D;
 
         function vertex() {
@@ -122,9 +123,12 @@ class PostEffectsMaterial extends h3d.mat.Material{
     public var tex : h3d.mat.Texture;
     var pshader : PostEffectsShader;
 
-    public function new( tex ) {
+    public function new( tex, w, h, camera: Matrix ) {
         this.tex = tex;
         pshader = new PostEffectsShader();
+        pshader.tex = tex;
+        pshader.camera.proj = camera;
+        pshader.screenres = new h3d.Vector( w, h );
         addPass( new Pass( "default", null ) ).addShader( pshader );
         mainPass.culling = None;
         mainPass.blend(SrcAlpha, OneMinusSrcAlpha);
@@ -138,9 +142,6 @@ class PostEffectsMaterial extends h3d.mat.Material{
     /*
     override function setup( ctx : h3d.scene.RenderContext ) {
         super.setup(ctx);
-        pshader.tex = tex;
-        pshader.mproj = ctx.camera.m;
-        pshader.screenres = new h3d.Vector( ctx.engine.width, ctx.engine.height );
     }
     */
 }
@@ -150,14 +151,14 @@ class Screen extends CustomObject {
     public var tex(get,set) : h3d.mat.Texture;
     var sm : PostEffectsMaterial;
 
-    public function new( tex : h3d.mat.Texture, parent )
+    public function new( tex : h3d.mat.Texture, parent, w, h, camera )
     {
         var prim = new h3d.prim.Cube();
         prim.translate( -0.5, -0.5, -0.5);
         prim.addUVs();
         prim.addNormals();
 
-        super( prim, sm = new PostEffectsMaterial( tex ), parent );
+        super( prim, sm = new PostEffectsMaterial( tex, w, h, camera ), parent );
     }
 
     public function updateTime( newTime ) {
@@ -214,7 +215,6 @@ class Main extends flash.display.Sprite
             // var tex = h3d.mat.Texture.fromColor( 0xffffffff );
             var tex = renderTarget.getTexture();
 
-            screen = new Screen( tex, scene );
             scene.camera.pos.set( 0, 0, 1. );
 
             // make orthographic camera bounds just at the edges of the cube
@@ -228,6 +228,8 @@ class Main extends flash.display.Sprite
             scene.camera.target.set( 0, 0, 0 );
 
             scene.camera.update();
+
+            screen = new Screen( tex, scene, engine.width, engine.height, scene.camera.mproj );
 
             framebuffer = new h2d.Sprite( backscene );
             framebuffer.x = 0;
