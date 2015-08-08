@@ -55,7 +55,7 @@ class PostEffectsShader extends hxsl.Shader {
             return coord;
         }
 
-        // sampling trick to force a red-green shift on resulting texture
+        // sample with an offset to force a red-green shift on resulting texture
         function rgshift( tex : Sampler2D, uv : Vec2 ): Vec4 {
             var c : Vec4 = vec4( 0, 0, 0, 1 );
             c.r = tex.get( uv - vec2( 0.003, 0 ) ).r;
