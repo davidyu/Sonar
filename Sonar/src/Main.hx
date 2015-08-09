@@ -15,33 +15,18 @@ import com.sociodox.theminer.TheMiner;
 
 using gibber.Util;
 
-class PostEffectsShader extends hxsl.Shader {
+class PostEffectsShader extends h3d.shader.ScreenShader {
 
 #if flash 
     static var SRC = {
-        @input var input : {
-            pos : Vec3,
-            uv : Vec2,
-        };
-
         @param var camera : {
             var proj : Mat4;
-        };
-
-        var output : {
-            var position : Vec4;
-            var color : Vec4;
         };
 
         var tuv : Vec2;
         @param var time : Float;
         @param var screenres : Vec2;
         @param var tex : Sampler2D;
-
-        function vertex() {
-            output.position = vec4( input.pos.xyz, 1 ) * camera.proj;
-            tuv =  input.uv;
-        }
 
         // apply fisheye/CRT screen warp to UV coords; at flatness ~= 0, it's a circle.
         function crtwarp( uv : Vec2, flatness : Float ): Vec2 {
@@ -78,7 +63,7 @@ class PostEffectsShader extends hxsl.Shader {
         }
 
         function fragment() {
-            var uv = crtwarp( tuv, 4.2 );
+            var uv = crtwarp( input.uv, 4.2 );
             var c = rgshift( tex, uv );
 
             // discard
@@ -117,6 +102,12 @@ class PostEffectsShader extends hxsl.Shader {
         }
     ";
 #end
+}
+
+class PostEffects extends h3d.pass.ScreenFx<PostEffectsShader> {
+    public function new() {
+        super( new PostEffectsShader() );
+    }
 }
 
 class PostEffectsMaterial extends h3d.mat.Material{
