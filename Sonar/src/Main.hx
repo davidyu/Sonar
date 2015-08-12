@@ -16,8 +16,6 @@ import com.sociodox.theminer.TheMiner;
 using gibber.Util;
 
 class PostEffectsShader extends h3d.shader.ScreenShader {
-
-#if flash 
     static var SRC = {
         @param var camera : {
             var proj : Mat4;
@@ -78,30 +76,6 @@ class PostEffectsShader extends h3d.shader.ScreenShader {
             output.color = c;
         }
     };
-
-#else
-    // do nothing
-    static var VERTEX = "
-        attribute vec3 pos;
-        uniform mat4 mproj;
-        attribute vec2 uv;
-
-        varying vec2 tuv;
-
-        void main(void) {
-            gl_Position = vec4(pos,1)*mproj;
-            tuv = uv;
-        }";
-
-    static var FRAGMENT = "
-        uniform sampler2D tex;
-        varying vec2 tuv;
-        void main(void) {
-            gl_FragColor = texture2D(tex, tuv);
-            //gl_FragColor = vec4(1,1,1,1);
-        }
-    ";
-#end
 }
 
 class PostEffects extends h3d.pass.ScreenFx<PostEffectsShader> {
