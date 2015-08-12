@@ -56,7 +56,7 @@ class PostEffectsShader extends h3d.shader.ScreenShader {
         // darken corners
         function darken( color : Vec4, screenspace : Vec2 ): Vec4 {
             var threshold : Vec2 = min( screenspace, screenres - screenspace );
-            color.rgb -= pow( length( screenres ) / length( threshold ), 0.3 ) * vec3( 0.11, 0.11, 0.11 );
+            color.rgb -= pow( sqrt( screenres.dot( screenres ) ) / sqrt( threshold.dot( threshold ) ), 0.3 ) * vec3( 0.11, 0.11, 0.11 );
             return color;
         }
 
@@ -64,11 +64,10 @@ class PostEffectsShader extends h3d.shader.ScreenShader {
             var uv = crtwarp( input.uv, 4.2 );
             var c = rgshift( tex, uv );
 
-            // discard
-            c *= uv.x > 0 ? 1 : 0;
-            c *= uv.y > 0 ? 1 : 0;
-            c *= uv.x < 1 ? 1 : 0;
-            c *= uv.y < 1 ? 1 : 0;
+            if ( uv.x < 0 ) discard;
+            if ( uv.y < 0 ) discard;
+            if ( uv.x > 1 ) discard;
+            if ( uv.y > 1 ) discard;
 
             // using screenspace coords forcibly produces a moire pattern, neat!
             c = darken( c, uv * screenres );
