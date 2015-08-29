@@ -97,8 +97,6 @@ class PostEffectsMaterial extends h3d.mat.Material{
         pshader.camera.proj = camera;
         pshader.screenres = new h3d.Vector( w, h );
         addPass( new Pass( "default", null ) ).addShader( pshader );
-        mainPass.culling = None;
-        mainPass.blend(SrcAlpha, OneMinusSrcAlpha);
         super( pshader );
     }
 
@@ -137,6 +135,21 @@ class Screen extends CustomObject {
     }
 }
 
+class PostEffectsRenderer extends h3d.scene.Renderer {
+    var ps : PostEffects;
+    var out : h3d.mat.Texture;
+
+    public function new() {
+        super();
+        ps = new PostEffects();
+    }
+
+    override function process( ctx, passes ) {
+        super.process(ctx, passes);
+        ps.render();
+    }
+}
+
 class Main extends flash.display.Sprite
 {
     static var engine : h3d.Engine;
@@ -150,7 +163,6 @@ class Main extends flash.display.Sprite
     static function update()
     {
         backscene.captureBitmap( renderTarget );
-        engine.clear();
         engine.render( scene );
         screen.updateTime( time );
         time += 1 / Lib.current.stage.frameRate;
@@ -192,6 +204,7 @@ class Main extends flash.display.Sprite
             scene.camera.target.set( 0, 0, 0 );
 
             scene.camera.update();
+            scene.renderer = new PostEffectsRenderer();
 
             screen = new Screen( tex, scene, engine.width, engine.height, scene.camera.mproj );
 
