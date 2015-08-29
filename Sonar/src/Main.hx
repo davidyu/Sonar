@@ -8,6 +8,7 @@ import gibber.God;
 import h3d.scene.*;
 import h3d.mat.Pass;
 import h3d.Matrix;
+import h3d.col.Point;
 
 #if debug
 import com.sociodox.theminer.TheMiner;
@@ -117,10 +118,8 @@ class Screen extends CustomObject {
 
     public function new( tex : h3d.mat.Texture, parent, w, h, camera )
     {
-        var prim = new h3d.prim.Cube();
-        prim.translate( -0.5, -0.5, -0.5);
-        prim.addUVs();
-        prim.addNormals();
+        var prim = new h3d.prim.Quads( [ new Point( 0, 0 ), new Point( 1, 0 ), new Point( 1, 1 ), new Point( 0, 1 ) ] );
+        prim.addTCoords();
 
         super( prim, sm = new PostEffectsMaterial( tex, w, h, camera ), parent );
     }
@@ -151,6 +150,7 @@ class Main extends flash.display.Sprite
     static function update()
     {
         backscene.captureBitmap( renderTarget );
+        engine.clear();
         engine.render( scene );
         screen.updateTime( time );
         time += 1 / Lib.current.stage.frameRate;
@@ -179,7 +179,7 @@ class Main extends flash.display.Sprite
             // var tex = h3d.mat.Texture.fromColor( 0xffffffff );
             var tex = renderTarget.getTexture();
 
-            scene.camera.pos.set( 0, 0, 1. );
+            scene.camera.pos.set( 0, 0, 0.5 );
 
             // make orthographic camera bounds just at the edges of the cube
             scene.camera.orthoBounds = new h3d.col.Bounds();
