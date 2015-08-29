@@ -9,6 +9,8 @@ import h3d.scene.*;
 import h3d.mat.Pass;
 import h3d.Matrix;
 import h3d.col.Point;
+import h3d.prim.UV;
+import h3d.prim.Quads;
 
 #if debug
 import com.sociodox.theminer.TheMiner;
@@ -118,9 +120,7 @@ class Screen extends CustomObject {
 
     public function new( tex : h3d.mat.Texture, parent, w, h, camera )
     {
-        var prim = new h3d.prim.Quads( [ new Point( 0, 0 ), new Point( 1, 0 ), new Point( 1, 1 ), new Point( 0, 1 ) ] );
-        prim.addTCoords();
-
+        var prim = new h3d.prim.Plan2D();
         super( prim, sm = new PostEffectsMaterial( tex, w, h, camera ), parent );
     }
 
