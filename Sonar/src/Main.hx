@@ -84,6 +84,17 @@ class PostEffects extends h3d.pass.ScreenFx<PostEffectsShader> {
     public function new() {
         super( new PostEffectsShader() );
     }
+
+    public function apply( tex, w, h, camera: Matrix ) {
+        shader.tex = tex;
+        shader.camera.proj = camera;
+        shader.screenres = new h3d.Vector( w, h );
+        render();
+    }
+
+    public function updateTime( newTime: Float ) {
+        shader.time = newTime;
+    }
 }
 
 class PostEffectsMaterial extends h3d.mat.Material{
@@ -146,7 +157,9 @@ class PostEffectsRenderer extends h3d.scene.Renderer {
 
     override function process( ctx, passes ) {
         super.process(ctx, passes);
-        ps.render();
+        ps.apply( def.getTexture(), ctx.engine.width, ctx.engine.height, ctx.camera.m );
+
+        h3d.pass.Copy.run( out, null, Multiply );
     }
 }
 
@@ -206,7 +219,7 @@ class Main extends flash.display.Sprite
             scene.camera.update();
             scene.renderer = new PostEffectsRenderer();
 
-            screen = new Screen( tex, scene, engine.width, engine.height, scene.camera.mproj );
+            // screen = new Screen( tex, scene, engine.width, engine.height, scene.camera.mproj );
 
             framebuffer = new h2d.Sprite( backscene );
             framebuffer.x = 0;
