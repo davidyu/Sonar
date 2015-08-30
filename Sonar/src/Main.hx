@@ -172,67 +172,100 @@ class Main extends flash.display.Sprite
     static var renderTarget : h2d.Tile; // intermediate
     static var time : Float;
     static var screen : Screen;
+    static var threed : Bool;
 
     static function update()
     {
-        backscene.captureBitmap( renderTarget );
-        engine.render( scene );
-        screen.updateTime( time );
+        backscene.checkEvents();
+
+        if ( threed ) {
+            backscene.captureBitmap( renderTarget );
+        }
+
+        if ( engine != null ) {
+            engine.render( scene );
+        }
+
+        if ( screen != null ) {
+            screen.updateTime( time );
+        }
+
         time += 1 / Lib.current.stage.frameRate;
     }
 
     static function main()
     {
         time = 0;
+        threed = false;
         engine = new h3d.Engine();
-        scene = new h3d.scene.Scene();
-        backscene = new h2d.Scene();
+        if ( threed ) {
+            engine.onReady = function() {
+                scene = new h3d.scene.Scene();
+                backscene = new h2d.Scene();
 
-        engine.onReady = function() {
-            function p2( x : Int ) {
-                var i = 1;
-                while ( x > i ) {
-                    i <<= 1;
+                function p2( x : Int ) {
+                    var i = 1;
+                    while ( x > i ) {
+                        i <<= 1;
+                    }
+                    return i;
                 }
-                return i;
+
+                var bmd = new hxd.BitmapData( p2( engine.width ), p2( engine.height ) );
+                renderTarget = h2d.Tile.fromBitmap( bmd );
+
+                // sanity check
+                // var tex = h3d.mat.Texture.fromColor( 0xffffffff );
+                var tex = renderTarget.getTexture();
+
+                scene.camera.pos.set( 0, 0, 0.5 );
+
+                // make orthographic camera bounds just at the edges of the cube
+                scene.camera.orthoBounds = new h3d.col.Bounds();
+                scene.camera.orthoBounds.xMin = -0.5;
+                scene.camera.orthoBounds.yMin = -0.5;
+                scene.camera.orthoBounds.xMax =  0.5;
+                scene.camera.orthoBounds.yMax =  0.5;
+
+                scene.camera.up.set( 0, -1, 0 );
+                scene.camera.target.set( 0, 0, 0 );
+
+                scene.camera.update();
+                // scene.renderer = new PostEffectsRenderer();
+
+                screen = new Screen( tex, scene, engine.width, engine.height, scene.camera.mproj );
+
+                framebuffer = new h2d.Sprite( backscene );
+                framebuffer.x = 0;
+                framebuffer.y = 0;
+
+                trace( "Starting up God" );
+                var g = new God( Lib.current, framebuffer );
+
+                hxd.System.setLoop( update );
             }
 
-            var bmd = new hxd.BitmapData( p2( engine.width ), p2( engine.height ) );
-            renderTarget = h2d.Tile.fromBitmap( bmd );
+            engine.debug = true;
+            engine.init();
+        } else {
+            engine.onReady = function() {
+                scene = new h3d.scene.Scene();
+                backscene = new h2d.Scene();
+                scene.addPass( backscene );
 
-            // sanity check
-            // var tex = h3d.mat.Texture.fromColor( 0xffffffff );
-            var tex = renderTarget.getTexture();
+                framebuffer = new h2d.Sprite( backscene );
+                framebuffer.x = 0;
+                framebuffer.y = 0;
 
-            scene.camera.pos.set( 0, 0, 0.5 );
+                trace( "Starting up God" );
+                var g = new God( Lib.current, framebuffer );
 
-            // make orthographic camera bounds just at the edges of the cube
-            scene.camera.orthoBounds = new h3d.col.Bounds();
-            scene.camera.orthoBounds.xMin = -0.5;
-            scene.camera.orthoBounds.yMin = -0.5;
-            scene.camera.orthoBounds.xMax =  0.5;
-            scene.camera.orthoBounds.yMax =  0.5;
-
-            scene.camera.up.set( 0, -1, 0 );
-            scene.camera.target.set( 0, 0, 0 );
-
-            scene.camera.update();
-            scene.renderer = new PostEffectsRenderer();
-
-            // screen = new Screen( tex, scene, engine.width, engine.height, scene.camera.mproj );
-
-            framebuffer = new h2d.Sprite( backscene );
-            framebuffer.x = 0;
-            framebuffer.y = 0;
-
-            trace( "Starting up God" );
-            var g = new God( Lib.current, framebuffer );
-
-            hxd.System.setLoop( update );
+                hxd.System.setLoop( update );
+            }
         }
 
-        engine.debug = true;
         engine.init();
+
         var stage = Lib.current.stage;
         stage.scaleMode = StageScaleMode.NO_SCALE;
         stage.align = StageAlign.TOP_LEFT;
