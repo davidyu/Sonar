@@ -20,10 +20,6 @@ using gibber.Util;
 
 class PostEffectsShader extends h3d.shader.ScreenShader {
     static var SRC = {
-        @param var camera : {
-            var proj : Mat4;
-        };
-
         var tuv : Vec2;
         @param var time : Float;
         @param var screenres : Vec2;
@@ -85,9 +81,8 @@ class PostEffects extends h3d.pass.ScreenFx<PostEffectsShader> {
         super( new PostEffectsShader() );
     }
 
-    public function apply( tex, w, h, camera: Matrix ) {
+    public function apply( tex, w, h ) {
         shader.tex = tex;
-        shader.camera.proj = camera;
         shader.screenres = new h3d.Vector( w, h );
         render();
     }
@@ -101,11 +96,10 @@ class PostEffectsMaterial extends h3d.mat.Material{
     public var tex : h3d.mat.Texture;
     var pshader : PostEffectsShader;
 
-    public function new( tex, w, h, camera: Matrix ) {
+    public function new( tex, w, h ) {
         this.tex = tex;
         pshader = new PostEffectsShader();
         pshader.tex = tex;
-        pshader.camera.proj = camera;
         pshader.screenres = new h3d.Vector( w, h );
         addPass( new Pass( "default", null ) ).addShader( pshader );
         super( pshader );
@@ -130,7 +124,7 @@ class Screen extends CustomObject {
     public function new( tex : h3d.mat.Texture, parent, w, h, camera )
     {
         var prim = new h3d.prim.Plan2D();
-        super( prim, sm = new PostEffectsMaterial( tex, w, h, camera ), parent );
+        super( prim, sm = new PostEffectsMaterial( tex, w, h ), parent );
     }
 
     public function updateTime( newTime ) {
@@ -157,9 +151,24 @@ class PostEffectsRenderer extends h3d.scene.Renderer {
 
     override function process( ctx, passes ) {
         super.process(ctx, passes);
-        ps.apply( def.getTexture(), ctx.engine.width, ctx.engine.height, ctx.camera.m );
-
+        var target = allocTarget("sao",0,false);
+        setTarget( target );
+        ps.apply( def.getTexture(), ctx.engine.width, ctx.engine.height );
         h3d.pass.Copy.run( out, null, Multiply );
+    }
+}
+
+class PostEffectsFilter extends h2d.filter.Filter {
+    var pass : PostEffects;
+
+    public function new() {
+        super();
+        pass = new PostEffects();
+    }
+
+    override function draw( ctx: h2d.RenderContext, input: h2d.Tile ) {
+        pass.apply( input.getTexture(), ctx.engine.width, ctx.engine.height );
+        return input;
     }
 }
 
@@ -256,6 +265,8 @@ class Main extends flash.display.Sprite
                 framebuffer = new h2d.Sprite( backscene );
                 framebuffer.x = 0;
                 framebuffer.y = 0;
+
+                framebuffer.filters = [ new PostEffectsFilter() ];
 
                 trace( "Starting up God" );
                 var g = new God( Lib.current, framebuffer );
