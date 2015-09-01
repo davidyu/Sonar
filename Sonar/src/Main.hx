@@ -167,8 +167,12 @@ class PostEffectsFilter extends h2d.filter.Filter {
     }
 
     override function draw( ctx: h2d.RenderContext, input: h2d.Tile ) {
+        var dst = ctx.textures.allocTarget( "dest", ctx, input.width, input.height, false );
+        dst.clear( 0, 0 );
+        h3d.pass.Copy.run( input.getTexture(), dst );
+        ctx.engine.setTarget( dst );
         pass.apply( input.getTexture(), ctx.engine.width, ctx.engine.height );
-        return input;
+        return h2d.Tile.fromTexture( dst );
     }
 }
 
