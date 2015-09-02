@@ -42,7 +42,6 @@ import gibber.systems.RenderTrailSys;
 import gibber.systems.RenderTraceSys;
 import gibber.systems.SyncSys;
 import gibber.systems.SonarSys;
-import gibber.systems.TimedEffectSys;
 import gibber.systems.TorpedoSys;
 import gibber.systems.TraceSys;
 import gibber.systems.TrailSys;
@@ -116,7 +115,6 @@ class God
         world.setSystem( new SyncSys() );
         world.setSystem( new SonarSys() );
         world.setSystem( new TorpedoSys() );
-        world.setSystem( new TimedEffectSys() );
         world.setSystem( new TraceSys() );
         world.setSystem( new TrailSys() );
         world.setSystem( new UIPhysicsSys() );
