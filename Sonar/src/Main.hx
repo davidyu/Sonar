@@ -76,21 +76,7 @@ class PostEffectsShader extends h3d.shader.ScreenShader {
     };
 }
 
-class PostEffects extends h3d.pass.ScreenFx<PostEffectsShader> {
-    public function new() {
-        super( new PostEffectsShader() );
-    }
-
-    public function apply( tex, w, h ) {
-        shader.tex = tex;
-        shader.screenres = new h3d.Vector( w, h );
-        render();
-    }
-
-    public function updateTime( newTime: Float ) {
-        shader.time = newTime;
-    }
-}
+// 3D
 
 class PostEffectsMaterial extends h3d.mat.Material{
     public var tex : h3d.mat.Texture;
@@ -121,7 +107,7 @@ class Screen extends CustomObject {
     public var tex(get,set) : h3d.mat.Texture;
     var sm : PostEffectsMaterial;
 
-    public function new( tex : h3d.mat.Texture, parent, w, h, camera )
+    public function new( tex : h3d.mat.Texture, parent, w, h )
     {
         var prim = new h3d.prim.Plan2D();
         super( prim, sm = new PostEffectsMaterial( tex, w, h ), parent );
@@ -141,12 +127,12 @@ class Screen extends CustomObject {
 }
 
 class PostEffectsRenderer extends h3d.scene.Renderer {
-    var ps : PostEffects;
+    var ps : ScreenPostFX;
     var out : h3d.mat.Texture;
 
     public function new() {
         super();
-        ps = new PostEffects();
+        ps = new ScreenPostFX();
     }
 
     override function process( ctx, passes ) {
@@ -158,12 +144,30 @@ class PostEffectsRenderer extends h3d.scene.Renderer {
     }
 }
 
+// 2D
+
+class ScreenPostFX extends h3d.pass.ScreenFx<PostEffectsShader> {
+    public function new() {
+        super( new PostEffectsShader() );
+    }
+
+    public function apply( tex, w, h ) {
+        shader.tex = tex;
+        shader.screenres = new h3d.Vector( w, h );
+        render();
+    }
+
+    public function updateTime( newTime: Float ) {
+        shader.time = newTime;
+    }
+}
+
 class PostEffectsFilter extends h2d.filter.Filter {
-    var pass : PostEffects;
+    var pass : ScreenPostFX;
 
     public function new() {
         super();
-        pass = new PostEffects();
+        pass = new ScreenPostFX();
     }
 
     override function draw( ctx: h2d.RenderContext, input: h2d.Tile ) {
@@ -212,8 +216,8 @@ class Main extends flash.display.Sprite
         time = 0;
         threed = false;
         engine = new h3d.Engine();
-        if ( threed ) {
-            engine.onReady = function() {
+        engine.onReady = function() {
+            if ( threed ) {
                 scene = new h3d.scene.Scene();
                 backscene = new h2d.Scene();
 
@@ -228,8 +232,6 @@ class Main extends flash.display.Sprite
                 var bmd = new hxd.BitmapData( p2( engine.width ), p2( engine.height ) );
                 renderTarget = h2d.Tile.fromBitmap( bmd );
 
-                // sanity check
-                // var tex = h3d.mat.Texture.fromColor( 0xffffffff );
                 var tex = renderTarget.getTexture();
 
                 scene.camera.pos.set( 0, 0, 0.5 );
@@ -247,22 +249,12 @@ class Main extends flash.display.Sprite
                 scene.camera.update();
                 // scene.renderer = new PostEffectsRenderer();
 
-                screen = new Screen( tex, scene, engine.width, engine.height, scene.camera.mproj );
+                screen = new Screen( tex, scene, engine.width, engine.height );
 
                 framebuffer = new h2d.Sprite( backscene );
                 framebuffer.x = 0;
                 framebuffer.y = 0;
-
-                trace( "Starting up God" );
-                var g = new God( Lib.current, framebuffer );
-
-                hxd.System.setLoop( update );
-            }
-
-            engine.debug = true;
-            engine.init();
-        } else {
-            engine.onReady = function() {
+            } else {
                 scene = new h3d.scene.Scene();
                 backscene = new h2d.Scene();
                 scene.addPass( backscene );
@@ -272,13 +264,15 @@ class Main extends flash.display.Sprite
                 framebuffer.y = 0;
 
                 framebuffer.filters = [ new PostEffectsFilter() ];
-
-                trace( "Starting up God" );
-                var g = new God( Lib.current, framebuffer );
-
-                hxd.System.setLoop( update );
             }
+
+            trace( "Starting up God" );
+            var g = new God( Lib.current, framebuffer );
+
+            hxd.System.setLoop( update );
         }
+
+        engine.debug = true;
 
         engine.init();
 
