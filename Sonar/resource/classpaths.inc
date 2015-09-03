@@ -19,7 +19,6 @@ InventoryCmp gibber.components.InventoryCmp
 LookCmp gibber.components.LookCmp
 NameIdCmp gibber.components.NameIdCmp
 NetworkPlayerCmp gibber.components.NetworkPlayerCmp
-PortalCmp gibber.components.PortalCmp
 PosCmp gibber.components.PosCmp
 PosTrackerCmp gibber.components.PosTrackerCmp
 RegionCmp gibber.components.RegionCmp
@@ -39,11 +38,9 @@ TransitRequestCmp gibber.components.TransitRequestCmp
 UICmp gibber.components.UICmp
 UsageCmp gibber.components.UsageCmp
 EntityDeserializer gibber.EntityDeserializer
-PortalEdge gibber.gabby.PortalEdge
 God gibber.God
 ContainerMgr gibber.managers.ContainerMgr
 NameRegistry gibber.managers.NameRegistry
-SectorGraphMgr gibber.managers.SectorGraphMgr
 GenericScript gibber.scripts.GenericScript
 Script gibber.scripts.Script
 TransitScript gibber.scripts.TransitScript
@@ -56,6 +53,7 @@ DebugClientSys gibber.systems.DebugClientSys
 DestructionSys gibber.systems.DestructionSys
 EntityAssemblySys gibber.systems.EntityAssemblySys
 ExplosionSys gibber.systems.ExplosionSys
+FixedIntervalSys gibber.systems.FixedIntervalSys
 GridSys gibber.systems.GridSys
 InputSys gibber.systems.InputSys
 PhysicsSys gibber.systems.PhysicsSys

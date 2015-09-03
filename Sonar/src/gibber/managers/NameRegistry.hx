@@ -7,7 +7,6 @@ import com.artemisx.managers.TagManager;
 import gibber.components.CharCmp;
 import gibber.components.ContainerCmp;
 import gibber.components.NameIdCmp;
-import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
 import gibber.components.RegionCmp;
 import gibber.components.TakeCmp;
@@ -19,13 +18,11 @@ enum EType {
     CHAR;
     ITEM;
     OBJ;
-    PORTAL;
     SECTOR;
 }
 
 // Name registry class used to cataloguing game entities.
 // Invariant is the essential entity component signature
-// e.g. a portal is defined as an entity with certain components that are expectet not to change
 class NameRegistry extends TagManager
 {
     public function new() {

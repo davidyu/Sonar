@@ -17,7 +17,6 @@ import gibber.components.ReticuleCmp;
 import gibber.components.TakeCmp;
 import gibber.managers.ContainerMgr;
 import gibber.managers.NameRegistry;
-import gibber.managers.SectorGraphMgr;
 import gibber.systems.CameraSys;
 import gibber.systems.ClientSys;
 import gibber.systems.CmdProcessSys;
@@ -85,7 +84,6 @@ class God
         cm.registerAspect( "ret", Aspect.getAspectForAll( [ReticuleCmp] ) );
 
         world.setManager( cm );
-        world.setManager( new SectorGraphMgr() );
 
         // don't really need these anymore; take them out
         world.setManager( new NameRegistry() ); // Needs to be last

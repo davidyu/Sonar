@@ -12,7 +12,6 @@ import flash.ui.Keyboard;
 
 import gibber.components.ContainableCmp;
 import gibber.components.StaticPosCmp;
-import gibber.gabby.PortalEdge;
 import gibber.components.BoundCmp;
 import gibber.components.BounceCmp;
 import gibber.components.CameraCmp;
@@ -27,7 +26,6 @@ import gibber.components.ExplosionCmp;
 import gibber.components.LookCmp;
 import gibber.components.NameIdCmp;
 import gibber.components.NetworkPlayerCmp;
-import gibber.components.PortalCmp;
 import gibber.components.PosCmp;
 import gibber.components.PosTrackerCmp;
 import gibber.components.RegionCmp;
