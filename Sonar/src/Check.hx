@@ -1,7 +1,7 @@
 import utils.test.CheckMath2;
 import utils.test.CheckFlashUtils;
 
-import gibber.systems.test.CheckSonarSys;
+import sonar.systems.test.CheckSonarSys;
 
 class Check
 {

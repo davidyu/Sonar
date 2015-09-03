@@ -3,7 +3,7 @@ package ;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.Lib;
-import gibber.God;
+import sonar.God;
 
 import h3d.scene.*;
 import h3d.mat.Pass;
@@ -16,7 +16,7 @@ import h3d.prim.Quads;
 import com.sociodox.theminer.TheMiner;
 #end
 
-using gibber.Util;
+using sonar.Util;
 
 class PostEffectsShader extends h3d.shader.ScreenShader {
     static var SRC = {
