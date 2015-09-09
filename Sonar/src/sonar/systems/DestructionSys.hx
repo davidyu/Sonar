@@ -12,8 +12,8 @@ import sonar.managers.ContainerMgr;
 
 import utils.Geo;
 import utils.Polygon;
-import utils.Vec2;
 import utils.Math2;
+import utils.Vec2;
 
 class DestructionSys extends EntitySystem
 {

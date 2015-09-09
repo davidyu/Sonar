@@ -10,7 +10,6 @@ import sonar.components.ReticuleCmp;
 import sonar.components.PosCmp;
 import sonar.Util;
 
-import utils.Vec2;
 import utils.Mouse;
 
 class ReticuleSys extends EntitySystem

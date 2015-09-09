@@ -10,8 +10,6 @@ import sonar.components.BounceCmp;
 import sonar.components.PosCmp;
 import sonar.components.PosTrackerCmp;
 
-import utils.Vec2;
-
 class PosTrackerSys extends EntitySystem
 {
     public function new() {

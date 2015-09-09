@@ -13,7 +13,6 @@ import sonar.components.PosCmp;
 import sonar.components.UICmp;
 
 import utils.Polygon;
-import utils.Vec2;
 
 using Lambda;
 using sonar.Util;

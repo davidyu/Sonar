@@ -10,8 +10,6 @@ import sonar.components.BoundCmp;
 import sonar.components.CameraCmp;
 import sonar.components.PosCmp;
 
-import utils.Vec2;
-
 class GridSys extends EntitySystem
 {
     public function new() {

@@ -7,7 +7,6 @@ import com.artemisx.utils.Bag;
 import sonar.components.ControllerCmp;
 import sonar.components.InputCmp;
 import utils.Polygon;
-import utils.Vec2;
 import utils.Key;
 import utils.Mouse;
 

@@ -2,6 +2,7 @@
 -cp libs/artemisx/src
 -cp libs/heaps
 -cp libs/format
+-cp libs/gml/src/haxe
 
 -lib hscript
 

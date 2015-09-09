@@ -13,8 +13,6 @@ import sonar.systems.EntityAssemblySys;
 
 import flash.utils.ByteArray;
 
-import utils.Vec2;
-
 class SyncSys extends IntervalEntitySystem
 {
     public function new() {

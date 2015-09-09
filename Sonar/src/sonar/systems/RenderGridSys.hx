@@ -13,7 +13,6 @@ import sonar.components.RenderCmp;
 
 import sonar.Util;
 
-import utils.Vec2;
 import utils.Render;
 
 import h2d.Tile;
