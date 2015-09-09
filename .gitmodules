@@ -7,3 +7,6 @@
 [submodule "Sonar/libs/format"]
 	path = Sonar/libs/format
 	url = https://github.com/HaxeFoundation/format.git
+[submodule "Sonar/libs/gml"]
+	path = Sonar/libs/gml
+	url = https://github.com/davidyu/gml.git
