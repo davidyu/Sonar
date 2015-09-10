@@ -1,7 +1,6 @@
 package sonar.components;
 import com.artemisx.Component;
 import com.artemisx.Entity;
-import utils.Vec2;
 
 using sonar.Util;
 

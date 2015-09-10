@@ -3,7 +3,6 @@ import com.artemisx.Component;
 import com.artemisx.Entity;
 import sonar.scripts.VoidExecuteScript;
 import utils.Polygon;
-import utils.Vec2;
 
 class RegionCmp implements Component
 {

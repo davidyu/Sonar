@@ -12,7 +12,6 @@ import sonar.systems.EntityAssemblySys;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.events.Event;
-import utils.Vec2;
 
 import haxe.ds.StringMap;
 

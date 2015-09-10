@@ -3,7 +3,6 @@ import com.artemisx.Entity;
 import sonar.components.PosCmp;
 import sonar.components.RegionCmp;
 import sonar.God;
-import utils.Vec2;
 
 using sonar.Util;
 

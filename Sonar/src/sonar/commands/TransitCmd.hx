@@ -5,7 +5,6 @@ import sonar.components.PosCmp;
 import sonar.components.RegionCmp;
 import sonar.gabby.PortalEdge;
 import sonar.scripts.TransitScript;
-import utils.Vec2;
 
 @:rtti
 class TransitCmd implements Command
