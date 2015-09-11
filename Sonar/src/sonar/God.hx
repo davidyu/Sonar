@@ -41,7 +41,6 @@ import sonar.systems.SonarSys;
 import sonar.systems.TorpedoSys;
 import sonar.systems.TraceSys;
 import sonar.systems.TrailSys;
-import sonar.systems.TransitRequestSys;
 import sonar.systems.UIPhysicsSys;
 import utils.Key;
 import utils.Math2;

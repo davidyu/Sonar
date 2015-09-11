@@ -36,10 +36,8 @@ import sonar.components.TorpedoCmp;
 import sonar.components.TraceCmp;
 import sonar.components.TrailCmp;
 import sonar.components.TimedEffectCmp;
-import sonar.components.TransitRequestCmp;
 import sonar.components.UICmp;
 import sonar.managers.ContainerMgr;
-import sonar.scripts.TransitScript;
 import utils.Polygon;
 import utils.Vec2;
 
