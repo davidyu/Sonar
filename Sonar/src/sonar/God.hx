@@ -10,7 +10,6 @@ import flash.text.TextFieldType;
 import flash.ui.Keyboard;
 import flash.system.Security;
 import sonar.components.ClientCmp;
-import sonar.components.CmdQueue;
 import sonar.components.ControllerCmp;
 import sonar.components.PosCmp;
 import sonar.components.ReticuleCmp;
@@ -19,7 +18,6 @@ import sonar.managers.ContainerMgr;
 import sonar.managers.NameRegistry;
 import sonar.systems.CameraSys;
 import sonar.systems.ClientSys;
-import sonar.systems.CmdProcessSys;
 import sonar.systems.ControllerSys;
 import sonar.systems.DestructionSys;
 import sonar.systems.ExplosionSys;
@@ -80,7 +78,7 @@ class God
     public function initializeSystems() : Void {
         var cm = new ContainerMgr();
         cm.registerAspect( "item", Aspect.getAspectForAll( [TakeCmp] ) );
-        cm.registerAspect( "char", Aspect.getAspectForAll( [CmdQueue, PosCmp] ) );
+        cm.registerAspect( "char", Aspect.getAspectForAll( [PosCmp] ) );
         cm.registerAspect( "ret", Aspect.getAspectForAll( [ReticuleCmp] ) );
 
         world.setManager( cm );
@@ -97,7 +95,6 @@ class God
         world.setSystem( new DestructionSys() );
         world.setSystem( new GridSys() );
         world.setSystem( new PhysicsSys() );
-        world.setSystem( new CmdProcessSys() );
         world.setSystem( new ExplosionSys() );
         world.setSystem( new RenderGridSys( quad ) );
         world.setSystem( new ReticuleSys() );

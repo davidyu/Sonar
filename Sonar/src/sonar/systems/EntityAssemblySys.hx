@@ -15,7 +15,6 @@ import sonar.components.StaticPosCmp;
 import sonar.components.BoundCmp;
 import sonar.components.BounceCmp;
 import sonar.components.CameraCmp;
-import sonar.components.CmdQueue;
 import sonar.components.ContainerCmp;
 import sonar.components.ControllerCmp;
 import sonar.components.ClientCmp;
@@ -78,7 +77,6 @@ class EntityAssemblySys extends EntitySystem
         var nameCmp = new NameIdCmp( name );
         var posCmp = new PosCmp( sector, position );
         var renderCmp = new RenderCmp();
-        var cmdCmp = new CmdQueue();
         var syncCmp = new SyncCmp();
         var controllerCmp = new ControllerCmp();
         var inventoryCmp = new InventoryCmp();
@@ -91,7 +89,6 @@ class EntityAssemblySys extends EntitySystem
         e.addComponent( nameCmp );
         e.addComponent( posCmp );
         e.addComponent( renderCmp );
-        e.addComponent( cmdCmp );
         e.addComponent( inventoryCmp );
         e.addComponent( inputCmp );
         e.addComponent( syncCmp );
