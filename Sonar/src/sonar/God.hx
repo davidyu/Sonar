@@ -14,7 +14,6 @@ import sonar.components.ControllerCmp;
 import sonar.components.PosCmp;
 import sonar.components.ReticuleCmp;
 import sonar.managers.ContainerMgr;
-import sonar.managers.NameRegistry;
 import sonar.systems.CameraSys;
 import sonar.systems.ClientSys;
 import sonar.systems.ControllerSys;
@@ -79,9 +78,6 @@ class God
         cm.registerAspect( "ret", Aspect.getAspectForAll( [ReticuleCmp] ) );
 
         world.setManager( cm );
-
-        // don't really need these anymore; take them out
-        world.setManager( new NameRegistry() ); // Needs to be last
 
         entityAssembler = world.setSystem( new EntityAssemblySys() );
         world.setSystem( new PosTrackerSys() ); // should be before anything that explicitly updates PosCmp

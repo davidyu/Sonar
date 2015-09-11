@@ -6,7 +6,6 @@ import com.artemisx.Component;
 import com.artemisx.Manager;
 import com.artemisx.Entity;
 import haxe.Json;
-import sonar.managers.NameRegistry;
 import sonar.managers.ContainerMgr;
 import sonar.systems.EntityAssemblySys;
 import flash.net.URLLoader;
@@ -22,7 +21,6 @@ class EntityDeserializer
     // an object
     @:isVar public var RESOURCE_PATH ( default, null ) : String = "../resource";
     @:isVar private var entityAssembler ( default, null ) : EntityAssemblySys;
-    @:isVar private var nameRegistry  ( default, null ) : NameRegistry;
     @:isVar private var god           ( default, null ) : God;
     @:isVar private var containerMgr  ( default, null ) : ContainerMgr;
 
@@ -30,7 +28,6 @@ class EntityDeserializer
 
     public function new( god : God ) {
         entityAssembler = god.entityAssembler;
-        nameRegistry = god.world.getManager( NameRegistry );
         containerMgr = god.world.getManager( ContainerMgr );
         this.god = god;
 
@@ -117,7 +114,7 @@ class EntityDeserializer
 
         switch ( prefix ) {
             case "$":
-                return nameRegistry.getEntity( identifier );
+                // name registry disabled
             case "@":
                 // right now this just gets me the property of this class, but I need a way to get
                 // any manager from God. Using GetManager doesn't work, because it requires an argument
