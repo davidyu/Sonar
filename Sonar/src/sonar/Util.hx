@@ -4,7 +4,6 @@ import com.artemisx.Entity;
 import sonar.components.PosCmp;
 import haxe.ds.GenericStack;
 import haxe.ds.StringMap;
-import hscript.Interp;
 import utils.Vec2;
 
 using Lambda;
@@ -84,15 +83,6 @@ class Util
         return res;
     }
     
-    
-    public static function interpCopy( i : Interp ) : Interp {
-        var res = new Interp();
-        res.variables = mapCopy( i.variables );
-        res.locals = mapCopy( i.locals );
-        res.binops = mapCopy( i.binops );
-        res.declared = i.declared.copy();
-        return res;
-    }
     
     static var god : God;
     static var posMapper : ComponentMapper<PosCmp>;

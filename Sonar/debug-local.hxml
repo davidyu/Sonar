@@ -6,7 +6,6 @@
 
 -debug
 -D fdb
--lib hscript
 -swf-lib ./libs/TheMiner_en.swc
 
 -D debug

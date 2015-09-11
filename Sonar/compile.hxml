@@ -4,8 +4,6 @@
 -cp libs/format
 -cp libs/gml/src/haxe
 
--lib hscript
-
 -swf-header 512:512:30:000000
 -swf-version 11.7
 --no-traces
