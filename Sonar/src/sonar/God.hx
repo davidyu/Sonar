@@ -13,7 +13,6 @@ import sonar.components.ClientCmp;
 import sonar.components.ControllerCmp;
 import sonar.components.PosCmp;
 import sonar.components.ReticuleCmp;
-import sonar.components.TakeCmp;
 import sonar.managers.ContainerMgr;
 import sonar.managers.NameRegistry;
 import sonar.systems.CameraSys;
@@ -77,7 +76,6 @@ class God
 
     public function initializeSystems() : Void {
         var cm = new ContainerMgr();
-        cm.registerAspect( "item", Aspect.getAspectForAll( [TakeCmp] ) );
         cm.registerAspect( "char", Aspect.getAspectForAll( [PosCmp] ) );
         cm.registerAspect( "ret", Aspect.getAspectForAll( [ReticuleCmp] ) );
 

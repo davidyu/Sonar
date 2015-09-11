@@ -9,7 +9,6 @@ import sonar.components.ContainerCmp;
 import sonar.components.NameIdCmp;
 import sonar.components.PosCmp;
 import sonar.components.RegionCmp;
-import sonar.components.TakeCmp;
 import sonar.components.UsageCmp;
 import haxe.ds.StringMap;
 import haxe.ds.StringMap;
