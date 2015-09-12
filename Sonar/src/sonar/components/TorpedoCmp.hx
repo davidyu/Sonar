@@ -1,10 +1,10 @@
 package sonar.components;
 import com.artemisx.Component;
 import com.artemisx.Entity;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 enum TorpedoTarget {
-    StaticTarget( pos: Vec2 );
+    StaticTarget( pos: Vec2f );
     DynamicTarget( e : Entity );
 }
 

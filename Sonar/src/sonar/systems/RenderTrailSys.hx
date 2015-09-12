@@ -22,7 +22,7 @@ import sonar.components.TrailCmp;
 import sonar.Util;
 
 import utils.Render;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 using Lambda;
 
@@ -53,8 +53,8 @@ class RenderTrailSys extends EntitySystem
         var trail : TrailCmp;
         var pos : PosCmp;
         var posTracker : PosTrackerCmp;
-        var lastScreenPos : Vec2;
-        var curScreenPos : Vec2;
+        var lastScreenPos : Vec2f;
+        var curScreenPos : Vec2f;
 
         if ( camera == null ) return;
 
@@ -74,7 +74,7 @@ class RenderTrailSys extends EntitySystem
             lastScreenPos = Util.toScreen( SectorCoordinates( posTracker.getLastPosition(), pos.sector ), camera );
             curScreenPos = Util.toScreen( SectorCoordinates( pos.pos, pos.sector ), camera );
 
-            function drawLine( p1, p2, dx = 1, dy = 1 ) {
+            function drawLine( p1: Vec2f, p2: Vec2f, dx = 1, dy = 1 ) {
                 g2d.beginFill( 0xffffff );
                 g2d.lineStyle( 0 );
                 g2d.addPoint( p1.x, p1.y );

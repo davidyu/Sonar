@@ -17,7 +17,7 @@ import sonar.managers.ContainerMgr;
 
 import utils.Geo;
 import utils.Polygon;
-import utils.Vec2;
+import gml.vector.Vec2f;
 import utils.Math2;
 
 class ExplosionSys extends EntitySystem
@@ -40,7 +40,7 @@ class ExplosionSys extends EntitySystem
 
         var time : TimedEffectCmp;
         var explosion : ExplosionCmp;
-        var center : Vec2;
+        var center : Vec2f;
         var sector : Entity;
 
         for ( i in 0...actives.size ) {
@@ -60,7 +60,7 @@ class ExplosionSys extends EntitySystem
 
                     // check for collision against player entities
                     for ( e in containerMgr.getAllEntitiesOfContainer( sector ) ) {
-                        var p : Vec2 = posMapper.get( e ).pos;
+                        var p : Vec2f = posMapper.get( e ).pos;
                         if ( Geo.isPointInCircle( { center: center, radius: radius }, p ) ) {
                             var d = destructibleMapper.get( e );
                             if ( d != null ) {

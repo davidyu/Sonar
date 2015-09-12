@@ -10,6 +10,8 @@ import flash.display.Graphics;
 import flash.display.MovieClip;
 import flash.display.Sprite;
 
+import gml.vector.Vec2f;
+
 import sonar.components.CameraCmp;
 import sonar.components.PosCmp;
 import sonar.components.RenderCmp;
@@ -57,7 +59,7 @@ class RenderTraceSys extends EntitySystem
 
             switch ( trace.traceType ) {
                 case Line( a, b ):
-                    function drawLine( p1, p2, dx = 1, dy = 1 ) {
+                    function drawLine( p1: Vec2f, p2: Vec2f, dx = 1, dy = 1 ) {
                         g2d.beginFill( render.colour, trace.fadeAcc );
                         g2d.lineStyle( 0 );
                         g2d.addPoint( p1.x, p1.y );

@@ -50,7 +50,7 @@ class RenderGridSys extends EntitySystem
             render = renderMapper.get( e );
 
             var pos = posMapper.get( e ).pos;
-            var offset = pos.sub( posMapper.get( camera ).pos );
+            var offset = pos - posMapper.get( camera ).pos;
 
             // capture w and h of grid cell for use...ugh
             var bound : { w : Float, h : Float } = switch( boundMapper.get( e ).bound ) {

@@ -4,14 +4,14 @@ import com.artemisx.Entity;
 import sonar.components.PosCmp;
 import haxe.ds.GenericStack;
 import haxe.ds.StringMap;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 using Lambda;
 
 enum Coordinates {
-    ScreenCoordinates   ( p : Vec2, camera : Entity );
-    WorldCoordinates    ( p : Vec2 );
-    SectorCoordinates   ( p : Vec2, sector : Entity );
+    ScreenCoordinates   ( p : Vec2f, camera : Entity );
+    WorldCoordinates    ( p : Vec2f );
+    SectorCoordinates   ( p : Vec2f, sector : Entity );
 }
 
 @:access(hscript)
@@ -23,40 +23,40 @@ class Util
     }
     
     // remember that the camera also has a sector (DUH - DOY)
-    public static function toScreen( coords : Coordinates, camera : Entity ) : Vec2 {
+    public static function toScreen( coords : Coordinates, camera : Entity ) : Vec2f {
         switch ( coords ) {
             case ScreenCoordinates( p, camera_ ): // translates from camera_ to camera
-                var world = p.add( posMapper.get( camera_ ).pos );
-                return world.sub( posMapper.get( camera ).pos );
+                var world = p + posMapper.get( camera_ ).pos;
+                return world - posMapper.get( camera ).pos;
             case WorldCoordinates( p ):
-                return p.sub( posMapper.get( camera ).pos );
+                return p - posMapper.get( camera ).pos;
             case SectorCoordinates( p, sector ):
-                var world = p.add( posMapper.get( sector ).pos );
-                return world.sub( posMapper.get( camera ).pos );
+                var world = p + posMapper.get( sector ).pos;
+                return world - posMapper.get( camera ).pos;
         }
     }
 
-    public static function toWorld( coords : Coordinates ) : Vec2 {
+    public static function toWorld( coords : Coordinates ) : Vec2f {
         switch ( coords ) {
             case ScreenCoordinates( p, camera ):
-                return p.add( posMapper.get( camera ).pos );
+                return p + posMapper.get( camera ).pos;
             case WorldCoordinates( p ):
                 return p;
             case SectorCoordinates( p, sector ):
-                return p.add( posMapper.get( sector ).pos );
+                return p +  posMapper.get( sector ).pos;
         }
     }
 
-    public static function toSector( coords : Coordinates, sector : Entity ) : Vec2 {
+    public static function toSector( coords : Coordinates, sector : Entity ) : Vec2f {
         switch ( coords ) {
             case ScreenCoordinates( p, camera ):
-                var world = p.add( posMapper.get( camera ).pos );
-                return world.sub( posMapper.get( sector ).pos );
+                var world = p + posMapper.get( camera ).pos;
+                return world - posMapper.get( sector ).pos;
             case WorldCoordinates( p ):
-                return p.sub( posMapper.get( sector ).pos );
+                return p - posMapper.get( sector ).pos;
             case SectorCoordinates( p, localSector ):
-                var world = p.add( posMapper.get( localSector ).pos );
-                return world.sub( posMapper.get( sector ).pos );
+                var world = p +  posMapper.get( localSector ).pos;
+                return world - posMapper.get( sector ).pos;
         }
     }
 

@@ -20,7 +20,7 @@ import sonar.components.NetworkPlayerCmp;
 
 import sonar.systems.EntityAssemblySys;
 
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 class ClientSys extends IntervalEntitySystem
 {
@@ -54,27 +54,27 @@ class ClientSys extends IntervalEntitySystem
                         d.id = d.socket.readUnsignedByte();
                         trace( "my ID is " + d.id );
                         if ( d.id == 0 ) {
-                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 200, 400 ) );
+                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2f( 200, 400 ) );
                         } else if ( d.id == 1 ) {
-                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 400, 200 ) );
+                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2f( 400, 200 ) );
                         } else if ( d.id == 2 ) {
-                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 400, 700 ) );
+                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2f( 400, 700 ) );
                         } else { // 3 and above
-                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2( 700, 400 ) );
+                            god.player = entityAssembler.createPlayer( "ship", god.sectors[0], new Vec2f( 700, 400 ) );
                         }
-                        entityAssembler.createCamera( god.sectors[0], new Vec2( 0, 0 ), god.player );
-                        entityAssembler.createReticule( god.sectors[0], god.player, new Vec2( 0, 0 ) );
+                        entityAssembler.createCamera( god.sectors[0], new Vec2f( 0, 0 ), god.player );
+                        entityAssembler.createReticule( god.sectors[0], god.player, new Vec2f( 0, 0 ) );
                     case 254: //join
                         var newClientID = d.socket.readUnsignedByte();
                         trace( "another client with ID " + newClientID + " joined this game." );
                         if ( newClientID == 0 ) {
-                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 200, 400 ), newClientID ) );
+                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2f( 200, 400 ), newClientID ) );
                         } else if ( newClientID == 1 ) {
-                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 400, 200 ), newClientID ) );
+                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2f( 400, 200 ), newClientID ) );
                         } else if ( newClientID == 2 ) {
-                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 400, 700 ), newClientID ) );
+                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2f( 400, 700 ), newClientID ) );
                         } else { // 3 and above
-                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2( 700, 400 ), newClientID ) );
+                            god.netPlayers.push( entityAssembler.createNetworkPlayer( "enemy", god.sectors[0], new Vec2f( 700, 400 ), newClientID ) );
                         }
                     case 253: //relay data
                         var id : UInt, peerOpcode : UInt;
@@ -130,15 +130,15 @@ class ClientSys extends IntervalEntitySystem
                                 }
 
                             case 3: // unidirectional sonar
-                                var pos : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
+                                var pos : Vec2f = haxe.Unserializer.run( d.socket.readUTF() );
                                 entityAssembler.createSonar( netPlayer.id, netPlayer.getComponent( PosCmp ).sector, pos );
                             case 4: // directional sonar
-                                var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
-                                var direction : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
+                                var origin : Vec2f = haxe.Unserializer.run( d.socket.readUTF() );
+                                var direction : Vec2f = haxe.Unserializer.run( d.socket.readUTF() );
                                 entityAssembler.createSonarBeam( netPlayer.id, netPlayer.getComponent( PosCmp ).sector, origin, direction );
                             case 5: // torpedo
-                                var origin : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
-                                var target : Vec2 = haxe.Unserializer.run( d.socket.readUTF() );
+                                var origin : Vec2f = haxe.Unserializer.run( d.socket.readUTF() );
+                                var target : Vec2f = haxe.Unserializer.run( d.socket.readUTF() );
                                 entityAssembler.createTorpedo( netPlayer.id, StaticTarget( target ), netPlayer.getComponent( PosCmp ).sector, origin );
 
                             default: trace( "unknown peer opcode: " + peerOpcode );
@@ -161,7 +161,7 @@ class ClientSys extends IntervalEntitySystem
         }
     }
 
-    public function sendFireTorpedoEvent( pos : Vec2, target : Vec2 ) {
+    public function sendFireTorpedoEvent( pos : Vec2f, target : Vec2f ) {
         var socket = god.client.getComponent( ClientCmp ).socket;
         var posSerialized : String = haxe.Serializer.run( pos );
         var targetSerialized : String = haxe.Serializer.run( target );
@@ -175,7 +175,7 @@ class ClientSys extends IntervalEntitySystem
         }
     }
 
-    public function sendSonarBeamCreationEvent( origin : Vec2, direction : Vec2 ) : Void {
+    public function sendSonarBeamCreationEvent( origin : Vec2f, direction : Vec2f ) : Void {
         var socket = god.client.getComponent( ClientCmp ).socket;
         var originSerialized : String = haxe.Serializer.run( origin );
         var directionSerialized : String = haxe.Serializer.run( direction );
@@ -187,7 +187,7 @@ class ClientSys extends IntervalEntitySystem
         }
     }
 
-    public function sendSonarCreationEvent( pos : Vec2 ) {
+    public function sendSonarCreationEvent( pos : Vec2f ) {
         var socket = god.client.getComponent( ClientCmp ).socket;
         var posSerialized : String = haxe.Serializer.run( pos );
         if ( socket.connected ) {

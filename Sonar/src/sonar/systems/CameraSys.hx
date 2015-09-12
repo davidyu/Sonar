@@ -13,7 +13,7 @@ import sonar.systems.RenderSys;
 import sonar.systems.RenderTraceSys;
 import sonar.systems.RenderGridSys;
 
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 class CameraSys extends EntitySystem
 {
@@ -54,8 +54,8 @@ class CameraSys extends EntitySystem
                 case DynamicTarget( t ):
                     var tpos = posMapper.get( t );
                     if ( tpos != null ) {
-                        var fudgeCenterOffset = new Vec2( camera.viewportW/2, camera.viewportH/2 ); // centers target
-                        camPos.pos = Util.toWorld( SectorCoordinates( tpos.pos, tpos.sector ) ).sub( fudgeCenterOffset );
+                        var fudgeCenterOffset = new Vec2f( camera.viewportW/2, camera.viewportH/2 ); // centers target
+                        camPos.pos = Util.toWorld( SectorCoordinates( tpos.pos, tpos.sector ) ) - fudgeCenterOffset;
                     } else {
                         throw "can't track a target without a posCmp!";
                     }

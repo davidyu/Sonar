@@ -1,12 +1,12 @@
 package sonar.components;
 import com.artemisx.Component;
 import com.artemisx.Entity;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 using sonar.Util;
 
 enum CameraTarget {
-    StaticTarget( pos: Vec2, sector: Entity );
+    StaticTarget( pos: Vec2f, sector: Entity );
     DynamicTarget( e : Entity );
 }
 

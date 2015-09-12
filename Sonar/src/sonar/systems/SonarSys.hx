@@ -21,7 +21,7 @@ import sonar.systems.EntityAssemblySys;
 
 import utils.Geo;
 import utils.Polygon;
-import utils.Vec2;
+import gml.vector.Vec2f;
 import utils.Math2;
 
 using utils.RadianHelper;
@@ -54,7 +54,7 @@ class SonarSys extends EntitySystem
 
         var time : TimedEffectCmp;
         var sonar : SonarCmp;
-        var center : Vec2;
+        var center : Vec2f;
         var sector : Entity;
 
         for ( i in 0...actives.size ) {
@@ -77,7 +77,7 @@ class SonarSys extends EntitySystem
                     // check for intersection against player entities
                     for ( e in containerMgr.getAllEntitiesOfContainer( sector ) ) {
                         if ( e.id == sonar.playerId ) continue; //skip me
-                        var p : Vec2 = posMapper.get( e ).pos;
+                        var p : Vec2f = posMapper.get( e ).pos;
                         if ( Geo.isPointInCircle( { center: center, radius: radius }, p ) ) {
                             entityAssembler.createTrace( sector, Mass( p, 3 ) );
                         }
@@ -172,8 +172,8 @@ class SonarSys extends EntitySystem
 #if debug
                                         dbgtrace( rngToString( rng ) );
 #end
-                                        function radianToPoint( origin, theta, invertedY : Bool = true ) : Vec2 {
-                                            var direction = new Vec2( Math.sin( theta ), invertedY ? -Math.cos( theta ) : Math.cos( theta ) );
+                                        function radianToPoint( origin, theta, invertedY : Bool = true ) : Vec2f {
+                                            var direction = new Vec2f( Math.sin( theta ), invertedY ? -Math.cos( theta ) : Math.cos( theta ) );
 
                                             switch ( Math2.getRayLineIntersection( { origin: origin, direction: direction }, { a: poly.verts[k], b: poly.verts[k + 1] } ) ) {
                                                 case Point( point ): return point;
@@ -229,7 +229,7 @@ class SonarSys extends EntitySystem
         return diff;
     }
 
-    private function pointToRadian( center: Vec2, point: Vec2, invertedY : Bool = true ): Float {
+    private function pointToRadian( center: Vec2f, point: Vec2f, invertedY : Bool = true ): Float {
         // note that Y is inverted by default because for regular usage in screen space, it grows from 0 downwards
         var ratio : Float = ( point.x - center.x ) / ( invertedY ? ( center.y - point.y ) : ( point.y - center.y ) );
         var radian = Math.atan( ratio );

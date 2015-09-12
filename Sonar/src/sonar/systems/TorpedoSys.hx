@@ -13,7 +13,7 @@ import sonar.components.BounceCmp;
 import sonar.systems.EntityAssemblySys;
 
 import utils.Math2;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 class TorpedoSys extends EntitySystem
 {
@@ -40,20 +40,20 @@ class TorpedoSys extends EntitySystem
             pos = posMapper.get( e );
             bounce = bounceMapper.get( e );
 
-            var target : Vec2 = switch ( torpedo.target ) {
+            var target : Vec2f = switch ( torpedo.target ) {
                 case StaticTarget( t ) : t;
                 case DynamicTarget( e ) : posMapper.get( e ).pos;
             }
 
-            pos.dp = pos.dp.add( target.sub( pos.pos ).normalize().mul( torpedo.accel ) ); // need to tweak tweak tweak
+            pos.dp = pos.dp + ( torpedo.accel * ( ( target - pos.pos ).normalize() ) ); // need to tweak tweak tweak
 
-            if ( pos.dp.lengthsq() > torpedo.maxSpeed * torpedo.maxSpeed ) {
-                pos.dp = pos.dp.normalize().mul( torpedo.maxSpeed );
+            if ( pos.dp.lensq() > torpedo.maxSpeed * torpedo.maxSpeed ) {
+                pos.dp = torpedo.maxSpeed * pos.dp.normalize();
             }
 
             // destruction conditions
             // met target
-            if ( pos.pos.sub( target ).lengthsq() <= 25.0 ) {
+            if ( ( pos.pos - target ).lensq() <= 25.0 ) {
                 world.deleteEntity( e );
                 entityAssembler.createExplosionEffect( pos.sector, pos.pos );
                 return;

@@ -2,12 +2,12 @@ package sonar.components;
 
 import com.artemisx.Component;
 
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 enum PingControllerState {
     No;
     Cooldown( n : UInt );
-    Ping( mousePos : Vec2 );
+    Ping( mousePos : Vec2f );
 }
 
 enum FireTorpedoState {
@@ -15,7 +15,7 @@ enum FireTorpedoState {
     Guiding;
     Cooldown( n : UInt );
     Loaded;
-    Fire( mousePos : Vec2 );
+    Fire( mousePos : Vec2f );
 }
 
 enum BlipControllerState {

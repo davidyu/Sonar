@@ -39,7 +39,7 @@ import sonar.components.TimedEffectCmp;
 import sonar.components.UICmp;
 import sonar.managers.ContainerMgr;
 import utils.Polygon;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 using Lambda;
 
@@ -55,7 +55,7 @@ class EntityAssemblySys extends EntitySystem
         posMapper = world.getMapper( PosCmp );
     }
 
-    public function createNetworkPlayer( name: String, sector: Entity, position: Vec2, id: UInt ): Entity {
+    public function createNetworkPlayer( name: String, sector: Entity, position: Vec2f, id: UInt ): Entity {
         var player = createPlayer( name, sector, position );
         var npCmp = new NetworkPlayerCmp( id );
 #if ( debug && local )
@@ -69,7 +69,7 @@ class EntityAssemblySys extends EntitySystem
         return player;
     }
 
-    public function createPlayer( name: String, sector: Entity, position: Vec2 ): Entity {
+    public function createPlayer( name: String, sector: Entity, position: Vec2f ): Entity {
         var e = world.createEntity();
         var lookCmp = new LookCmp();
         var nameCmp = new NameIdCmp( name );
@@ -99,7 +99,7 @@ class EntityAssemblySys extends EntitySystem
         return e;
     }
 
-    public function createReticule( sector: Entity, player: Entity, start : Vec2 ) {
+    public function createReticule( sector: Entity, player: Entity, start : Vec2f ) {
         var e = world.createEntity();
         var posCmp = new PosCmp( sector, start );
         var nameCmp = new NameIdCmp( "reticle" );
@@ -120,7 +120,7 @@ class EntityAssemblySys extends EntitySystem
         return e;
     }
 
-    public function createTorpedo( id : Int, target : TorpedoTarget, sector : Entity, origin : Vec2 ) : Entity {
+    public function createTorpedo( id : Int, target : TorpedoTarget, sector : Entity, origin : Vec2f ) : Entity {
         var e = world.createEntity();
 
         var posCmp = new PosCmp( sector, origin );
@@ -140,7 +140,7 @@ class EntityAssemblySys extends EntitySystem
     }
 
     // Look into this: I don't care about which sector I'm in when I'm creating a Sonar wave. It should ideally be inferred.
-    public function createSonar( id : Int, sector : Entity, pos : Vec2 ) : Entity {
+    public function createSonar( id : Int, sector : Entity, pos : Vec2f ) : Entity {
         var e = world.createEntity();
 
         var sonarCmp = new SonarCmp( id, 100.0, 100 );
@@ -158,18 +158,18 @@ class EntityAssemblySys extends EntitySystem
         return e;
     }
 
-    public function createExplosionEffect( sector : Entity, pos : Vec2 ) : List<Entity> {
+    public function createExplosionEffect( sector : Entity, pos : Vec2f ) : List<Entity> {
         var explosions = new List<Entity>();
         var mainExplosion = createSingleExplosion( sector, pos, 20, Math.random() * 30 + 20 ) ;
         explosions.add( mainExplosion );
         for ( i in 0...Std.int( Math.random() * 4 ) ) {
-            var e = createSingleExplosion( sector, pos.add( new Vec2( Math.random() * 40 - 20, Math.random() * 40 - 20 ) ), 7, Math.random() * 5 + 5 ) ;
+            var e = createSingleExplosion( sector, pos + new Vec2f( Math.random() * 40 - 20, Math.random() * 40 - 20 ), 7, Math.random() * 5 + 5 ) ;
             explosions.add( e );
         }
         return explosions;
     }
 
-    public function createSingleExplosion( sector : Entity, pos : Vec2, ?growthRate : Float, ?size : Float ) : Entity {
+    public function createSingleExplosion( sector : Entity, pos : Vec2f, ?growthRate : Float, ?size : Float ) : Entity {
         var e = world.createEntity();
 
         var explosionCmp = new ExplosionCmp( growthRate == null ? Math.random() * 15 + 15 : growthRate, size == null ? Math.random() * 30 + 20 : size );
@@ -201,12 +201,12 @@ class EntityAssemblySys extends EntitySystem
     }
 
     // ugh: bad parameters again; see above.
-    public function createSonarBeam( id : Int, sector : Entity, pos: Vec2, direction : Vec2 ) : Entity {
+    public function createSonarBeam( id : Int, sector : Entity, pos: Vec2f, direction : Vec2f ) : Entity {
         var e = world.createEntity();
 
         var posCmp = new PosCmp( sector, pos, true );
         var posTrackerCmp = new PosTrackerCmp( LastPos );
-        posCmp.dp = direction.normalize().mul( 9.0 );
+        posCmp.dp = direction.normalize() * 9.0;
         var trailCmp = new TrailCmp( id, direction );
         var timedEffectCmp = new TimedEffectCmp( 2000, GlobalTickInterval );
         var renderCmp = new RenderCmp( 0xffffff );
@@ -224,7 +224,7 @@ class EntityAssemblySys extends EntitySystem
         return e;
     }
 
-    public function createCamera( sector: Entity, pos: Vec2, ?target : Entity ) {
+    public function createCamera( sector: Entity, pos: Vec2f, ?target : Entity ) {
         var e = world.createEntity();
 
         var posCmp = new PosCmp( sector, pos );
@@ -235,7 +235,7 @@ class EntityAssemblySys extends EntitySystem
         world.addEntity( e );
     }
 
-    public function createGridReferenceBound( sector : Entity, pos : Vec2 ) {
+    public function createGridReferenceBound( sector : Entity, pos : Vec2f ) {
         var e = world.createEntity();
 
         var renderCmp = new RenderCmp( 0x34608D );
@@ -253,7 +253,7 @@ class EntityAssemblySys extends EntitySystem
         var e = world.createEntity();
 
         var renderCmp = new RenderCmp( 0xffffff );
-        var posCmp = new PosCmp( sector, new Vec2( 0, 0 ) );
+        var posCmp = new PosCmp( sector, new Vec2f( 0, 0 ) );
         var traceCmp = new TraceCmp( 0.8, traceType );
         var timedEffectCmp = new TimedEffectCmp( 1000, GlobalTickInterval );
 
@@ -266,12 +266,12 @@ class EntityAssemblySys extends EntitySystem
     }
 
     // returns a sector without the RenderCmp
-    public function createVirtualSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
+    public function createVirtualSector( name : String, pos : Vec2f, polygonAreas : Array<Polygon> ) : Entity {
         var e = createSector( name, pos, polygonAreas ).removeComponent( RenderCmp );
         return e;
     }
 
-    public function createSector( name : String, pos : Vec2, polygonAreas : Array<Polygon> ) : Entity {
+    public function createSector( name : String, pos : Vec2f, polygonAreas : Array<Polygon> ) : Entity {
         var e = world.createEntity();
         var nameCmp = new NameIdCmp( name );
         var posCmp = new PosCmp( e, pos );

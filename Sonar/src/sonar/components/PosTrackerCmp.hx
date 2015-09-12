@@ -1,6 +1,6 @@
 package sonar.components;
 import com.artemisx.Component;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 using sonar.Util;
 
@@ -14,20 +14,20 @@ class PosTrackerCmp implements Component
 {
     @:isVar public var behavior : TrackingBehavior;
 
-    private var lastPosArray : Array<Vec2>;
-    private var lastPos : Vec2;
+    private var lastPosArray : Array<Vec2f>;
+    private var lastPos : Vec2f;
 
     public function new( behavior : TrackingBehavior ) {
         switch( behavior ) {
-            case LastPos: lastPos = new Vec2( 0, 0 );
+            case LastPos: lastPos = new Vec2f( 0, 0 );
             case PosList( n ):
-                lastPosArray = new Array<Vec2>();
+                lastPosArray = new Array<Vec2f>();
         }
 
         this.behavior = behavior;
     }
 
-    public function setLastPosition( pos : Vec2 ) {
+    public function setLastPosition( pos : Vec2f ) {
         switch( behavior ) {
             case LastPos:
                 lastPos = pos;
@@ -39,7 +39,7 @@ class PosTrackerCmp implements Component
         }
     }
 
-    public function getLastPosition( nth : Int = 0 ) : Vec2 {
+    public function getLastPosition( nth : Int = 0 ) : Vec2f {
         switch( this.behavior ) {
             case LastPos:
                 if ( nth > 0 ) throw "this component is not tracking multiple position values! Rebuild the component with PosList instead!";

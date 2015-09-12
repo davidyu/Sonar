@@ -1,6 +1,6 @@
 package utils;
 
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 // polling-friendly Mouse interface helper
 // from a functional perspective, this is bad, because we're micromanaging all this state
@@ -9,12 +9,12 @@ class Mouse {
     private static var initialized = false;
     private static var down : Bool;
     private static var pressed : Bool;
-    private static var screenMousePos : Vec2;
+    private static var screenMousePos : Vec2f;
 
     public static function init() {
         if ( initialized ) return;
         var stage = flash.Lib.current.stage;
-        screenMousePos = new Vec2( 0, 0 );
+        screenMousePos = new Vec2f( 0, 0 );
         stage.addEventListener( flash.events.MouseEvent.MOUSE_DOWN, onMouse.bind( true ) );
         stage.addEventListener( flash.events.MouseEvent.MOUSE_UP, onMouse.bind( false ) );
         stage.addEventListener( flash.events.MouseEvent.CLICK, onMousePress );

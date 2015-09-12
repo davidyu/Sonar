@@ -16,7 +16,7 @@ import sonar.components.StaticPosCmp;
 import sonar.components.UICmp;
 
 import utils.Polygon;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 using Lambda;
 using sonar.Util;
@@ -38,18 +38,18 @@ class PhysicsSys extends EntitySystem
         var e : Entity;
         var posCmp : PosCmp;    // Position component of entity
         var pos;                // Position of entity
-        var newPos : Vec2;      // Projected osition of entity after update
-        var collPoint : Vec2;   // Collision point with wall
+        var newPos : Vec2f;      // Projected osition of entity after update
+        var collPoint : Vec2f;   // Collision point with wall
         var sectorPolys : Array<Polygon>; // Walls
-        var sectorPos : Vec2;       // Origin of sector
+        var sectorPos : Vec2f;       // Origin of sector
         var isColl = true;
 
         for ( i in 0...actives.size ) {
             e = actives.get( i );
             posCmp = posMapper.get( e );
             if ( !posCmp.noDamping )
-                posCmp.dp = posCmp.dp.scale( 0.9 );
-            newPos = posCmp.pos.add( posCmp.dp );
+                posCmp.dp = 0.9 * posCmp.dp;
+            newPos = posCmp.pos + posCmp.dp;
 
             // If entity is in an adjacent and nested region to the sector, add this region to player pos
             var sectorRegionCmp = regionMapper.get( posCmp.sector );
@@ -68,7 +68,7 @@ class PhysicsSys extends EntitySystem
             // Must reset for each entity
             var minDist = Math.POSITIVE_INFINITY;
             var dist = 0.0;
-            var minVec = newPos.clone();
+            var minVec = new Vec2f( newPos.x, newPos.y );
             var minSector = posCmp.sector;
             isColl = true;
 
@@ -97,7 +97,7 @@ class PhysicsSys extends EntitySystem
                             // Get distance between newPos and closest polygon for determining closest sector
                             var np = Util.toSector( SectorCoordinates( newPos, adj ), posCmp.sector );
                             collPoint = p.getClosestPoint( np );
-                            dist = collPoint.sub( np ).lengthsq();
+                            dist = ( collPoint - np ).lensq();
 
                             if ( dist < minDist ) {
                                 minDist = dist;
@@ -117,7 +117,7 @@ class PhysicsSys extends EntitySystem
                 for ( p in sectorPolys ) {
                     if ( p.isPointinPolygon( newPos ) ) {
                         isColl = false;
-                        minVec = newPos.clone();
+                        minVec = new Vec2f( newPos.x, newPos.y );
                         break;
                     }
                 }
@@ -126,21 +126,21 @@ class PhysicsSys extends EntitySystem
                 if ( isColl ) {
                     for ( p in sectorPolys ) {
                         var res = p.getClosestPointAndEdge( newPos );
-                        collPoint = res.point.add( res.edge.a.sub( res.edge.b ).orthogonal().normalize().mul( Math2.EPSILON ) );
-                        dist = collPoint.sub( newPos ).lengthsq();
+                        collPoint = Math2.EPSILON * ( ( res.point + res.edge.a - res.edge.b ).orthogonal().normalize() );
+                        dist = ( collPoint - newPos ).lensq();
                         if ( dist < minDist ) {
                             minDist = dist;
-                            minVec = collPoint.clone();
+                            minVec = collPoint;
                             minSector = posCmp.sector;
                             // reflect velocity if entity is a bouncer.
                             if ( e.getComponent( BounceCmp ) != null ) {
                                 var edge = res.edge;
-                                var dir = edge.a.sub( edge.b );
+                                var dir = edge.a - edge.b;
                                 var normal = dir.orthogonal().normalize();
                                 var v = posCmp.dp;
                                 var refl = v.reflect( normal );
                                 posCmp.dp = refl;
-                                e.getComponent( BounceCmp ).lastTouched = Edge( edge.a, edge.b, collPoint.clone() );
+                                e.getComponent( BounceCmp ).lastTouched = Edge( edge.a, edge.b, collPoint );
                             }
                         }
                     }

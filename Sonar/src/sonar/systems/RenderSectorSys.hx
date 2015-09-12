@@ -13,7 +13,7 @@ import sonar.components.RegionCmp;
 import sonar.components.RenderCmp;
 import sonar.Util;
 import utils.Polygon;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 class RenderSectorSys extends EntitySystem
 {
@@ -57,7 +57,7 @@ class RenderSectorSys extends EntitySystem
 
             render = renderMapper.get( e );
             var posCmp = posMapper.get( e );
-            var pos : Vec2 = posCmp.pos.clone();
+            var pos : Vec2f = posCmp.pos;
             if ( posCmp.sector != null && posCmp.sector != e ) {
                 pos = Util.toWorld( SectorCoordinates( posCmp.pos, posCmp.sector ) );
             }

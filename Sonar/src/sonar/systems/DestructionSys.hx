@@ -13,7 +13,7 @@ import sonar.managers.ContainerMgr;
 import utils.Geo;
 import utils.Polygon;
 import utils.Math2;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 class DestructionSys extends EntitySystem
 {
@@ -39,7 +39,7 @@ class DestructionSys extends EntitySystem
             switch( d.state ) {
                 case Destroyed:
                     d.deaths++;
-                    posMapper.get( e ).pos = new Vec2( 0, 0 );
+                    posMapper.get( e ).pos = new Vec2f( 0, 0 );
                     d.state = Respawning( 60 );
                 case Respawning( n ):
                     if ( n > 0 ) {

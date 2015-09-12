@@ -11,7 +11,7 @@ import sonar.components.RenderCmp;
 import sonar.components.ReticuleCmp;
 import sonar.components.ControllerCmp;
 
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 class RenderReticuleSys extends EntitySystem
 {
@@ -37,7 +37,7 @@ class RenderReticuleSys extends EntitySystem
         var render : RenderCmp;
         var reticule : ReticuleCmp;
         var posCmp : PosCmp;
-        var pos : Vec2;
+        var pos : Vec2f;
 
         g2d.clear();
 

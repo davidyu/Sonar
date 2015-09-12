@@ -1,15 +1,15 @@
 package sonar.components;
 import com.artemisx.Component;
 import com.artemisx.Entity;
-import utils.Vec2;
+import gml.vector.Vec2f;
 import utils.Geo;
 
 using sonar.Util;
 
 enum TraceType {
-    Point(point: Vec2);
-    Line(a:Vec2, b:Vec2);
-    Mass(pos:Vec2, size:Float);
+    Point(point: Vec2f);
+    Line(a:Vec2f, b:Vec2f);
+    Mass(pos:Vec2f, size:Float);
 }
 
 @:rtti

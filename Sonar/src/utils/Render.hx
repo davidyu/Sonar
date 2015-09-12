@@ -1,11 +1,11 @@
 package utils;
 
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 class Render
 {
     // draws a good number of lines to fake the appearance of a circular arc
-    public static function drawArc( center: Vec2, radius : Float, startAngle : Float, arcAngle : Float, plot: Int->Int-> Void ) {
+    public static function drawArc( center: Vec2f, radius : Float, startAngle : Float, arcAngle : Float, plot: Int->Int-> Void ) {
         var steps = Std.int( arcAngle * radius * 2 ); //adaptive sampling FTW!
         startAngle -= .25; // compensate; apparently 0 means start at 90 deg
 

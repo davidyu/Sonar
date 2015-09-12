@@ -21,7 +21,7 @@ import sonar.components.TimedEffectCmp;
 
 import utils.Math2;
 import utils.Render;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 class RenderSonarSys extends EntitySystem
 {
@@ -50,7 +50,7 @@ class RenderSonarSys extends EntitySystem
         var sonar : SonarCmp;
         var time : TimedEffectCmp;
         var pos : PosCmp;
-        var screenTransform : Vec2;
+        var screenTransform : Vec2f;
 
         if ( actives.size > 0 ) {
             bmd.fill( 0, 0, bmd.width, bmd.height, 0x00000000 ); //clear

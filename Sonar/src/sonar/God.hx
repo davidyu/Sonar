@@ -44,7 +44,7 @@ import sonar.systems.UIPhysicsSys;
 import utils.Key;
 import utils.Math2;
 import utils.Polygon;
-import utils.Vec2;
+import gml.vector.Vec2f;
 
 class God
 {
@@ -126,25 +126,41 @@ class God
          *           +-------+
         */
 
-        var hammer = Vec2.getVecArray( [ 144, 144, 256, 144, /* p2 */ 426, 225, 448, 225, 500, 144,
-                                    /* p5 */ 780, 144, 832, 225, 854, 225, /* p8 */ 1024, 144, 1136, 144,
-                                    /* p10 */ 1136, 360, 1024, 360, 854, 279, /* p13 */ 660, 279,
-                                    /* p14 */ 660, 576, 620, 576, 620, 279, /* p17 */ 426, 279,
-                                    /* p18 */ 256, 360, 144, 360, 144, 144 ] );
+        var hammer = [ new Vec2f( 144, 144 )
+                     , new Vec2f( 256, 144 )
+                     , new Vec2f( 426, 225 )
+                     , new Vec2f( 448, 225 )
+                     , new Vec2f( 500, 144 )
+                     , new Vec2f( 780, 144 )
+                     , new Vec2f( 832, 225 )
+                     , new Vec2f( 854, 225 )
+                     , new Vec2f( 1024, 144 )
+                     , new Vec2f( 1136, 144 )
+                     , new Vec2f( 1136, 360 )
+                     , new Vec2f( 1024, 360 )
+                     , new Vec2f( 854, 279 )
+                     , new Vec2f( 660, 279 )
+                     , new Vec2f( 660, 576 )
+                     , new Vec2f( 620, 576 )
+                     , new Vec2f( 620, 279 )
+                     , new Vec2f( 426, 279 )
+                     , new Vec2f( 256, 360 )
+                     , new Vec2f( 144, 360 )
+                     , new Vec2f( 144, 144 ) ];
 
-        var baseSquare = Vec2.getVecArray( [ 144, 144,
-                                             744, 144,
-                                             744, 744,
-                                             144, 744,
-                                             144, 144 ] );
+        var baseSquare = [ new Vec2f( 144, 144 )
+                         , new Vec2f( 744, 144 )
+                         , new Vec2f( 744, 744 )
+                         , new Vec2f( 144, 744 )
+                         , new Vec2f( 144, 144 ) ];
 
-        var innerSquare = Vec2.getVecArray( [ 600, 600,
-                                              650, 600,
-                                              650, 650,
-                                              600, 650,
-                                              600, 600 ] );
+        var innerSquare = [ new Vec2f( 600, 600 )
+                          , new Vec2f( 650, 600 )
+                          , new Vec2f( 650, 650 )
+                          , new Vec2f( 600, 650 )
+                          , new Vec2f( 600, 600 ) ];
 
-        sectors.push( entityAssembler.createVirtualSector( "sector0", new Vec2( 0, 0 ), [ new Polygon( baseSquare ), new Polygon( baseSquare ) ] ) );
+        sectors.push( entityAssembler.createVirtualSector( "sector0", new Vec2f( 0, 0 ), [ new Polygon( baseSquare ), new Polygon( baseSquare ) ] ) );
 
 #if ( local )
         Security.loadPolicyFile( "xmlsocket://localhost:10000" );
@@ -153,7 +169,7 @@ class God
         Security.loadPolicyFile( "xmlsocket://sonargame.cloudapp.net:10000" );
         client = entityAssembler.createClient( "sonargame.cloudapp.net", 5000 );
 #end
-        entityAssembler.createGridReferenceBound( sectors[0], new Vec2( 0, 0 ) );
+        entityAssembler.createGridReferenceBound( sectors[0], new Vec2f( 0, 0 ) );
     }
 
     public function tick( _ ) : Void {

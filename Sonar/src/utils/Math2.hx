@@ -1,9 +1,11 @@
 package utils;
 
+import gml.vector.Vec2f;
+
 enum LineLineIntersectResult {
     None; //parallel, not collinear
     Overlapping;
-    Point(point: Vec2);
+    Point(point: Vec2f);
 }
 
 class Math2 {
@@ -57,21 +59,21 @@ class Math2 {
             return value;
     }
 
-    public static function getRayLineIntersection( ray: { origin: Vec2, direction: Vec2 }, line: { a: Vec2, b: Vec2 } ) : LineLineIntersectResult {
+    public static function getRayLineIntersection( ray: { origin: Vec2f, direction: Vec2f }, line: { a: Vec2f, b: Vec2f } ) : LineLineIntersectResult {
         // approach: let t and u be scalars, find t such that. ( origin + u ( direction ) ) = ( a + t ( b - a ) ). Insight: find t, not u
 
         // edge cases: if ( b - a ) x direction = 0, then the line and ray are parallel
         // if ( a - origin ) x direction = 0 also, then the line and ray are collinear: there are two more umbrella cases. See below:
-        var b_a = line.b.sub( line.a );
+        var b_a = line.b - line.a;
 
         if ( Math.abs( b_a.cross( ray.direction ) ) < Math2.EPSILON ) { // parallel, but don't know if collinear or not
-            if ( Math.abs( ray.origin.sub( line.a ).cross( ray.direction ) ) < Math2.EPSILON ) { //collinear, but don't know if overlapping or disjoint
-                var oa: Vec2 = line.a.sub( ray.origin );
-                var ob: Vec2 = line.b.sub( ray.origin );
+            if ( Math.abs( ( ray.origin - line.a ).cross( ray.direction ) ) < Math2.EPSILON ) { //collinear, but don't know if overlapping or disjoint
+                var oa: Vec2f = line.a - ray.origin;
+                var ob: Vec2f = line.b - ray.origin;
 
                 // I have a feeling this can be optimized more...
-                if ( oa.dot( ob ) / oa.lengthsq() >= 0 && oa.dot( ob ) / oa.lengthsq() <= 1 &&                 // b is between a and o AND
-                     Math.abs( oa.normalize().add( ray.direction.normalize() ).length() ) <= Math2.EPSILON ) { // ob is pointing away from ray.direction; so line and ray are disjoint
+                if ( oa.dot( ob ) / oa.lensq() >= 0 && oa.dot( ob ) / oa.lensq() <= 1 &&                 // b is between a and o AND
+                     Math.abs( ( oa.normalize() + ray.direction.normalize() ).len() ) <= Math2.EPSILON ) { // ob is pointing away from ray.direction; so line and ray are disjoint
                     return None;
                 } else { // ray overlaps line segment ab
                     return Overlapping;
@@ -85,49 +87,49 @@ class Math2 {
         // origin x direction = a x direction + t ( b - a ) x direction
         // t = ( origin - a ) x direction / ( b - a ) x direction
 
-        var t = ( ray.origin.sub( line.a ).cross( ray.direction ) ) / ( b_a.cross( ray.direction ) );
+        var t = ( ( ray.origin - line.a ).cross( ray.direction ) ) / ( b_a.cross( ray.direction ) );
 
         // 0 <= t <= 1, otherwise the point is on the line defined by a and b rather than the line segment itself
         if ( t >= -Math2.EPSILON && t <= 1 + Math2.EPSILON  ) {
-            return Point( line.a.add( b_a.mul( t ) ) );
+            return Point( line.a + ( t * b_a ) );
         }
 
         return None;
     }
 
     // http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-    public static function getLineLineIntersection( ap1 : Vec2, ap2 : Vec2, bp1 : Vec2, bp2 : Vec2 ) : Vec2 {
-        var r = ap2.sub( ap1 );
-        var s = bp2.sub( bp1 );
-        var d = bp1.sub( ap1 );
+    public static function getLineLineIntersection( ap1 : Vec2f, ap2 : Vec2f, bp1 : Vec2f, bp2 : Vec2f ) : Vec2f {
+        var r = ap2 - ap1;
+        var s = bp2 - bp1;
+        var d = bp1 - ap1;
         var rxs = 1 / r.cross( s );
-        var t = d.cross( s.scale( rxs ) );
-        var u = d.cross( r.scale( rxs ) );
+        var t = d.cross( s * rxs );
+        var u = d.cross( r * rxs );
 
         if ( 0 <= t && t <= 1 && 0 <= u && u <= 1 ) {
-            return ap1.add( r.scale( t ) );
+            return ap1 +  r *  t;
         }
 
         return null;
     }
 
     // returns the point on a line segment (a,b) that is closest to some other point p
-    public static function getCloseIntersectPoint( p : Vec2, line: { a: Vec2, b : Vec2 }  ) : Vec2 {
-        var ap : Vec2 = p.sub( line.a );
-        var ab : Vec2 = line.b.sub( line.a );
+    public static function getCloseIntersectPoint( p : Vec2f, line: { a: Vec2f, b : Vec2f }  ) : Vec2f {
+        var ap : Vec2f = p - line.a;
+        var ab : Vec2f = line.b - line.a;
 
         // r is the ratio between lengths ae / ab, where ae is ||ap||cos@
         // ae can also be thought of as the vector projection of ap onto ab.
         // r can also be thought of as the scalar projection of ap onto ab
-        var r : Float = ap.dot( ab ) / ab.lengthsq();
-        var closest : Vec2;
+        var r : Float = ap.dot( ab ) / ab.lensq();
+        var closest : Vec2f;
 
         if ( r < 0 ) {
             closest = line.a;
         } else if ( r > 1 ) {
             closest = line.b;
         } else {
-            closest = line.a.add( ab.mul( r ) );
+            closest = line.a + r * ab;
         }
 
         return closest;

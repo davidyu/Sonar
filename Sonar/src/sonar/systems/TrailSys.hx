@@ -19,7 +19,7 @@ import sonar.systems.EntityAssemblySys;
 
 import utils.Geo;
 import utils.Polygon;
-import utils.Vec2;
+import gml.vector.Vec2f;
 import utils.Math2;
 
 class TrailSys extends EntitySystem
@@ -59,29 +59,29 @@ class TrailSys extends EntitySystem
                     for ( e in containerMgr.getAllEntitiesOfContainer( sector ) ) {
                         if ( e.id == trail.playerId ) continue; //skip me
                         if ( e.getComponent( UICmp ) != null ) continue; // skip UI components
-                        var p : Vec2 = posMapper.get( e ).pos;
+                        var p : Vec2f = posMapper.get( e ).pos;
                         if ( Geo.isPointInCircle( { center: p, radius: 6 }, pos.pos ) ) {
                             entityAssembler.createTrace( sector, Mass( p, 3 ) );
                             // bounce back
-                            pos.dp = pos.dp.mul( -1 );
+                            pos.dp = -pos.dp;
                         }
                     }
 
                     switch ( bounce.lastTouched ) {
                         case Edge( a, b, collisionPt ):
                             // create trace
-                            var toA = a.sub( collisionPt ).normalize();
-                            var toB = b.sub( collisionPt ).normalize();
+                            var toA = ( a - collisionPt ).normalize();
+                            var toB = ( b - collisionPt ).normalize();
                             var traceLen = 40.0;
 
-                            var aa = collisionPt.add( toA.mul( traceLen / 2 ) );
-                            var bb = collisionPt.add( toB.mul( traceLen / 2 ) );
+                            var aa = ( traceLen / 2 ) * ( collisionPt + toA );
+                            var bb = ( traceLen / 2 ) * ( collisionPt + toB );
 
                             // bb overshot
-                            if ( b.sub( aa ).lengthsq() < bb.sub( aa ).lengthsq() ) bb = b;
+                            if ( ( b - aa ).lensq() < ( bb - aa ).lensq() ) bb = b;
 
                             // aa overshot
-                            if ( a.sub( bb ).lengthsq() < aa.sub( bb ).lengthsq() ) aa = a;
+                            if ( ( a - bb ).lensq() < ( aa - bb ).lensq() ) aa = a;
 
                             entityAssembler.createTrace( pos.sector, Line( aa, bb ) );
 

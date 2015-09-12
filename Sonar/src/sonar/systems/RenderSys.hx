@@ -23,7 +23,7 @@ import sonar.components.TraceCmp;
 
 import sonar.Util;
 
-import utils.Vec2;
+import gml.vector.Vec2f;
 import utils.Render;
 
 import h2d.Tile;
@@ -52,8 +52,8 @@ class RenderSys extends EntitySystem
     override public function processEntities( entities : Bag<Entity> ) : Void  {
         var e : Entity;
         var posCmp : PosCmp;
-        var pos : Vec2;
-        var sectorPos : Vec2;
+        var pos : Vec2f;
+        var sectorPos : Vec2f;
 
         if ( actives.size > 0 && compensatingClear ) {
             g2d.clear();

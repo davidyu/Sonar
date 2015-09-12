@@ -37,8 +37,8 @@ class UIPhysicsSys extends EntitySystem
             e = actives.get( i );
             posCmp = posMapper.get( e );
             if ( !posCmp.noDamping )
-                posCmp.dp = posCmp.dp.scale( 0.9 );
-            posCmp.pos = posCmp.pos.add( posCmp.dp );
+                posCmp.dp = 0.9 * posCmp.dp;
+            posCmp.pos = posCmp.pos + posCmp.dp;
         }
     }
 
